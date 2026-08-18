@@ -25,9 +25,14 @@
       justify-content: center;
     }
 
+    /* =========================
+       AUGE
+    ========================= */
+
     .eye {
       width: 180px;
       height: 110px;
+
       border: 4px solid white;
       border-radius: 50% / 60%;
 
@@ -36,20 +41,23 @@
       justify-content: center;
 
       transition:
-        height 0.15s ease,
+        height 0.12s ease-in-out,
         transform 0.3s ease;
     }
 
     .pupil {
       width: 55px;
       height: 55px;
+
       background: white;
       border-radius: 50%;
 
-      transition: transform 0.15s ease;
+      transition:
+        transform 0.12s ease-in-out;
     }
 
-    /* BLINZELN */
+    /* Blinzeln */
+
     .eye.blink {
       height: 6px;
     }
@@ -58,52 +66,32 @@
       transform: scaleY(0);
     }
 
+
+    /* =========================
+       TEXT
+    ========================= */
+
     .title {
       margin-top: 35px;
+
       font-size: 22px;
       letter-spacing: 8px;
     }
 
     .status {
       margin-top: 15px;
+
       font-size: 13px;
       letter-spacing: 3px;
+
       opacity: 0.7;
-    }
-
-    /* MIKROFON */
-    .mic-button {
-      margin-top: 30px;
-
-      width: 65px;
-      height: 65px;
-
-      border: 2px solid white;
-      border-radius: 50%;
-
-      background: black;
-      color: white;
-
-      font-size: 28px;
-
-      cursor: pointer;
-
-      transition: 0.2s;
-    }
-
-    .mic-button:hover {
-      transform: scale(1.08);
-    }
-
-    .mic-button.listening {
-      box-shadow: 0 0 25px white;
     }
 
     .speech {
       margin-top: 20px;
 
       width: 80%;
-      max-width: 500px;
+      max-width: 600px;
 
       min-height: 25px;
 
@@ -120,11 +108,96 @@
 
       min-height: 25px;
 
-      font-size: 16px;
+      font-size: 17px;
       letter-spacing: 2px;
+
+      text-align: center;
     }
+
+
+    /* =========================
+       AUDIOWELLE
+    ========================= */
+
+    .wave {
+      margin-top: 25px;
+
+      height: 45px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      gap: 4px;
+
+      opacity: 0;
+
+      transition: opacity 0.3s ease;
+    }
+
+    .wave.active {
+      opacity: 1;
+    }
+
+    .bar {
+      width: 4px;
+      height: 10px;
+
+      background: white;
+
+      border-radius: 3px;
+
+      animation: wave 0.8s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .wave.active .bar {
+      animation-play-state: running;
+    }
+
+    .bar:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .bar:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .bar:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .bar:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .bar:nth-child(5) {
+      animation-delay: 0.2s;
+    }
+
+    .bar:nth-child(6) {
+      animation-delay: 0.1s;
+    }
+
+    .bar:nth-child(7) {
+      animation-delay: 0s;
+    }
+
+    @keyframes wave {
+
+      0%, 100% {
+        height: 8px;
+      }
+
+      50% {
+        height: 38px;
+      }
+
+    }
+
   </style>
 </head>
+
 
 <body>
 
@@ -140,12 +213,20 @@
     BEOBACHTUNG AKTIV
   </div>
 
-  <button class="mic-button" id="micButton">
-    🎙️
-  </button>
+  <div class="wave" id="wave">
+
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+
+  </div>
 
   <div class="speech" id="speech">
-    Mikrofon bereit
+    Mikrofon wird aktiviert...
   </div>
 
   <div class="response" id="response"></div>
@@ -154,39 +235,47 @@
   <script>
 
     /* =========================
-       AUGE BLINZELN
+       ELEMENTE
     ========================= */
 
     const eye = document.getElementById("eye");
+    const speech = document.getElementById("speech");
+    const response = document.getElementById("response");
+    const status = document.getElementById("status");
+    const wave = document.getElementById("wave");
+
+
+    /* =========================
+       BLINZELN
+    ========================= */
 
     function blink() {
 
       eye.classList.add("blink");
 
       setTimeout(() => {
+
         eye.classList.remove("blink");
+
       }, 180);
 
     }
 
-    // Alle 20 Sekunden blinzeln
-    setInterval(blink, 20000);
+    // Alle 10 Sekunden blinzeln
+    setInterval(blink, 10000);
 
 
     /* =========================
        SPRACHERKENNUNG
     ========================= */
 
-    const micButton = document.getElementById("micButton");
-    const speech = document.getElementById("speech");
-    const response = document.getElementById("response");
-    const status = document.getElementById("status");
-
     const SpeechRecognition =
       window.SpeechRecognition ||
       window.webkitSpeechRecognition;
 
-    let recognition;
+
+    let recognition = null;
+
 
     if (SpeechRecognition) {
 
@@ -194,145 +283,296 @@
 
       recognition.lang = "de-DE";
 
-      recognition.continuous = false;
+      // Möglichst dauerhaft zuhören
+      recognition.continuous = true;
 
-      recognition.interimResults = false;
+      // Zwischenergebnisse anzeigen
+      recognition.interimResults = true;
 
 
-      /* Wenn Mikrofon gestartet wird */
+      /* =========================
+         MIKROFON STARTEN
+      ========================= */
 
-      micButton.addEventListener("click", () => {
+      function startListening() {
 
         try {
 
           recognition.start();
 
-          micButton.classList.add("listening");
-
-          status.textContent = "ICH HÖRE ZU...";
-          speech.textContent = "Sprich jetzt...";
+          status.textContent =
+            "BEOBACHTUNG AKTIV";
 
         } catch (error) {
 
-          console.log(error);
+          // Browser versucht eventuell bereits zuzuhören
+          console.log("Mikrofon läuft bereits.");
 
         }
 
-      });
+      }
 
 
-      /* Wenn Sprache erkannt wurde */
+      /* =========================
+         SPRACHE ERKANNT
+      ========================= */
 
       recognition.onresult = (event) => {
 
-        const text =
-          event.results[0][0].transcript
+        let finalText = "";
+
+        for (
+          let i = event.resultIndex;
+          i < event.results.length;
+          i++
+        ) {
+
+          const result = event.results[i];
+
+          const text =
+            result[0].transcript;
+
+          // Das Gesagte anzeigen
+          speech.textContent =
+            '"' + text + '"';
+
+          if (result.isFinal) {
+
+            finalText += text;
+
+          }
+
+        }
+
+
+        if (!finalText) {
+          return;
+        }
+
+
+        const command =
+          finalText
             .toLowerCase()
             .trim();
 
-        speech.textContent = '"' + text + '"';
-
-        micButton.classList.remove("listening");
-
-        status.textContent = "BEOBACHTUNG AKTIV";
-
 
         /* =========================
-           OBSERVER SÄTZE
+           BEFEHLE
         ========================= */
 
         if (
-          text.includes("observer") ||
-          text.includes("bist du da")
+          command.includes("hallo")
         ) {
 
-          response.textContent =
-            "ICH BIN DA.";
-
-          blink();
+          respond(
+            "ICH HABE EUCH BEREITS ERKANNT."
+          );
 
         }
 
         else if (
-          text.includes("wer bist du")
+          command.includes("observer")
         ) {
 
-          response.textContent =
-            "ICH BIN DER OBSERVER.";
+          respond(
+            "ICH BIN DA."
+          );
 
         }
 
         else if (
-          text.includes("öffne dich") ||
-          text.includes("öffne")
+          command.includes("bist du da")
         ) {
 
-          response.textContent =
-            "ZUGRIFF VERWEIGERT.";
+          respond(
+            "ICH BIN DA."
+          );
 
         }
 
         else if (
-          text.includes("hilfe")
+          command.includes("wer bist du")
         ) {
 
-          response.textContent =
-            "BEOBACHTE DEINE UMGEBUNG.";
+          respond(
+            "ICH BIN DER OBSERVER."
+          );
 
         }
 
         else if (
-          text.includes("hallo")
+          command.includes("öffne dich") ||
+          command === "öffne"
         ) {
 
-          response.textContent =
-            "ICH HABE EUCH BEREITS ERKANNT.";
+          respond(
+            "ZUGRIFF VERWEIGERT."
+          );
+
+        }
+
+        else if (
+          command.includes("hilfe")
+        ) {
+
+          respond(
+            "BEOBACHTE DEINE UMGEBUNG."
+          );
+
+        }
+
+        /*
+          WICHTIG:
+
+          Wenn kein Befehl erkannt wird,
+          passiert ABSOLUT NICHTS.
+
+          Kein Fehler.
+          Keine Antwort.
+          Keine zusätzliche Meldung.
+        */
+
+      };
+
+
+      /* =========================
+         OBSERVER SPRICHT
+      ========================= */
+
+      function respond(text) {
+
+        // Antwort anzeigen
+        response.textContent = text;
+
+        // Audiowelle einschalten
+        wave.classList.add("active");
+
+        // Status ändern
+        status.textContent =
+          "OBSERVER SPRICHT";
+
+
+        // Browser-Sprachausgabe
+        if ("speechSynthesis" in window) {
+
+          window.speechSynthesis.cancel();
+
+          const utterance =
+            new SpeechSynthesisUtterance(text);
+
+          utterance.lang = "de-DE";
+
+          utterance.rate = 0.85;
+
+          utterance.pitch = 0.8;
+
+          utterance.volume = 1;
+
+
+          utterance.onstart = () => {
+
+            wave.classList.add("active");
+
+          };
+
+
+          utterance.onend = () => {
+
+            wave.classList.remove("active");
+
+            status.textContent =
+              "BEOBACHTUNG AKTIV";
+
+          };
+
+
+          window.speechSynthesis.speak(
+            utterance
+          );
 
         }
 
         else {
 
-          response.textContent =
-            "BEFEHL NICHT ERKANNT.";
+          // Falls Sprachausgabe nicht verfügbar ist
+          setTimeout(() => {
+
+            wave.classList.remove("active");
+
+            status.textContent =
+              "BEOBACHTUNG AKTIV";
+
+          }, 2500);
+
+        }
+
+      }
+
+
+      /* =========================
+         MIKROFON ENDET
+      ========================= */
+
+      recognition.onend = () => {
+
+        /*
+          Viele Browser beenden continuous
+          recognition irgendwann.
+
+          Deshalb starten wir sie automatisch
+          erneut.
+        */
+
+        setTimeout(() => {
+
+          startListening();
+
+        }, 300);
+
+      };
+
+
+      /* =========================
+         FEHLER
+      ========================= */
+
+      recognition.onerror = (event) => {
+
+        console.log(
+          "Spracherkennung:",
+          event.error
+        );
+
+        /*
+          Bei normalen temporären Fehlern
+          versuchen wir es erneut.
+        */
+
+        if (
+          event.error !== "not-allowed" &&
+          event.error !== "service-not-allowed"
+        ) {
+
+          setTimeout(() => {
+
+            startListening();
+
+          }, 1000);
 
         }
 
       };
 
 
-      /* Wenn die Aufnahme endet */
+      /* =========================
+         START
+      ========================= */
 
-      recognition.onend = () => {
-
-        micButton.classList.remove("listening");
-
-        status.textContent =
-          "BEOBACHTUNG AKTIV";
-
-      };
-
-
-      /* Fehler */
-
-      recognition.onerror = (event) => {
-
-        micButton.classList.remove("listening");
-
-        status.textContent =
-          "MIKROFONFEHLER";
-
-        response.textContent =
-          "SPRACHE NICHT ERKANNT.";
-
-        console.log(event.error);
-
-      };
+      startListening();
 
     }
 
     else {
-
-      micButton.disabled = true;
 
       status.textContent =
         "SPRACHERKENNUNG NICHT VERFÜGBAR";
