@@ -32,6 +32,7 @@
     .eye {
       width: 180px;
       height: 110px;
+
       border: 4px solid white;
       border-radius: 50% / 60%;
 
@@ -45,6 +46,7 @@
     .pupil {
       width: 55px;
       height: 55px;
+
       background: white;
       border-radius: 50%;
 
@@ -59,15 +61,18 @@
       transform: scaleY(0);
     }
 
+
     /* =========================
        TITEL
     ========================= */
 
     .title {
       margin-top: 35px;
+
       font-size: 22px;
       letter-spacing: 8px;
     }
+
 
     /* =========================
        STATUS
@@ -75,23 +80,33 @@
 
     .status {
       margin-top: 15px;
+
       font-size: 13px;
       letter-spacing: 3px;
+
       opacity: 0.7;
     }
 
+
     /* =========================
-       OBSERVER ANTWORT
+       ANTWORT
     ========================= */
 
     .response {
       margin-top: 25px;
+
+      width: 80%;
+      max-width: 700px;
+
       min-height: 25px;
 
       font-size: 17px;
       letter-spacing: 2px;
+
       text-align: center;
+      line-height: 1.5;
     }
+
 
     /* =========================
        AUDIOWELLE
@@ -99,6 +114,7 @@
 
     .wave {
       margin-top: 25px;
+
       height: 45px;
 
       display: flex;
@@ -108,6 +124,7 @@
       gap: 4px;
 
       opacity: 0;
+
       transition: opacity 0.3s ease;
     }
 
@@ -120,9 +137,11 @@
       height: 8px;
 
       background: white;
+
       border-radius: 3px;
 
       animation: wave 0.8s ease-in-out infinite;
+
       animation-play-state: paused;
     }
 
@@ -159,6 +178,7 @@
     }
 
     @keyframes wave {
+
       0%, 100% {
         height: 8px;
       }
@@ -166,10 +186,12 @@
       50% {
         height: 38px;
       }
+
     }
 
   </style>
 </head>
+
 
 <body>
 
@@ -243,7 +265,7 @@
     }
 
 
-    // Alle 10 Sekunden blinzeln
+    // Alle 10 Sekunden
 
     setInterval(blink, 10000);
 
@@ -283,7 +305,7 @@
 
         } catch (error) {
 
-          // Mikrofon läuft bereits.
+          // Läuft bereits.
 
         }
 
@@ -305,10 +327,19 @@
         }
 
 
-        const command =
+        let command =
           result[0].transcript
             .toLowerCase()
             .trim();
+
+
+        /*
+          Satzzeichen entfernen
+        */
+
+        command = command
+          .replace(/[.,!?;:]/g, "")
+          .trim();
 
 
         /* =========================
@@ -316,77 +347,146 @@
         ========================= */
 
 
-        // HALLO
+        /*
+          HALLO
+        */
 
-        if (
-          command.includes("hallo")
-        ) {
-
-          respond(
-            "ICH HABE EUCH BEREITS ERKANNT."
-          );
-
-        }
-
-
-        // OBSERVER / BIST DU DA
-
-        else if (
-          command.includes("observer") ||
-          command.includes("bist du da")
-        ) {
+        if (command === "hallo") {
 
           respond(
-            "ICH BIN DA."
-          );
-
-        }
-
-
-        // WER BIST DU
-
-        else if (
-          command.includes("wer bist du")
-        ) {
-
-          respond(
-            "ICH BIN DER OBSERVER."
-          );
-
-        }
-
-
-        // ÖFFNE DICH
-
-        else if (
-          command.includes("öffne dich") ||
-          command === "öffne"
-        ) {
-
-          respond(
-            "ZUGRIFF VERWEIGERT."
-          );
-
-        }
-
-
-        // HILFE
-
-        else if (
-          command.includes("hilfe")
-        ) {
-
-          respond(
-            "BEOBACHTE DEINE UMGEBUNG."
+            "Hallo."
           );
 
         }
 
 
         /*
-          Alles andere wird ignoriert.
-          Keine Fehlermeldung.
-          Keine Antwort.
+          WAS
+        */
+
+        else if (command === "was") {
+
+          respond(
+            "Was?"
+          );
+
+        }
+
+
+        /*
+          WER BIST DU
+        */
+
+        else if (
+          command === "wer bist du"
+        ) {
+
+          respond(
+            "Observer Typ 0.4"
+          );
+
+        }
+
+
+        /*
+          OBSERVER TYP 0.4
+        */
+
+        else if (
+          command === "observer typ 0.4" ||
+          command === "observer typ null 0.4"
+        ) {
+
+          respond(
+            "Wo sind wir"
+          );
+
+        }
+
+
+        /*
+          WO SIND WIR
+        */
+
+        else if (
+          command === "wo sind wir"
+        ) {
+
+          respond(
+            "Ihr wurdet von zwei Männern hier reingebracht, " +
+            "sie trugen einen schwarzen Hoodie und eine " +
+            "schwarze Winterjacke, der eine hatte einen Zettel " +
+            "darin versteckt"
+          );
+
+        }
+
+
+        /*
+          HILFE
+        */
+
+        else if (
+          command === "hilfe"
+        ) {
+
+          respond(
+            "Ich bin nicht fürs Helfen da"
+          );
+
+        }
+
+
+        /*
+          WASCHMASCHINE
+        */
+
+        else if (
+          command === "waschmaschine"
+        ) {
+
+          respond(
+            "Ich bin nicht für eine Wäsche gemacht"
+          );
+
+        }
+
+
+        /*
+          WIE KOMMEN WIR RAUS
+        */
+
+        else if (
+          command === "wie kommen wir raus"
+        ) {
+
+          respond(
+            "Probiert es mal mit der Tür, sonst sind alle weg im Betriebssystem blockiert"
+          );
+
+        }
+
+
+        /*
+          WASSER IN DIE FLASCHE
+        */
+
+        else if (
+          command ===
+          "sollen wir das wasser in die flasche füllen"
+        ) {
+
+          respond(
+            "Vorsichtsmaßnahme erkannt, stellt sicher das ich kein Wasser abbekomme und sonst zurück zu euer Frage, Ja!"
+          );
+
+        }
+
+
+        /*
+          ALLES ANDERE:
+
+          KEINE REAKTION.
         */
 
       };
@@ -402,7 +502,6 @@
 
         status.textContent =
           "OBSERVER SPRICHT";
-
 
         wave.classList.add("active");
 
@@ -462,19 +561,10 @@
 
 
       /* =========================
-         MIKROFON WIRD BEENDET
+         SPRACHERKENNUNG ENDET
       ========================= */
 
       recognition.onend = () => {
-
-        /*
-          Manche Browser beenden
-          continuous Speech Recognition
-          automatisch.
-
-          Deshalb starten wir sie
-          automatisch wieder.
-        */
 
         setTimeout(() => {
 
