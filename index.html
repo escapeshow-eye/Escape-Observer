@@ -25,10 +25,6 @@
       justify-content: center;
     }
 
-    /* =========================
-       AUGE
-    ========================= */
-
     .eye {
       width: 180px;
       height: 110px;
@@ -61,22 +57,12 @@
       transform: scaleY(0);
     }
 
-
-    /* =========================
-       TITEL
-    ========================= */
-
     .title {
       margin-top: 35px;
 
       font-size: 22px;
       letter-spacing: 8px;
     }
-
-
-    /* =========================
-       STATUS
-    ========================= */
 
     .status {
       margin-top: 15px;
@@ -86,11 +72,6 @@
 
       opacity: 0.7;
     }
-
-
-    /* =========================
-       ANTWORT
-    ========================= */
 
     .response {
       margin-top: 25px;
@@ -106,11 +87,6 @@
       text-align: center;
       line-height: 1.5;
     }
-
-
-    /* =========================
-       AUDIOWELLE
-    ========================= */
 
     .wave {
       margin-top: 25px;
@@ -141,7 +117,6 @@
       border-radius: 3px;
 
       animation: wave 0.8s ease-in-out infinite;
-
       animation-play-state: paused;
     }
 
@@ -178,7 +153,6 @@
     }
 
     @keyframes wave {
-
       0%, 100% {
         height: 8px;
       }
@@ -186,40 +160,25 @@
       50% {
         height: 38px;
       }
-
     }
-
   </style>
 </head>
 
-
 <body>
-
-  <!-- AUGE -->
 
   <div class="eye" id="eye">
     <div class="pupil"></div>
   </div>
 
-
-  <!-- TITEL -->
-
   <div class="title">
     OBSERVER
   </div>
-
-
-  <!-- STATUS -->
 
   <div class="status" id="status">
     BEOBACHTUNG AKTIV
   </div>
 
-
-  <!-- AUDIOWELLE -->
-
   <div class="wave" id="wave">
-
     <div class="bar"></div>
     <div class="bar"></div>
     <div class="bar"></div>
@@ -227,20 +186,12 @@
     <div class="bar"></div>
     <div class="bar"></div>
     <div class="bar"></div>
-
   </div>
-
-
-  <!-- ANTWORT -->
 
   <div class="response" id="response"></div>
 
 
   <script>
-
-    /* =========================
-       ELEMENTE
-    ========================= */
 
     const eye = document.getElementById("eye");
     const response = document.getElementById("response");
@@ -257,15 +208,10 @@
       eye.classList.add("blink");
 
       setTimeout(() => {
-
         eye.classList.remove("blink");
-
       }, 180);
 
     }
-
-
-    // Alle 10 Sekunden
 
     setInterval(blink, 10000);
 
@@ -277,7 +223,6 @@
     const SpeechRecognition =
       window.SpeechRecognition ||
       window.webkitSpeechRecognition;
-
 
     let recognition = null;
 
@@ -293,20 +238,12 @@
       recognition.interimResults = false;
 
 
-      /* =========================
-         MIKROFON STARTEN
-      ========================= */
-
       function startListening() {
 
         try {
-
           recognition.start();
-
         } catch (error) {
-
           // Läuft bereits.
-
         }
 
       }
@@ -321,7 +258,6 @@
         const result =
           event.results[event.results.length - 1];
 
-
         if (!result.isFinal) {
           return;
         }
@@ -333,170 +269,194 @@
             .trim();
 
 
-        /*
-          Satzzeichen entfernen
-        */
-
         command = command
           .replace(/[.,!?;:]/g, "")
           .trim();
 
 
+        console.log("Erkannt:", command);
+
+
         /* =========================
-           BEFEHLE
+           HALLO
         ========================= */
 
-
-        /*
-          HALLO
-        */
-
-        if (command === "hallo") {
-
-          respond(
-            "Hallo."
-          );
-
-        }
-
-
-        /*
-          WAS
-        */
-
-        else if (command === "was") {
-
-          respond(
-            "Was?"
-          );
-
-        }
-
-
-        /*
-          WER BIST DU
-        */
-
-        else if (
-          command === "wer bist du"
+        if (
+          command === "hallo" &&
+          !command.includes("waschmaschine")
         ) {
 
           respond(
-            "Observer Typ 0.4"
+            "Hallo.",
+            "hallo"
           );
 
+          return;
         }
 
 
-        /*
-          OBSERVER TYP 0.4
-        */
+        /* =========================
+           WAS
+        ========================= */
 
-        else if (
-          command === "observer typ 0.4" ||
-          command === "observer typ null 0.4"
+        if (command === "was") {
+
+          respond(
+            "Was?",
+            "was"
+          );
+
+          return;
+        }
+
+
+        /* =========================
+           WER BIST DU
+        ========================= */
+
+        if (
+          command.includes("wer bist du")
         ) {
 
           respond(
-            "Wo sind wir"
+            "Observer Typ 0.4",
+            "wer"
           );
 
+          return;
         }
 
 
-        /*
-          WO SIND WIR
-        */
+        /* =========================
+           WO SIND WIR
+        ========================= */
 
-        else if (
-          command === "wo sind wir"
+        if (
+          command.includes("wo sind wir")
         ) {
 
           respond(
             "Ihr wurdet von zwei Männern hier reingebracht, " +
             "sie trugen einen schwarzen Hoodie und eine " +
             "schwarze Winterjacke, der eine hatte einen Zettel " +
-            "darin versteckt"
+            "darin versteckt",
+            "wo"
           );
 
+          return;
         }
 
 
-        /*
-          HILFE
-        */
+        /* =========================
+           HILFE
+        ========================= */
 
-        else if (
-          command === "hilfe"
+        if (
+          command.includes("hilfe")
         ) {
 
           respond(
-            "Ich bin nicht fürs Helfen da"
+            "Ich bin nicht fürs Helfen da",
+            "hilfe"
           );
 
+          return;
         }
 
 
-        /*
-          WASCHMASCHINE
-        */
+        /* =========================
+           WASCHMASCHINE
+           Funktioniert jetzt auch
+           innerhalb eines Satzes.
+        ========================= */
 
-        else if (
-          command === "waschmaschine"
+        if (
+          command.includes("waschmaschine")
         ) {
 
           respond(
-            "Ich bin nicht für eine Wäsche gemacht"
+            "Ich bin nicht für eine Wäsche gemacht",
+            "waschmaschine"
           );
 
+          return;
         }
 
 
-        /*
-          WIE KOMMEN WIR RAUS
-        */
+        /* =========================
+           WIE KOMMEN WIR RAUS
+           Mehrere Varianten erlaubt.
+        ========================= */
 
-        else if (
-          command === "wie kommen wir raus"
+        if (
+          command.includes("wie kommen wir raus") ||
+          command.includes("wie kommen wir hier raus") ||
+          command.includes("wie kommen wir heraus") ||
+          command.includes("wie kommen wir hier heraus") ||
+          command.includes("wie kommen wir wieder raus")
         ) {
 
           respond(
-            "Probiert es mal mit der Tür, sonst sind alle weg im Betriebssystem blockiert"
+            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert",
+            "raus"
           );
 
+          return;
         }
 
 
-        /*
-          WASSER IN DIE FLASCHE
-        */
+        /* =========================
+           WASSER + FLASCHE
+        ========================= */
 
-        else if (
-          command ===
-          "sollen wir das wasser in die flasche füllen"
+        if (
+          command.includes("wasser") &&
+          command.includes("flasche") &&
+          (
+            command.includes("füllen") ||
+            command.includes("fuellen")
+          )
         ) {
 
           respond(
-            "Vorsichtsmaßnahme erkannt, stellt sicher das ich kein Wasser abbekomme und sonst zurück zu euer Frage, Ja!"
+            "Vorsichtsmaßnahme erkannt, stellt sicher das ich kein Wasser abbekomme und sonst zurück zu euer Frage, Ja!",
+            "wasser"
           );
 
+          return;
         }
 
 
         /*
-          ALLES ANDERE:
-
-          KEINE REAKTION.
+          Alles andere wird ignoriert.
         */
 
       };
 
 
       /* =========================
-         OBSERVER SPRICHT
+         ANTWORT
       ========================= */
 
-      function respond(text) {
+      function respond(text, type) {
+
+        /*
+          Verhindert, dass derselbe erkannte
+          Befehl ständig wiederholt wird.
+        */
+
+        if (
+          window.lastCommand === type &&
+          window.speechSynthesis &&
+          window.speechSynthesis.speaking
+        ) {
+
+          return;
+        }
+
+
+        window.lastCommand = type;
+
 
         response.textContent = text;
 
@@ -513,7 +473,6 @@
 
           const utterance =
             new SpeechSynthesisUtterance(text);
-
 
           utterance.lang = "de-DE";
 
@@ -542,26 +501,11 @@
 
         }
 
-        else {
-
-          setTimeout(() => {
-
-            wave.classList.remove("active");
-
-            response.textContent = "";
-
-            status.textContent =
-              "BEOBACHTUNG AKTIV";
-
-          }, 2500);
-
-        }
-
       }
 
 
       /* =========================
-         SPRACHERKENNUNG ENDET
+         ERKENNUNG ENDET
       ========================= */
 
       recognition.onend = () => {
@@ -570,7 +514,7 @@
 
           startListening();
 
-        }, 300);
+        }, 500);
 
       };
 
@@ -604,13 +548,12 @@
 
 
       /* =========================
-         AUTOMATISCHER START
+         START
       ========================= */
 
       startListening();
 
     }
-
 
     else {
 
