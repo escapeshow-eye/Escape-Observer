@@ -28,7 +28,6 @@
     .eye {
       width: 180px;
       height: 110px;
-
       border: 4px solid white;
       border-radius: 50% / 60%;
 
@@ -42,7 +41,6 @@
     .pupil {
       width: 55px;
       height: 55px;
-
       background: white;
       border-radius: 50%;
 
@@ -59,38 +57,31 @@
 
     .title {
       margin-top: 35px;
-
       font-size: 22px;
       letter-spacing: 8px;
     }
 
     .status {
       margin-top: 15px;
-
       font-size: 13px;
       letter-spacing: 3px;
-
       opacity: 0.7;
     }
 
     .response {
       margin-top: 25px;
-
       width: 80%;
       max-width: 700px;
-
       min-height: 25px;
 
       font-size: 17px;
       letter-spacing: 2px;
-
       text-align: center;
       line-height: 1.5;
     }
 
     .wave {
       margin-top: 25px;
-
       height: 45px;
 
       display: flex;
@@ -98,7 +89,6 @@
       justify-content: center;
 
       gap: 4px;
-
       opacity: 0;
 
       transition: opacity 0.3s ease;
@@ -111,9 +101,7 @@
     .bar {
       width: 4px;
       height: 8px;
-
       background: white;
-
       border-radius: 3px;
 
       animation: wave 0.8s ease-in-out infinite;
@@ -124,33 +112,13 @@
       animation-play-state: running;
     }
 
-    .bar:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .bar:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .bar:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-
-    .bar:nth-child(4) {
-      animation-delay: 0.3s;
-    }
-
-    .bar:nth-child(5) {
-      animation-delay: 0.2s;
-    }
-
-    .bar:nth-child(6) {
-      animation-delay: 0.1s;
-    }
-
-    .bar:nth-child(7) {
-      animation-delay: 0s;
-    }
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.2s; }
+    .bar:nth-child(6) { animation-delay: 0.1s; }
+    .bar:nth-child(7) { animation-delay: 0s; }
 
     @keyframes wave {
       0%, 100% {
@@ -190,6 +158,13 @@
 
   <div class="response" id="response"></div>
 
+  <!-- DEINE AUDIO-DATEI -->
+  <audio
+    id="mailboxAudio"
+    src="audio/Stromausfall%20Escape%20Room.m4a"
+    preload="auto">
+  </audio>
+
 
   <script>
 
@@ -197,6 +172,7 @@
     const response = document.getElementById("response");
     const status = document.getElementById("status");
     const wave = document.getElementById("wave");
+    const mailboxAudio = document.getElementById("mailboxAudio");
 
 
     /* =========================
@@ -232,9 +208,7 @@
       recognition = new SpeechRecognition();
 
       recognition.lang = "de-DE";
-
       recognition.continuous = true;
-
       recognition.interimResults = false;
 
 
@@ -262,17 +236,14 @@
           return;
         }
 
-
         let command =
           result[0].transcript
             .toLowerCase()
             .trim();
 
-
         command = command
           .replace(/[.,!?;:]/g, "")
           .trim();
-
 
         console.log("Erkannt:", command);
 
@@ -281,10 +252,7 @@
            HALLO
         ========================= */
 
-        if (
-          command === "hallo" &&
-          !command.includes("waschmaschine")
-        ) {
+        if (command === "hallo") {
 
           respond(
             "Hallo.",
@@ -314,9 +282,7 @@
            WER BIST DU
         ========================= */
 
-        if (
-          command.includes("wer bist du")
-        ) {
+        if (command.includes("wer bist du")) {
 
           respond(
             "Observer Typ 0.4",
@@ -331,9 +297,7 @@
            WO SIND WIR
         ========================= */
 
-        if (
-          command.includes("wo sind wir")
-        ) {
+        if (command.includes("wo sind wir")) {
 
           respond(
             "Ihr wurdet von zwei Männern hier reingebracht, " +
@@ -351,9 +315,7 @@
            HILFE
         ========================= */
 
-        if (
-          command.includes("hilfe")
-        ) {
+        if (command.includes("hilfe")) {
 
           respond(
             "Ich bin nicht fürs Helfen da",
@@ -366,13 +328,9 @@
 
         /* =========================
            WASCHMASCHINE
-           Funktioniert jetzt auch
-           innerhalb eines Satzes.
         ========================= */
 
-        if (
-          command.includes("waschmaschine")
-        ) {
+        if (command.includes("waschmaschine")) {
 
           respond(
             "Ich bin nicht für eine Wäsche gemacht",
@@ -385,7 +343,6 @@
 
         /* =========================
            WIE KOMMEN WIR RAUS
-           Mehrere Varianten erlaubt.
         ========================= */
 
         if (
@@ -406,7 +363,7 @@
 
 
         /* =========================
-           WASSER + FLASCHE
+           WASSER IN DIE FLASCHE
         ========================= */
 
         if (
@@ -427,6 +384,24 @@
         }
 
 
+        /* =========================
+           MAILBOX ABSPIELEN
+        ========================= */
+
+        if (
+          command.includes("spiele die mailbox ab") ||
+          command.includes("spiele mailbox ab") ||
+          command.includes("spiel die mailbox ab") ||
+          command.includes("spiel mailbox ab") ||
+          command.includes("mailbox abspielen")
+        ) {
+
+          playMailbox();
+
+          return;
+        }
+
+
         /*
           Alles andere wird ignoriert.
         */
@@ -435,15 +410,10 @@
 
 
       /* =========================
-         ANTWORT
+         OBSERVER ANTWORT
       ========================= */
 
       function respond(text, type) {
-
-        /*
-          Verhindert, dass derselbe erkannte
-          Befehl ständig wiederholt wird.
-        */
 
         if (
           window.lastCommand === type &&
@@ -454,9 +424,7 @@
           return;
         }
 
-
         window.lastCommand = type;
-
 
         response.textContent = text;
 
@@ -470,16 +438,12 @@
 
           window.speechSynthesis.cancel();
 
-
           const utterance =
             new SpeechSynthesisUtterance(text);
 
           utterance.lang = "de-DE";
-
           utterance.rate = 0.85;
-
           utterance.pitch = 0.8;
-
           utterance.volume = 1;
 
 
@@ -500,6 +464,104 @@
           );
 
         }
+
+      }
+
+
+      /* =========================
+         MAILBOX
+      ========================= */
+
+      function playMailbox() {
+
+        // Text anzeigen
+        response.textContent =
+          "Ich spiele die Mailbox ab.";
+
+        status.textContent =
+          "MAILBOX WIRD ABGESPIELT";
+
+        wave.classList.add("active");
+
+
+        /*
+          Falls gerade eine andere OBSERVER-Stimme
+          läuft, wird sie beendet.
+        */
+
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+
+
+        const intro =
+          new SpeechSynthesisUtterance(
+            "Ich spiele die Mailbox ab."
+          );
+
+        intro.lang = "de-DE";
+        intro.rate = 0.85;
+        intro.pitch = 0.8;
+        intro.volume = 1;
+
+
+        intro.onend = () => {
+
+          wave.classList.remove("active");
+
+          response.textContent = "";
+
+          status.textContent =
+            "MAILBOX";
+
+
+          /*
+            Audio starten
+          */
+
+          mailboxAudio.currentTime = 0;
+
+          mailboxAudio.play()
+            .then(() => {
+
+              console.log(
+                "Mailbox wird abgespielt."
+              );
+
+            })
+            .catch((error) => {
+
+              console.error(
+                "Audio konnte nicht gestartet werden:",
+                error
+              );
+
+              response.textContent =
+                "AUDIO NICHT VERFÜGBAR";
+
+              status.textContent =
+                "FEHLER";
+
+            });
+
+        };
+
+
+        window.speechSynthesis.speak(intro);
+
+
+        /*
+          Wenn die Mailbox fertig ist
+        */
+
+        mailboxAudio.onended = () => {
+
+          response.textContent = "";
+
+          status.textContent =
+            "BEOBACHTUNG AKTIV";
+
+        };
 
       }
 
@@ -529,7 +591,6 @@
           "Spracherkennung:",
           event.error
         );
-
 
         if (
           event.error !== "not-allowed" &&
