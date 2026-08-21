@@ -2,6 +2,7 @@
 <html lang="de">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -13,15 +14,28 @@
            viewport-fit=cover"
 >
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+>
 
 <title>OBSERVER</title>
 
+
 <style>
+
+/* =================================================
+   GRUNDLAYOUT
+================================================= */
 
 * {
   box-sizing: border-box;
+
   -webkit-user-select: none;
   user-select: none;
 }
@@ -53,9 +67,9 @@ body {
 
   flex-direction: column;
 
-  justify-content: center;
-
   align-items: center;
+
+  justify-content: center;
 
   padding:
     env(safe-area-inset-top)
@@ -66,17 +80,16 @@ body {
 }
 
 
-/* =========================================
+/* =================================================
    AUGE
-========================================= */
+================================================= */
 
 .eye {
 
   width: 180px;
   height: 110px;
 
-  border:
-    4px solid white;
+  border: 4px solid white;
 
   border-radius:
     50% / 60%;
@@ -119,9 +132,9 @@ body {
 }
 
 
-/* =========================================
-   SPRECHTEXT
-========================================= */
+/* =================================================
+   TEXT
+================================================= */
 
 .response {
 
@@ -144,9 +157,9 @@ body {
 }
 
 
-/* =========================================
+/* =================================================
    AUDIOWELLE
-========================================= */
+================================================= */
 
 .wave {
 
@@ -156,9 +169,9 @@ body {
 
   display: flex;
 
-  justify-content: center;
-
   align-items: center;
+
+  justify-content: center;
 
   gap: 4px;
 
@@ -186,7 +199,7 @@ body {
   border-radius: 4px;
 
   animation:
-    wave 0.8s ease-in-out infinite;
+    audioWave 0.8s ease-in-out infinite;
 
   animation-play-state:
     paused;
@@ -228,7 +241,7 @@ body {
   animation-delay: 0s;
 }
 
-@keyframes wave {
+@keyframes audioWave {
 
   0%,
   100% {
@@ -242,9 +255,9 @@ body {
 }
 
 
-/* =========================================
-   AKTIVIERUNG
-========================================= */
+/* =================================================
+   STARTBUTTON
+================================================= */
 
 #activate {
 
@@ -255,16 +268,16 @@ body {
 
   background: #000;
 
-  color: white;
+  color: #fff;
 
   border:
-    1px solid white;
+    1px solid #fff;
+
+  border-radius: 4px;
 
   font-size: 13px;
 
   letter-spacing: 2px;
-
-  border-radius: 4px;
 
   touch-action: manipulation;
 
@@ -280,9 +293,9 @@ body {
 }
 
 
-/* =========================================
+/* =================================================
    KAMERA
-========================================= */
+================================================= */
 
 #cameraContainer {
 
@@ -321,7 +334,9 @@ body {
 <body>
 
 
-<!-- AUGE -->
+<!-- =================================================
+     AUGE
+================================================= -->
 
 <div
   class="eye"
@@ -335,7 +350,9 @@ body {
 </div>
 
 
-<!-- ANTWORT -->
+<!-- =================================================
+     SPRECHTEXT
+================================================= -->
 
 <div
   class="response"
@@ -343,7 +360,9 @@ body {
 ></div>
 
 
-<!-- AUDIOWELLE -->
+<!-- =================================================
+     AUDIOWELLE
+================================================= -->
 
 <div
   class="wave"
@@ -361,16 +380,22 @@ body {
 </div>
 
 
-<!-- START -->
+<!-- =================================================
+     START
+================================================= -->
 
 <button
   id="activate"
 >
+
   OBSERVER AKTIVIEREN
+
 </button>
 
 
-<!-- KAMERA -->
+<!-- =================================================
+     KAMERA
+================================================= -->
 
 <div
   id="cameraContainer"
@@ -392,10 +417,9 @@ body {
 
 <script>
 
-
-/* ==================================================
+/* =================================================
    ELEMENTE
-================================================== */
+================================================= */
 
 const eye =
   document.getElementById("eye");
@@ -413,102 +437,166 @@ const camera =
   document.getElementById("camera");
 
 
-/* ==================================================
+/* =================================================
    ZUSTAND
-================================================== */
+================================================= */
 
-let active = false;
+let observerActive =
+  false;
 
-let speaking = false;
+let observerSpeaking =
+  false;
 
-let emergency = false;
+let emergencyRunning =
+  false;
 
-let waitingForNumber = false;
+let waitingForNumber =
+  false;
 
-let recognition = null;
+let recognition =
+  null;
 
-let recognitionRunning = false;
+let recognitionRunning =
+  false;
 
-let restartTimer = null;
+let restartTimer =
+  null;
 
-let microphoneStream = null;
+let microphoneStream =
+  null;
 
-let cameraStream = null;
+let cameraStream =
+  null;
 
-let cameraActive = false;
+let cameraRunning =
+  false;
 
-let lastCommand = "";
+let lastCommand =
+  "";
 
-let lastCommandTime = 0;
-
-
-/* ==================================================
-   STIMME
-================================================== */
-
-let selectedVoice = null;
+let lastCommandTime =
+  0;
 
 
-/* ==================================================
+/* =================================================
+   SPRACHSTIMME
+================================================= */
+
+let selectedVoice =
+  null;
+
+
+/* =================================================
    STIMMEN LADEN
-================================================== */
+================================================= */
 
 function loadVoices() {
 
   if (
     !("speechSynthesis" in window)
   ) {
+
     return;
+
   }
 
   const voices =
-    window.speechSynthesis.getVoices();
+    window.speechSynthesis
+      .getVoices();
 
   if (
     !voices ||
     voices.length === 0
   ) {
+
     return;
+
   }
 
   selectedVoice =
+
     voices.find(
-      v =>
-        v.lang === "de-DE"
+      voice =>
+        voice.lang === "de-DE"
     )
+
     ||
+
     voices.find(
-      v =>
-        v.lang &&
-        v.lang
+      voice =>
+        voice.lang &&
+        voice.lang
           .toLowerCase()
           .startsWith("de")
     )
+
     ||
+
     voices[0];
 
 }
 
+
 loadVoices();
+
 
 if (
   "speechSynthesis" in window
 ) {
 
-  window.speechSynthesis.onvoiceschanged =
-    loadVoices;
+  window.speechSynthesis
+    .onvoiceschanged =
+      loadVoices;
 
 }
 
 
-/* ==================================================
+/* =================================================
+   iPAD SPEECH VORBEREITUNG
+================================================= */
+
+function prepareSpeech() {
+
+  if (
+    !("speechSynthesis" in window)
+  ) {
+
+    return;
+
+  }
+
+  loadVoices();
+
+  try {
+
+    window.speechSynthesis.resume();
+
+  }
+
+  catch (error) {
+
+    console.log(
+      "Speech resume:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =================================================
    BLINZELN
-================================================== */
+================================================= */
 
 function blink() {
 
-  if (!active) {
+  if (
+    !observerActive
+  ) {
+
     return;
+
   }
 
   eye.classList.add(
@@ -527,15 +615,15 @@ function blink() {
 
 
 /*
-   Ungefähr alle 10 Sekunden.
+   Alle 10 Sekunden.
 */
 
 setInterval(() => {
 
   if (
-    active &&
-    !speaking &&
-    !emergency
+    observerActive &&
+    !observerSpeaking &&
+    !emergencyRunning
   ) {
 
     blink();
@@ -545,60 +633,237 @@ setInterval(() => {
 }, 10000);
 
 
-/* ==================================================
-   SPRACHE VORBEREITEN
-================================================== */
+/* =================================================
+   TEXT IN SÄTZE AUFTEILEN
+================================================= */
 
-function prepareSpeech() {
+function splitIntoSentences(
+  text
+) {
 
-  if (
-    !("speechSynthesis" in window)
-  ) {
-    return;
-  }
-
-  loadVoices();
-
-  try {
-
-    window.speechSynthesis.resume();
-
-  } catch (e) {}
+  return text
+    .match(
+      /[^.!?]+[.!?]+|[^.!?]+$/g
+    )
+    ?.map(
+      sentence =>
+        sentence.trim()
+    )
+    .filter(
+      sentence =>
+        sentence.length > 0
+    )
+    ||
+    [text];
 
 }
 
 
-/* ==================================================
-   OBSERVER SPRICHT
-================================================== */
+/* =================================================
+   SPRACHE - EINZELNER SATZ
+================================================= */
 
-function speak(
-  text,
-  finished = null
+function speakSentence(
+  text
 ) {
 
-  if (!active) {
+  return new Promise(
+    resolve => {
+
+      if (
+        !("speechSynthesis" in window)
+      ) {
+
+        resolve();
+
+        return;
+
+      }
+
+
+      loadVoices();
+
+
+      const utterance =
+        new SpeechSynthesisUtterance(
+          text
+        );
+
+
+      utterance.lang =
+        "de-DE";
+
+
+      utterance.rate =
+        0.85;
+
+
+      utterance.pitch =
+        0.8;
+
+
+      utterance.volume =
+        1;
+
+
+      if (
+        selectedVoice
+      ) {
+
+        utterance.voice =
+          selectedVoice;
+
+      }
+
+
+      let finished =
+        false;
+
+
+      const finish =
+        () => {
+
+          if (
+            finished
+          ) {
+
+            return;
+
+          }
+
+          finished =
+            true;
+
+          resolve();
+
+        };
+
+
+      utterance.onend =
+        finish;
+
+
+      utterance.onerror =
+        event => {
+
+          console.log(
+            "Speech:",
+            event
+          );
+
+          finish();
+
+        };
+
+
+      /*
+         Safari kann Speech gelegentlich
+         pausieren.
+
+         Deshalb regelmäßig resume().
+      */
+
+      const keepAlive =
+        setInterval(() => {
+
+          if (
+            finished
+          ) {
+
+            clearInterval(
+              keepAlive
+            );
+
+            return;
+
+          }
+
+          try {
+
+            window.speechSynthesis
+              .resume();
+
+          }
+
+          catch (e) {}
+
+        }, 1000);
+
+
+      try {
+
+        window.speechSynthesis
+          .resume();
+
+
+        window.speechSynthesis
+          .speak(
+            utterance
+          );
+
+      }
+
+      catch (error) {
+
+        console.log(
+          "Speech start:",
+          error
+        );
+
+        clearInterval(
+          keepAlive
+        );
+
+        finish();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =================================================
+   OBSERVER SPRICHT
+================================================= */
+
+async function speak(
+  text
+) {
+
+  if (
+    !observerActive
+  ) {
+
     return;
+
   }
 
+
   /*
-     Niemals mehrere Antworten
-     gleichzeitig.
+     Keine parallelen Antworten.
   */
 
-  if (speaking) {
+  if (
+    observerSpeaking
+  ) {
+
     return;
+
   }
 
-  speaking = true;
+
+  observerSpeaking =
+    true;
 
 
   /*
-     MIKROFON SOFORT AUS.
+     MIKROFON SOFORT STOPPEN.
 
-     Dadurch kann niemand während
-     der Observer spricht einen
-     weiteren Befehl auslösen.
+     Dadurch kann man den Observer
+     nicht während seiner Antwort
+     unterbrechen.
   */
 
   stopRecognition();
@@ -607,143 +872,46 @@ function speak(
   response.textContent =
     text;
 
+
   wave.classList.add(
     "active"
   );
 
 
-  /*
-     Falls speechSynthesis nicht
-     verfügbar ist.
-  */
-
-  if (
-    !("speechSynthesis" in window)
-  ) {
-
-    finishSpeech(
-      finished
-    );
-
-    return;
-
-  }
-
-
-  loadVoices();
-
-
-  const utterance =
-    new SpeechSynthesisUtterance(
+  const sentences =
+    splitIntoSentences(
       text
     );
 
 
-  utterance.lang =
-    "de-DE";
+  /*
+     Sätze nacheinander abspielen.
+  */
 
-  utterance.rate =
-    0.85;
-
-  utterance.pitch =
-    0.8;
-
-  utterance.volume =
-    1;
-
-
-  if (
-    selectedVoice
+  for (
+    const sentence of sentences
   ) {
 
-    utterance.voice =
-      selectedVoice;
+    if (
+      !observerActive
+    ) {
 
-  }
+      break;
 
-
-  let ended = false;
-
-
-  function done() {
-
-    if (ended) {
-      return;
     }
 
-    ended = true;
 
-    finishSpeech(
-      finished
+    await speakSentence(
+      sentence
     );
-
-  }
-
-
-  utterance.onend =
-    done;
-
-  utterance.onerror =
-    done;
-
-
-  try {
-
-    window.speechSynthesis.resume();
-
-    window.speechSynthesis.speak(
-      utterance
-    );
-
-  }
-
-  catch (error) {
-
-    console.log(
-      "Speech:",
-      error
-    );
-
-    done();
-
-    return;
 
   }
 
 
   /*
-     Sicherheitsnetz:
-
-     Wenn Safari einmal kein
-     onend sendet, hängt der
-     Observer nicht dauerhaft.
+     Text SOFORT entfernen,
+     sobald die Sprache fertig ist.
   */
-
-  const fallbackTime =
-    Math.max(
-      6000,
-      text.length * 125
-    );
-
-
-  setTimeout(
-    done,
-    fallbackTime
-  );
-
-}
-
-
-/* ==================================================
-   SPRACHE FERTIG
-================================================== */
-
-function finishSpeech(
-  callback
-) {
-
-  speaking = false;
-
 
   response.textContent =
     "";
@@ -753,39 +921,34 @@ function finishSpeech(
   );
 
 
+  observerSpeaking =
+    false;
+
+
   /*
-     Während Notfallsequenz
-     bleibt alles gesperrt.
+     Während einer Notfallsequenz
+     bleibt das Mikrofon aus.
   */
 
   if (
-    !emergency &&
-    active
+    !emergencyRunning &&
+    observerActive
   ) {
 
     setTimeout(() => {
 
       startRecognition();
 
-    }, 300);
-
-  }
-
-
-  if (
-    callback
-  ) {
-
-    callback();
+    }, 250);
 
   }
 
 }
 
 
-/* ==================================================
+/* =================================================
    SPEECH RECOGNITION
-================================================== */
+================================================= */
 
 const SpeechRecognition =
   window.SpeechRecognition ||
@@ -803,14 +966,6 @@ if (
   recognition.lang =
     "de-DE";
 
-
-  /*
-     Dauerhaft zuhören.
-
-     Safari kann trotzdem irgendwann
-     onend auslösen. Unser Watchdog
-     startet es dann wieder.
-  */
 
   recognition.continuous =
     true;
@@ -855,20 +1010,13 @@ if (
       );
 
 
-      /*
-         Fehler NICHT anzeigen.
-
-         Der Escape Room soll keine
-         technischen Meldungen zeigen.
-      */
-
       if (
-        active &&
-        !speaking &&
-        !emergency
+        observerActive &&
+        !observerSpeaking &&
+        !emergencyRunning
       ) {
 
-        scheduleRestart();
+        scheduleRecognitionRestart();
 
       }
 
@@ -883,12 +1031,12 @@ if (
 
 
       if (
-        active &&
-        !speaking &&
-        !emergency
+        observerActive &&
+        !observerSpeaking &&
+        !emergencyRunning
       ) {
 
-        scheduleRestart();
+        scheduleRecognitionRestart();
 
       }
 
@@ -897,9 +1045,9 @@ if (
 }
 
 
-/* ==================================================
-   ERKENNUNG STARTEN
-================================================== */
+/* =================================================
+   RECOGNITION START
+================================================= */
 
 function startRecognition() {
 
@@ -911,15 +1059,17 @@ function startRecognition() {
 
   }
 
+
   if (
-    !active ||
-    speaking ||
-    emergency
+    !observerActive ||
+    observerSpeaking ||
+    emergencyRunning
   ) {
 
     return;
 
   }
+
 
   if (
     recognitionRunning
@@ -938,27 +1088,16 @@ function startRecognition() {
 
   catch (error) {
 
-    /*
-       Safari kann hier "already started"
-       werfen. Das ist kein kritischer
-       Fehler.
-    */
-
-    console.log(
-      "Recognition start:",
-      error
-    );
-
-    scheduleRestart();
+    scheduleRecognitionRestart();
 
   }
 
 }
 
 
-/* ==================================================
-   ERKENNUNG STOPPEN
-================================================== */
+/* =================================================
+   RECOGNITION STOP
+================================================= */
 
 function stopRecognition() {
 
@@ -969,6 +1108,7 @@ function stopRecognition() {
     return;
 
   }
+
 
   try {
 
@@ -981,11 +1121,11 @@ function stopRecognition() {
 }
 
 
-/* ==================================================
+/* =================================================
    AUTOMATISCHER RESTART
-================================================== */
+================================================= */
 
-function scheduleRestart() {
+function scheduleRecognitionRestart() {
 
   if (
     restartTimer
@@ -1002,10 +1142,11 @@ function scheduleRestart() {
       restartTimer =
         null;
 
+
       if (
-        active &&
-        !speaking &&
-        !emergency
+        observerActive &&
+        !observerSpeaking &&
+        !emergencyRunning
       ) {
 
         startRecognition();
@@ -1017,32 +1158,23 @@ function scheduleRestart() {
 }
 
 
-/* ==================================================
-   ERKENNUNG AUSWERTEN
-================================================== */
+/* =================================================
+   ERKENNUNG VERARBEITEN
+================================================= */
 
 function processRecognition(
   event
 ) {
 
   if (
-    speaking ||
-    emergency
+    observerSpeaking ||
+    emergencyRunning
   ) {
 
     return;
 
   }
 
-
-  /*
-     Alle neuen Ergebnisse durchgehen.
-
-     Nicht nur result[length - 1].
-
-     Das macht die Erkennung deutlich
-     robuster.
-  */
 
   for (
     let i = event.resultIndex;
@@ -1064,8 +1196,7 @@ function processRecognition(
 
 
     /*
-       Bis zu drei Alternativen
-       ausprobieren.
+       Mehrere Alternativen prüfen.
     */
 
     for (
@@ -1074,7 +1205,7 @@ function processRecognition(
       j++
     ) {
 
-      const text =
+      const command =
         normalize(
           result[j].transcript
         );
@@ -1082,7 +1213,7 @@ function processRecognition(
 
       if (
         handleCommand(
-          text
+          command
         )
       ) {
 
@@ -1097,9 +1228,9 @@ function processRecognition(
 }
 
 
-/* ==================================================
-   TEXT NORMALISIEREN
-================================================== */
+/* =================================================
+   NORMALISIEREN
+================================================= */
 
 function normalize(
   text
@@ -1120,11 +1251,11 @@ function normalize(
 }
 
 
-/* ==================================================
-   DOPPELTE BEFEHLE VERHINDERN
-================================================== */
+/* =================================================
+   DOPPELTE ERKENNUNG VERHINDERN
+================================================= */
 
-function duplicateCommand(
+function isDuplicate(
   command
 ) {
 
@@ -1148,14 +1279,15 @@ function duplicateCommand(
   lastCommandTime =
     now;
 
+
   return false;
 
 }
 
 
-/* ==================================================
+/* =================================================
    BEFEHLE
-================================================== */
+================================================= */
 
 function handleCommand(
   command
@@ -1170,12 +1302,8 @@ function handleCommand(
   }
 
 
-  /*
-     Doppel-Erkennung vermeiden.
-  */
-
   if (
-    duplicateCommand(
+    isDuplicate(
       command
     )
   ) {
@@ -1186,7 +1314,7 @@ function handleCommand(
 
 
   console.log(
-    "Observer:",
+    "Erkannt:",
     command
   );
 
@@ -1204,9 +1332,11 @@ function handleCommand(
     waitingForNumber =
       true;
 
+
     speak(
       "Nennen Sie jetzt die Notfallnummer."
     );
+
 
     return true;
 
@@ -1221,17 +1351,15 @@ function handleCommand(
     waitingForNumber
   ) {
 
-    const numberThree =
+    if (
       command === "3" ||
       command === "03" ||
       command === "0 3" ||
-      command.includes("nummer drei") ||
       command === "drei" ||
-      command === "null drei";
-
-
-    if (
-      numberThree
+      command === "null drei" ||
+      command.includes(
+        "nummer drei"
+      )
     ) {
 
       startEmergency();
@@ -1249,7 +1377,9 @@ function handleCommand(
 
   if (
     command === "hallo" ||
-    command.startsWith("hallo ")
+    command.startsWith(
+      "hallo "
+    )
   ) {
 
     speak(
@@ -1285,7 +1415,8 @@ function handleCommand(
   if (
     command.includes(
       "wer bist du"
-    ) ||
+    )
+    ||
     (
       command.includes("wer") &&
       command.includes("bist") &&
@@ -1309,7 +1440,8 @@ function handleCommand(
   if (
     command.includes(
       "wo sind wir"
-    ) ||
+    )
+    ||
     (
       command.includes("wo") &&
       command.includes("sind") &&
@@ -1369,30 +1501,42 @@ function handleCommand(
   ================================================= */
 
   const hasHow =
-    command.includes("wie");
-
-  const hasOut =
-    command.includes("raus") ||
-    command.includes("heraus");
+    command.includes(
+      "wie"
+    );
 
   const hasCome =
-    command.includes("kommen");
+    command.includes(
+      "kommen"
+    );
 
-  const hasHere =
-    command.includes("hier");
+  const hasOut =
+    command.includes(
+      "raus"
+    )
+    ||
+    command.includes(
+      "heraus"
+    );
 
 
   if (
     (
       hasHow &&
-      hasOut &&
-      hasCome
+      hasCome &&
+      hasOut
     )
     ||
     (
-      hasHow &&
-      hasOut &&
-      hasHere
+      command.includes(
+        "wie kommen wir hier raus"
+      )
+    )
+    ||
+    (
+      command.includes(
+        "wie kommen wir hier heraus"
+      )
     )
   ) {
 
@@ -1408,11 +1552,7 @@ function handleCommand(
   /*
      NICHT ERKANNT:
 
-     ABSICHTLICH KEINE ANTWORT.
-
-     Keine Fehlermeldung.
-     Kein "Befehl nicht erkannt".
-     Kein Hängen.
+     Keine Reaktion.
   */
 
   return false;
@@ -1420,14 +1560,14 @@ function handleCommand(
 }
 
 
-/* ==================================================
-   NOTFALLSEQUENZ
-================================================== */
+/* =================================================
+   NOTFALL START
+================================================= */
 
 function startEmergency() {
 
   if (
-    emergency
+    emergencyRunning
   ) {
 
     return;
@@ -1435,16 +1575,13 @@ function startEmergency() {
   }
 
 
-  emergency =
+  emergencyRunning =
     true;
+
 
   waitingForNumber =
     false;
 
-
-  /*
-     Mikrofon sofort komplett sperren.
-  */
 
   stopRecognition();
 
@@ -1454,56 +1591,54 @@ function startEmergency() {
   */
 
   speak(
-    "Notfall erkannt, Maßnahmen werden eingeleitet.",
-    () => {
+    "Notfall erkannt, Maßnahmen werden eingeleitet."
+  )
+  .then(() => {
 
-      /*
-         FESTE SPRECHPAUSE.
+    /*
+       5 Sekunden feste Pause.
 
-         Während dieser Zeit:
-         - kein Mikrofon
-         - keine Befehle
-         - keine Kamera-Aktionen
-      */
+       Keine Befehle möglich.
+    */
 
-      setTimeout(() => {
+    setTimeout(() => {
 
-        emergencySecondPart();
+      emergencySecondPart();
 
-      }, 5000);
+    }, 5000);
 
-    }
-  );
+  });
 
 }
 
 
-/* ==================================================
-   NOTFALL - TEIL 2
-================================================== */
+/* =================================================
+   NOTFALL TEIL 2
+================================================= */
 
 function emergencySecondPart() {
 
   speak(
-    "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
-    () => {
+    "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner."
+  )
+  .then(() => {
 
-      finishEmergency();
+    finishEmergency();
 
-    }
-  );
+  });
 
 }
 
 
-/* ==================================================
+/* =================================================
    NOTFALL ENDE
-================================================== */
+================================================= */
 
 function finishEmergency() {
 
-  emergency =
+  emergencyRunning =
     false;
+
 
   waitingForNumber =
     false;
@@ -1517,27 +1652,24 @@ function finishEmergency() {
   );
 
 
-  /*
-     Kurze Sicherheitswartezeit,
-     dann alles wieder aktivieren.
-  */
-
   setTimeout(() => {
 
-    if (!active) {
-      return;
-    }
+    if (
+      observerActive
+    ) {
 
-    startRecognition();
+      startRecognition();
+
+    }
 
   }, 700);
 
 }
 
 
-/* ==================================================
-   MIKROFON-BERECHTIGUNG
-================================================== */
+/* =================================================
+   MIKROFON
+================================================= */
 
 async function prepareMicrophone() {
 
@@ -1546,7 +1678,7 @@ async function prepareMicrophone() {
     !navigator.mediaDevices.getUserMedia
   ) {
 
-    return false;
+    return;
 
   }
 
@@ -1560,16 +1692,6 @@ async function prepareMicrophone() {
           video: false
         });
 
-
-    /*
-       Stream NICHT ständig neu öffnen.
-
-       Die Berechtigung bleibt damit
-       für die laufende Session erhalten.
-    */
-
-    return true;
-
   }
 
   catch (error) {
@@ -1579,21 +1701,19 @@ async function prepareMicrophone() {
       error
     );
 
-    return false;
-
   }
 
 }
 
 
-/* ==================================================
+/* =================================================
    KAMERA
-================================================== */
+================================================= */
 
 async function startCamera() {
 
   if (
-    cameraActive
+    cameraRunning
   ) {
 
     return;
@@ -1630,7 +1750,7 @@ async function startCamera() {
       cameraStream;
 
 
-    cameraActive =
+    cameraRunning =
       true;
 
   }
@@ -1647,9 +1767,9 @@ async function startCamera() {
 }
 
 
-/* ==================================================
+/* =================================================
    KAMERA STOPP
-================================================== */
+================================================= */
 
 function stopCamera() {
 
@@ -1673,37 +1793,38 @@ function stopCamera() {
   camera.srcObject =
     null;
 
+
   cameraStream =
     null;
 
-  cameraActive =
+
+  cameraRunning =
     false;
 
 }
 
 
-/* ==================================================
+/* =================================================
    WATCHDOG
-================================================== */
+================================================= */
 
 /*
-   Alle 5 Sekunden.
+   Alle 5 Sekunden prüfen.
 
-   Der Watchdog macht KEINEN kompletten
-   Reset.
+   Es wird NICHT die ganze Seite
+   zurückgesetzt.
 
-   Er prüft nur, ob der Observer
-   eigentlich zuhören sollte.
-
-   Wenn nicht -> Reparatur.
+   Nur wenn die Spracherkennung
+   tatsächlich nicht mehr läuft,
+   wird sie neu gestartet.
 */
 
 setInterval(() => {
 
   if (
-    !active ||
-    speaking ||
-    emergency
+    !observerActive ||
+    observerSpeaking ||
+    emergencyRunning
   ) {
 
     return;
@@ -1715,23 +1836,23 @@ setInterval(() => {
     !recognitionRunning
   ) {
 
-    scheduleRestart();
+    scheduleRecognitionRestart();
 
   }
 
 }, 5000);
 
 
-/* ==================================================
-   OBSERVER START
-================================================== */
+/* =================================================
+   START
+================================================= */
 
 activate.addEventListener(
   "click",
   async () => {
 
     if (
-      active
+      observerActive
     ) {
 
       return;
@@ -1739,7 +1860,7 @@ activate.addEventListener(
     }
 
 
-    active =
+    observerActive =
       true;
 
 
@@ -1749,29 +1870,29 @@ activate.addEventListener(
 
 
     /*
-       iPad-Audio direkt aus der
-       Benutzeraktion heraus vorbereiten.
+       Audio direkt aus dem
+       Benutzer-Tap heraus vorbereiten.
     */
 
     prepareSpeech();
 
 
     /*
-       Mikrofon genau einmal anfordern.
+       Mikrofon einmalig erlauben.
     */
 
     await prepareMicrophone();
 
 
     /*
-       Kamera genau einmal anfordern.
+       Kamera einmalig erlauben.
     */
 
     await startCamera();
 
 
     /*
-       Danach dauerhaft zuhören.
+       Danach zuhören.
     */
 
     setTimeout(() => {
@@ -1784,34 +1905,24 @@ activate.addEventListener(
 );
 
 
-/* ==================================================
-   SICHERHEITS-NETZ
-================================================== */
-
-/*
-   Falls die Seite nach langer Zeit
-   durch Safari in einen seltsamen
-   Zustand gerät, wird NICHT die
-   komplette Seite neu geladen.
-
-   Nur die Erkennung wird repariert.
-*/
+/* =================================================
+   ZUSÄTZLICHER SAFARI-SCHUTZ
+================================================= */
 
 setInterval(() => {
 
   if (
-    active &&
-    !speaking &&
-    !emergency &&
+    observerActive &&
+    !observerSpeaking &&
+    !emergencyRunning &&
     !recognitionRunning
   ) {
 
-    scheduleRestart();
+    scheduleRecognitionRestart();
 
   }
 
 }, 15000);
-
 
 </script>
 
