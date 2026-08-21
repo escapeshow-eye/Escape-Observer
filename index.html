@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -10,78 +12,104 @@
 
 <title>OBSERVER</title>
 
+
 <style>
 
 * {
   box-sizing: border-box;
 }
 
+
 html,
 body {
+
   margin: 0;
+
   width: 100%;
   height: 100%;
+
   overflow: hidden;
+
   background: #000;
+
   color: #fff;
+
   font-family: Arial, sans-serif;
+
+  -webkit-user-select: none;
+  user-select: none;
 }
 
+
 body {
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
 }
 
-/* =========================
+
+/* =========================================
    AUGE
-========================= */
+========================================= */
 
 .eye {
+
   width: 180px;
   height: 110px;
 
   border: 4px solid white;
+
   border-radius: 50% / 60%;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
   transition:
-    height 0.12s ease,
-    transform 0.12s ease;
+    height 0.12s ease;
 }
 
+
 .pupil {
+
   width: 55px;
   height: 55px;
 
   background: white;
+
   border-radius: 50%;
 
   transition:
     transform 0.12s ease;
 }
 
-/* Blinzeln */
 
 .eye.blink {
+
   height: 7px;
 }
 
+
 .eye.blink .pupil {
+
   transform: scaleY(0);
 }
 
 
-/* =========================
+/* =========================================
    SPRECHERTEXT
-========================= */
+========================================= */
 
 .response {
+
   width: 85%;
+
   max-width: 850px;
 
   margin-top: 35px;
@@ -89,6 +117,7 @@ body {
   text-align: center;
 
   font-size: 17px;
+
   line-height: 1.5;
 
   letter-spacing: 1px;
@@ -97,16 +126,18 @@ body {
 }
 
 
-/* =========================
+/* =========================================
    AUDIOWELLE
-========================= */
+========================================= */
 
 .wave {
+
   height: 45px;
 
   margin-top: 15px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -117,12 +148,17 @@ body {
   transition: opacity 0.2s;
 }
 
+
 .wave.active {
+
   opacity: 1;
 }
 
+
 .bar {
+
   width: 4px;
+
   height: 8px;
 
   background: white;
@@ -135,9 +171,12 @@ body {
   animation-play-state: paused;
 }
 
+
 .wave.active .bar {
+
   animation-play-state: running;
 }
+
 
 .bar:nth-child(1) {
   animation-delay: 0s;
@@ -167,6 +206,7 @@ body {
   animation-delay: 0s;
 }
 
+
 @keyframes audioWave {
 
   0%,
@@ -181,9 +221,9 @@ body {
 }
 
 
-/* =========================
+/* =========================================
    AKTIVIERUNG
-========================= */
+========================================= */
 
 #activate {
 
@@ -192,6 +232,7 @@ body {
   padding: 13px 24px;
 
   background: #000;
+
   color: white;
 
   border: 1px solid white;
@@ -205,14 +246,16 @@ body {
   touch-action: manipulation;
 }
 
+
 #activate.hidden {
+
   display: none;
 }
 
 
-/* =========================
+/* =========================================
    VERDECKTE KAMERA
-========================= */
+========================================= */
 
 #cameraContainer {
 
@@ -229,6 +272,7 @@ body {
   pointer-events: none;
 }
 
+
 #camera {
 
   width: 100%;
@@ -237,20 +281,23 @@ body {
   object-fit: cover;
 }
 
+
 #cameraCanvas {
+
   display: none;
 }
 
 </style>
+
 </head>
 
 
 <body>
 
 
-<!-- =========================
-     OBSERVER AUGE
-========================= -->
+<!-- =========================================
+     AUGE
+========================================= -->
 
 <div
   class="eye"
@@ -264,9 +311,9 @@ body {
 </div>
 
 
-<!-- =========================
+<!-- =========================================
      SPRECHERTEXT
-========================= -->
+========================================= -->
 
 <div
   class="response"
@@ -274,9 +321,9 @@ body {
 ></div>
 
 
-<!-- =========================
+<!-- =========================================
      AUDIOWELLE
-========================= -->
+========================================= -->
 
 <div
   class="wave"
@@ -294,9 +341,9 @@ body {
 </div>
 
 
-<!-- =========================
+<!-- =========================================
      EINMALIGE AKTIVIERUNG
-========================= -->
+========================================= -->
 
 <button
   id="activate"
@@ -305,9 +352,9 @@ body {
 </button>
 
 
-<!-- =========================
+<!-- =========================================
      KAMERA
-========================= -->
+========================================= -->
 
 <div
   id="cameraContainer"
@@ -327,13 +374,21 @@ body {
 </div>
 
 
-<!-- =========================
+<!-- =========================================
      MAILBOX
-========================= -->
+=========================================
+
+     Datei muss hier liegen:
+
+     audio/
+     Stromausfall Escape Room.m4a
+
+========================================= -->
 
 <audio
   id="mailboxAudio"
   preload="auto"
+  playsinline
   src="audio/Stromausfall%20Escape%20Room.m4a"
 ></audio>
 
@@ -341,46 +396,51 @@ body {
 <script>
 
 
-/* ==================================================
+/* =========================================
    ELEMENTE
-================================================== */
+========================================= */
 
 const eye =
   document.getElementById("eye");
 
+
 const response =
   document.getElementById("response");
+
 
 const wave =
   document.getElementById("wave");
 
+
 const activateButton =
   document.getElementById("activate");
+
 
 const mailboxAudio =
   document.getElementById("mailboxAudio");
 
+
 const camera =
   document.getElementById("camera");
 
+
 const canvas =
   document.getElementById("cameraCanvas");
+
 
 const ctx =
   canvas.getContext("2d");
 
 
-/* ==================================================
+/* =========================================
    SYSTEMZUSTAND
-================================================== */
+========================================= */
 
 let observerActivated = false;
 
 let mailboxPlaying = false;
 
-let emergencyMode = false;
-
-let emergencyPause = false;
+let emergencyRunning = false;
 
 let waitingForEmergencyNumber = false;
 
@@ -388,20 +448,29 @@ let recognition = null;
 
 let recognitionAvailable = false;
 
+let recognitionRunning = false;
+
+let cameraStream = null;
+
 let cameraReady = false;
+
+let cameraInterval = null;
 
 let cameraCooldown = false;
 
 let lastCameraState = "unknown";
 
+let audioUnlocked = false;
 
-/* ==================================================
-   NORMALES BLINZELN
-================================================== */
+
+/* =========================================
+   BLINZELN
+========================================= */
 
 function blink() {
 
   eye.classList.add("blink");
+
 
   setTimeout(() => {
 
@@ -413,14 +482,17 @@ function blink() {
 
 
 /*
-   Alle 10 Sekunden blinzeln.
+   Normales Blinzeln:
+
+   alle 10 Sekunden.
 */
 
 setInterval(() => {
 
   if (
     observerActivated &&
-    !emergencyPause
+    !emergencyRunning &&
+    !mailboxPlaying
   ) {
 
     blink();
@@ -430,19 +502,9 @@ setInterval(() => {
 }, 10000);
 
 
-/* ==================================================
+/* =========================================
    MORSE-BLINZELN
-================================================== */
-
-/*
-   . = kurzer Blink
-   - = langer Blink
-
-   Beispiel:
-
-   blinkMorse(".");
-   blinkMorse("-");
-*/
+========================================= */
 
 function blinkMorse(symbol) {
 
@@ -450,12 +512,15 @@ function blinkMorse(symbol) {
     return;
   }
 
+
   eye.classList.add("blink");
+
 
   const duration =
     symbol === "."
       ? 180
       : 500;
+
 
   setTimeout(() => {
 
@@ -466,9 +531,9 @@ function blinkMorse(symbol) {
 }
 
 
-/* ==================================================
+/* =========================================
    OBSERVER SPRICHT
-================================================== */
+========================================= */
 
 function observerSpeak(
   text,
@@ -483,28 +548,11 @@ function observerSpeak(
   response.textContent =
     text;
 
+
   wave.classList.add(
     "active"
   );
 
-
-  /*
-     Alte Sprachausgabe stoppen.
-  */
-
-  if (
-    "speechSynthesis" in window
-  ) {
-
-    window.speechSynthesis.cancel();
-
-  }
-
-
-  /*
-     Falls der Browser keine
-     Sprachausgabe unterstützt.
-  */
 
   if (
     !("speechSynthesis" in window)
@@ -522,6 +570,13 @@ function observerSpeak(
   }
 
 
+  /*
+     Vorherige Sprache beenden.
+  */
+
+  window.speechSynthesis.cancel();
+
+
   const utterance =
     new SpeechSynthesisUtterance(
       text
@@ -531,11 +586,14 @@ function observerSpeak(
   utterance.lang =
     "de-DE";
 
+
   utterance.rate =
     0.85;
 
+
   utterance.pitch =
     0.8;
+
 
   utterance.volume =
     1;
@@ -548,8 +606,10 @@ function observerSpeak(
         "active"
       );
 
+
       response.textContent =
         "";
+
 
       if (finished) {
         finished();
@@ -565,6 +625,7 @@ function observerSpeak(
         "active"
       );
 
+
       if (finished) {
         finished();
       }
@@ -579,22 +640,86 @@ function observerSpeak(
 }
 
 
-/* ==================================================
-   MAILBOX
-================================================== */
+/* =========================================
+   AUDIO UNLOCK FÜR IPAD
+========================================= */
 
-function playMailbox() {
+/*
+   Safari/iPad kann Audio blockieren,
+   wenn die erste Wiedergabe nicht aus
+   einer Benutzeraktion heraus passiert.
+
+   Deshalb wird beim Klick auf
+   "OBSERVER AKTIVIEREN" die Mailbox
+   einmal stumm freigeschaltet.
+*/
+
+async function unlockMailboxAudio() {
+
+  try {
+
+    mailboxAudio.muted = true;
+
+    mailboxAudio.currentTime = 0;
+
+    await mailboxAudio.play();
+
+    mailboxAudio.pause();
+
+    mailboxAudio.currentTime = 0;
+
+    mailboxAudio.muted = false;
+
+    audioUnlocked = true;
+
+  }
+
+  catch (error) {
+
+    console.log(
+      "Audio-Unlock fehlgeschlagen:",
+      error
+    );
+
+    mailboxAudio.muted = false;
+
+    audioUnlocked = false;
+
+  }
+
+}
+
+
+/* =========================================
+   MAILBOX
+========================================= */
+
+async function playMailbox() {
 
   if (
     mailboxPlaying ||
-    emergencyPause
+    emergencyRunning
   ) {
+
     return;
+
   }
 
 
   mailboxPlaying =
     true;
+
+
+  /*
+     Mikrofon während der Mailbox
+     stoppen.
+
+     Dadurch kann der Observer seine
+     eigene Mailbox nicht als Befehl
+     verstehen.
+  */
+
+  stopRecognition();
 
 
   response.textContent =
@@ -605,6 +730,10 @@ function playMailbox() {
     "active"
   );
 
+
+  /*
+     Sprachausgabe stoppen.
+  */
 
   if (
     "speechSynthesis" in window
@@ -624,50 +753,94 @@ function playMailbox() {
   intro.lang =
     "de-DE";
 
+
   intro.rate =
     0.85;
 
+
   intro.pitch =
     0.8;
+
 
   intro.volume =
     1;
 
 
+  /*
+     Wenn die Ansage fertig ist,
+     startet SOFORT die M4A.
+  */
+
   intro.onend =
-    () => {
+    async () => {
 
       response.textContent =
         "";
+
+
+      wave.classList.remove(
+        "active"
+      );
+
 
       mailboxAudio.currentTime =
         0;
 
 
-      mailboxAudio
-        .play()
-        .catch(() => {
+      mailboxAudio.muted =
+        false;
 
-          finishMailbox();
 
-        });
+      try {
+
+        await mailboxAudio.play();
+
+      }
+
+      catch (error) {
+
+        console.log(
+          "Mailbox konnte nicht gestartet werden:",
+          error
+        );
+
+
+        finishMailbox();
+
+      }
 
     };
 
 
   intro.onerror =
-    () => {
+    async () => {
 
-      mailboxAudio.currentTime =
-        0;
+      response.textContent =
+        "";
 
-      mailboxAudio
-        .play()
-        .catch(() => {
 
-          finishMailbox();
+      wave.classList.remove(
+        "active"
+      );
 
-        });
+
+      try {
+
+        mailboxAudio.currentTime =
+          0;
+
+        mailboxAudio.muted =
+          false;
+
+        await mailboxAudio.play();
+
+      }
+
+      catch (error) {
+
+        finishMailbox();
+
+      }
 
     };
 
@@ -679,9 +852,9 @@ function playMailbox() {
 }
 
 
-/*
-   Mailbox komplett fertig.
-*/
+/* =========================================
+   MAILBOX ENDE
+========================================= */
 
 mailboxAudio.addEventListener(
   "ended",
@@ -694,58 +867,190 @@ function finishMailbox() {
   mailboxPlaying =
     false;
 
+
   wave.classList.remove(
     "active"
   );
 
+
   response.textContent =
     "";
+
+
+  /*
+     Mikrofon wieder aktivieren.
+  */
+
+  if (
+    observerActivated &&
+    !emergencyRunning
+  ) {
+
+    startRecognition();
+
+  }
 
 }
 
 
-/* ==================================================
-   NOTFALL
-================================================== */
+/* =========================================
+   NOTFALLNUMMERN
+========================================= */
+
+function askForEmergencyNumber() {
+
+  waitingForEmergencyNumber =
+    true;
+
+
+  observerSpeak(
+    "Nennen Sie jetzt die Notfallnummer."
+  );
+
+}
+
+
+/* =========================================
+   NOTFALL START
+========================================= */
 
 function startEmergency() {
 
-  if (emergencyMode) {
+  if (
+    emergencyRunning
+  ) {
+
     return;
+
   }
 
 
-  emergencyMode =
+  emergencyRunning =
     true;
 
-  emergencyPause =
-    true;
 
   waitingForEmergencyNumber =
     false;
 
 
-  observerSpeak(
-    "Notfall erkannt, Maßnahmen werden eingeleitet.",
+  /*
+     AB HIER IST ALLES BLOCKIERT.
+
+     Mikrofon aus.
+     Kamera aus.
+     Spracherkennung aus.
+  */
+
+  stopRecognition();
+
+  stopCamera();
+
+
+  /*
+     Eventuelle alte Sprache stoppen.
+  */
+
+  if (
+    "speechSynthesis" in window
+  ) {
+
+    window.speechSynthesis.cancel();
+
+  }
+
+
+  /*
+     Exakt die gewünschte erste Ansage.
+  */
+
+  const firstText =
+    "Notfall erkannt, Maßnahmen werden eingeleitet.";
+
+
+  response.textContent =
+    firstText;
+
+
+  wave.classList.add(
+    "active"
+  );
+
+
+  const firstSpeech =
+    new SpeechSynthesisUtterance(
+      firstText
+    );
+
+
+  firstSpeech.lang =
+    "de-DE";
+
+
+  firstSpeech.rate =
+    0.82;
+
+
+  firstSpeech.pitch =
+    0.8;
+
+
+  firstSpeech.volume =
+    1;
+
+
+  firstSpeech.onend =
     () => {
 
+      wave.classList.remove(
+        "active"
+      );
+
+
       /*
-        Nicht unterbrechbare Pause.
+         NICHT UNTERBRECHBARE PAUSE.
+
+         Während dieser fünf Sekunden
+         bleiben Mikrofon und Kamera aus.
       */
 
       setTimeout(() => {
 
-        emergencyAnnouncement();
+        emergencySecondAnnouncement();
 
       }, 5000);
 
-    }
+    };
+
+
+  firstSpeech.onerror =
+    () => {
+
+      wave.classList.remove(
+        "active"
+      );
+
+
+      setTimeout(() => {
+
+        emergencySecondAnnouncement();
+
+      }, 5000);
+
+    };
+
+
+  window.speechSynthesis.speak(
+    firstSpeech
   );
 
 }
 
 
-function emergencyAnnouncement() {
+/* =========================================
+   NOTFALL ZWEITE ANSAGE
+========================================= */
+
+function emergencySecondAnnouncement() {
 
   const text =
     "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.";
@@ -760,39 +1065,52 @@ function emergencyAnnouncement() {
   );
 
 
-  const utterance =
+  const speech =
     new SpeechSynthesisUtterance(
       text
     );
 
 
-  utterance.lang =
+  speech.lang =
     "de-DE";
 
-  utterance.rate =
+
+  speech.rate =
     0.82;
 
-  utterance.pitch =
+
+  speech.pitch =
     0.8;
 
-  utterance.volume =
+
+  speech.volume =
     1;
 
 
-  utterance.onend =
+  /*
+     Erst wenn diese komplette
+     Ansage beendet ist, wird alles
+     wieder freigeschaltet.
+  */
+
+  speech.onend =
     finishEmergency;
 
 
-  utterance.onerror =
+  speech.onerror =
     finishEmergency;
 
 
   window.speechSynthesis.speak(
-    utterance
+    speech
   );
 
 }
 
+
+/* =========================================
+   NOTFALL ENDE
+========================================= */
 
 function finishEmergency() {
 
@@ -800,18 +1118,32 @@ function finishEmergency() {
     "active"
   );
 
+
   response.textContent =
     "";
 
-  emergencyPause =
+
+  emergencyRunning =
     false;
+
+
+  /*
+     WICHTIG:
+
+     Mikrofon und Kamera werden jetzt
+     wieder aktiviert.
+  */
+
+  startRecognition();
+
+  startCamera();
 
 }
 
 
-/* ==================================================
+/* =========================================
    SPRACHERKENNUNG
-================================================== */
+========================================= */
 
 const SpeechRecognition =
   window.SpeechRecognition ||
@@ -831,33 +1163,48 @@ if (SpeechRecognition) {
   recognition.lang =
     "de-DE";
 
+
   recognition.continuous =
     true;
+
 
   recognition.interimResults =
     false;
 
+
   recognition.maxAlternatives =
-    1;
+    3;
 
 
   recognition.onresult =
     handleSpeech;
 
 
-  /*
-     Safari/iPad kann die Erkennung
-     gelegentlich beenden.
+  recognition.onstart =
+    () => {
 
-     Dann wird sie neu gestartet.
-  */
+      recognitionRunning =
+        true;
+
+    };
+
 
   recognition.onend =
     () => {
 
+      recognitionRunning =
+        false;
+
+
+      /*
+         Nur neu starten, wenn gerade
+         keine Sperrphase läuft.
+      */
+
       if (
         observerActivated &&
-        !mailboxPlaying
+        !mailboxPlaying &&
+        !emergencyRunning
       ) {
 
         setTimeout(
@@ -873,8 +1220,12 @@ if (SpeechRecognition) {
   recognition.onerror =
     event => {
 
+      recognitionRunning =
+        false;
+
+
       console.log(
-        "SpeechRecognition:",
+        "Spracherkennung:",
         event.error
       );
 
@@ -883,13 +1234,30 @@ if (SpeechRecognition) {
 }
 
 
+/* =========================================
+   MIKROFON STARTEN
+========================================= */
+
 function startRecognition() {
 
   if (
     !recognitionAvailable ||
-    !observerActivated
+    !observerActivated ||
+    mailboxPlaying ||
+    emergencyRunning
   ) {
+
     return;
+
+  }
+
+
+  if (
+    recognitionRunning
+  ) {
+
+    return;
+
   }
 
 
@@ -897,28 +1265,72 @@ function startRecognition() {
 
     recognition.start();
 
-  } catch (error) {
+  }
 
-    /*
-       Erkennung läuft eventuell
-       bereits.
-    */
+  catch (error) {
+
+    console.log(
+      "Mikrofon konnte nicht gestartet werden:",
+      error
+    );
 
   }
 
 }
 
 
-/* ==================================================
-   BEFEHLE
-================================================== */
+/* =========================================
+   MIKROFON STOPPEN
+========================================= */
+
+function stopRecognition() {
+
+  if (!recognition) {
+    return;
+  }
+
+
+  try {
+
+    recognition.stop();
+
+  }
+
+  catch (error) {}
+
+}
+
+
+/* =========================================
+   SPRACHBEFEHLE
+========================================= */
 
 function handleSpeech(event) {
+
+  /*
+     ABSOLUTE SICHERHEIT:
+
+     Wenn eine Sperrphase aktiv ist,
+     wird der erkannte Text sofort
+     verworfen.
+  */
+
+  if (
+    mailboxPlaying ||
+    emergencyRunning
+  ) {
+
+    return;
+
+  }
+
 
   if (
     !event.results.length
   ) {
+
     return;
+
   }
 
 
@@ -931,7 +1343,9 @@ function handleSpeech(event) {
   if (
     !result.isFinal
   ) {
+
     return;
+
   }
 
 
@@ -949,38 +1363,14 @@ function handleSpeech(event) {
 
 
   console.log(
-    "Observer erkannt:",
+    "Observer:",
     command
   );
 
 
-  /*
-     Während Mailbox:
-     keine Befehle.
-  */
-
-  if (
-    mailboxPlaying
-  ) {
-    return;
-  }
-
-
-  /*
-     Während Notfallpause:
-     keine Befehle.
-  */
-
-  if (
-    emergencyPause
-  ) {
-    return;
-  }
-
-
-  /* ==========================
+  /* =====================================
      NOTFALLNUMMERN
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -988,47 +1378,48 @@ function handleSpeech(event) {
     )
   ) {
 
-    waitingForEmergencyNumber =
-      true;
-
-
-    observerSpeak(
-      "Nennen Sie jetzt die Notfallnummer."
-    );
-
+    askForEmergencyNumber();
 
     return;
+
   }
 
 
-  /* ==========================
-     NOTFALL 03
-  ========================== */
+  /* =====================================
+     NOTFALLNUMMER 03 / 3
+  ===================================== */
 
   if (
     waitingForEmergencyNumber
   ) {
 
-    const is03 =
+    const numberThree =
       command === "03" ||
+      command === "3" ||
       command === "0 3" ||
       command === "null drei" ||
-      command === "drei";
+      command === "null drei" ||
+      command === "drei" ||
+      command.includes("03") ||
+      command.includes("3");
 
 
-    if (is03) {
+    if (
+      numberThree
+    ) {
 
       startEmergency();
 
       return;
+
     }
 
   }
 
 
-  /* ==========================
+  /* =====================================
      MAILBOX
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -1051,12 +1442,13 @@ function handleSpeech(event) {
     playMailbox();
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      HALLO
-  ========================== */
+  ===================================== */
 
   if (
     command === "hallo"
@@ -1067,12 +1459,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      WAS
-  ========================== */
+  ===================================== */
 
   if (
     command === "was"
@@ -1083,12 +1476,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      WER BIST DU
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -1101,12 +1495,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      WO SIND WIR
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -1119,12 +1514,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      HILFE
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -1137,23 +1533,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      WASCHMASCHINE
-  ========================== */
-
-  /*
-     Funktioniert auch innerhalb
-     eines längeren Satzes.
-
-     Beispiel:
-
-     "Was hast du gegen die Waschmaschine?"
-
-     → Observer reagiert.
-  */
+  ===================================== */
 
   if (
     command.includes(
@@ -1166,12 +1552,13 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
-  /* ==========================
+  /* =====================================
      WIE KOMMEN WIR RAUS
-  ========================== */
+  ===================================== */
 
   if (
     command.includes(
@@ -1190,8 +1577,7 @@ function handleSpeech(event) {
       "wie kommen wir wieder raus"
     ) ||
     (
-      command.includes("wie")
-      &&
+      command.includes("wie") &&
       command.includes("raus")
     )
   ) {
@@ -1201,11 +1587,12 @@ function handleSpeech(event) {
     );
 
     return;
+
   }
 
 
   /*
-     UNBEKANNTE SÄTZE:
+     ALLES ANDERE:
 
      KEINE REAKTION.
   */
@@ -1213,11 +1600,21 @@ function handleSpeech(event) {
 }
 
 
-/* ==================================================
-   KAMERA
-================================================== */
+/* =========================================
+   KAMERA STARTEN
+========================================= */
 
 async function startCamera() {
+
+  if (
+    cameraReady &&
+    cameraStream
+  ) {
+
+    return;
+
+  }
+
 
   if (
     !navigator.mediaDevices ||
@@ -1225,16 +1622,17 @@ async function startCamera() {
   ) {
 
     console.log(
-      "Kamera nicht unterstützt."
+      "Kamera wird nicht unterstützt."
     );
 
     return;
+
   }
 
 
   try {
 
-    const stream =
+    cameraStream =
       await navigator.mediaDevices
         .getUserMedia({
 
@@ -1248,20 +1646,26 @@ async function startCamera() {
 
 
     camera.srcObject =
-      stream;
+      cameraStream;
 
 
     cameraReady =
       true;
 
 
-    setInterval(
-      detectCameraPattern,
-      1000
-    );
+    if (!cameraInterval) {
 
+      cameraInterval =
+        setInterval(
+          detectCameraPattern,
+          1000
+        );
 
-  } catch (error) {
+    }
+
+  }
+
+  catch (error) {
 
     console.log(
       "Kamera:",
@@ -1273,22 +1677,41 @@ async function startCamera() {
 }
 
 
-/* ==================================================
+/* =========================================
+   KAMERA STOPPEN
+========================================= */
+
+function stopCamera() {
+
+  if (!cameraStream) {
+    return;
+  }
+
+
+  cameraStream
+    .getTracks()
+    .forEach(
+      track => track.stop()
+    );
+
+
+  camera.srcObject =
+    null;
+
+
+  cameraStream =
+    null;
+
+
+  cameraReady =
+    false;
+
+}
+
+
+/* =========================================
    KAMERA-MUSTER
-================================================== */
-
-/*
-   Aktuell:
-
-   sehr helles Bild
-   →
-   "Muster erkannt."
-
-   Das ist nur die Basis.
-
-   Später können wir echte Formen
-   erkennen lassen.
-*/
+========================================= */
 
 function detectCameraPattern() {
 
@@ -1297,20 +1720,25 @@ function detectCameraPattern() {
     !cameraReady ||
     cameraCooldown ||
     mailboxPlaying ||
-    emergencyPause
+    emergencyRunning
   ) {
+
     return;
+
   }
 
 
   if (
     camera.videoWidth === 0
   ) {
+
     return;
+
   }
 
 
   canvas.width = 80;
+
   canvas.height = 60;
 
 
@@ -1369,14 +1797,18 @@ function detectCameraPattern() {
     state =
       "white";
 
-  } else if (
+  }
+
+  else if (
     brightness < 35
   ) {
 
     state =
       "black";
 
-  } else {
+  }
+
+  else {
 
     state =
       "neutral";
@@ -1387,13 +1819,20 @@ function detectCameraPattern() {
   if (
     state === lastCameraState
   ) {
+
     return;
+
   }
 
 
   lastCameraState =
     state;
 
+
+  /*
+     Aktuelles Testmuster:
+     sehr helles Bild.
+  */
 
   if (
     state === "white"
@@ -1420,9 +1859,9 @@ function detectCameraPattern() {
 }
 
 
-/* ==================================================
+/* =========================================
    OBSERVER AKTIVIEREN
-================================================== */
+========================================= */
 
 activateButton.addEventListener(
   "click",
@@ -1438,49 +1877,29 @@ activateButton.addEventListener(
 
 
     /*
-       iPad/Safari Audio freischalten.
+       iPad Audio freischalten.
+
+       Das passiert direkt durch den
+       Benutzerklick.
     */
 
-    if (
-      "speechSynthesis" in window
-    ) {
-
-      window.speechSynthesis.cancel();
-
-
-      const unlock =
-        new SpeechSynthesisUtterance("");
-
-
-      unlock.lang =
-        "de-DE";
-
-      unlock.volume =
-        0;
-
-
-      window.speechSynthesis.speak(
-        unlock
-      );
-
-    }
+    await unlockMailboxAudio();
 
 
     /*
-       Mikrofon starten
+       Sprache starten.
     */
 
     startRecognition();
 
 
     /*
-       Kamera starten
+       Kamera starten.
     */
 
     await startCamera();
 
   }
-
 );
 
 </script>
