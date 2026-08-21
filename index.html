@@ -1,629 +1,1461 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OBSERVER</title>
+<meta charset="UTF-8">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
 
-    body {
-      margin: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
+<title>OBSERVER</title>
 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    .eye {
-      width: 180px;
-      height: 110px;
-      border: 4px solid white;
-      border-radius: 50% / 60%;
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-      transition: height 0.12s ease-in-out;
-    }
+/* =========================
+   AUGE
+========================= */
 
-    .pupil {
-      width: 55px;
-      height: 55px;
-      background: white;
-      border-radius: 50%;
+.eye {
+  width: 180px;
+  height: 110px;
+  border: 4px solid #fff;
+  border-radius: 50% / 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    height 0.12s ease,
+    transform 0.12s ease;
+}
 
-      transition: transform 0.12s ease-in-out;
-    }
+.pupil {
+  width: 55px;
+  height: 55px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.12s ease;
+}
 
-    .eye.blink {
-      height: 6px;
-    }
+.eye.blink {
+  height: 7px;
+}
 
-    .eye.blink .pupil {
-      transform: scaleY(0);
-    }
+.eye.blink .pupil {
+  transform: scaleY(0);
+}
 
-    .title {
-      margin-top: 35px;
-      font-size: 22px;
-      letter-spacing: 8px;
-    }
+/* =========================
+   TEXT
+========================= */
 
-    .status {
-      margin-top: 15px;
-      font-size: 13px;
-      letter-spacing: 3px;
-      opacity: 0.7;
-    }
+.title {
+  margin-top: 35px;
+  font-size: 22px;
+  letter-spacing: 8px;
+}
 
-    .response {
-      margin-top: 25px;
-      width: 80%;
-      max-width: 700px;
-      min-height: 25px;
+.status {
+  margin-top: 15px;
+  font-size: 13px;
+  letter-spacing: 3px;
+  opacity: 0.7;
+}
 
-      font-size: 17px;
-      letter-spacing: 2px;
-      text-align: center;
-      line-height: 1.5;
-    }
+.response {
+  width: 85%;
+  max-width: 850px;
+  min-height: 30px;
+  margin-top: 25px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
 
-    .wave {
-      margin-top: 25px;
-      height: 45px;
+/* =========================
+   AUDIOWELLE
+========================= */
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+.wave {
+  height: 45px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
 
-      gap: 4px;
-      opacity: 0;
+.wave.active {
+  opacity: 1;
+}
 
-      transition: opacity 0.3s ease;
-    }
+.bar {
+  width: 4px;
+  height: 8px;
+  background: #fff;
+  border-radius: 3px;
+  animation: audioWave 0.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
 
-    .wave.active {
-      opacity: 1;
-    }
+.wave.active .bar {
+  animation-play-state: running;
+}
 
-    .bar {
-      width: 4px;
-      height: 8px;
-      background: white;
-      border-radius: 3px;
+.bar:nth-child(1) { animation-delay: 0s; }
+.bar:nth-child(2) { animation-delay: .1s; }
+.bar:nth-child(3) { animation-delay: .2s; }
+.bar:nth-child(4) { animation-delay: .3s; }
+.bar:nth-child(5) { animation-delay: .2s; }
+.bar:nth-child(6) { animation-delay: .1s; }
+.bar:nth-child(7) { animation-delay: 0s; }
 
-      animation: wave 0.8s ease-in-out infinite;
-      animation-play-state: paused;
-    }
+@keyframes audioWave {
+  0%, 100% {
+    height: 8px;
+  }
 
-    .wave.active .bar {
-      animation-play-state: running;
-    }
+  50% {
+    height: 38px;
+  }
+}
 
-    .bar:nth-child(1) { animation-delay: 0s; }
-    .bar:nth-child(2) { animation-delay: 0.1s; }
-    .bar:nth-child(3) { animation-delay: 0.2s; }
-    .bar:nth-child(4) { animation-delay: 0.3s; }
-    .bar:nth-child(5) { animation-delay: 0.2s; }
-    .bar:nth-child(6) { animation-delay: 0.1s; }
-    .bar:nth-child(7) { animation-delay: 0s; }
+/* =========================
+   AKTIVIERUNG
+========================= */
 
-    @keyframes wave {
-      0%, 100% {
-        height: 8px;
-      }
+#activate {
+  margin-top: 25px;
+  padding: 13px 24px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
 
-      50% {
-        height: 38px;
-      }
-    }
-  </style>
+#activate.hidden {
+  display: none;
+}
+
+/* =========================
+   TIMER
+========================= */
+
+#timer {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  font-size: 15px;
+  letter-spacing: 3px;
+  opacity: .5;
+}
+
+/* =========================
+   KAMERA
+========================= */
+
+#cameraContainer {
+  position: fixed;
+  width: 180px;
+  height: 135px;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0.01;
+  pointer-events: none;
+}
+
+#camera {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#cameraCanvas {
+  display: none;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="eye" id="eye">
-    <div class="pupil"></div>
-  </div>
+<div class="eye" id="eye">
+  <div class="pupil"></div>
+</div>
 
-  <div class="title">
-    OBSERVER
-  </div>
+<div class="title">
+  OBSERVER
+</div>
 
-  <div class="status" id="status">
-    BEOBACHTUNG AKTIV
-  </div>
+<div class="status" id="status">
+  BEOBACHTUNG AKTIV
+</div>
 
-  <div class="wave" id="wave">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
+<div class="wave" id="wave">
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
 
-  <div class="response" id="response"></div>
+<div class="response" id="response"></div>
 
-  <!-- DEINE AUDIO-DATEI -->
-  <audio
-    id="mailboxAudio"
-    src="audio/Stromausfall%20Escape%20Room.m4a"
-    preload="auto">
-  </audio>
+<button id="activate">
+  OBSERVER AKTIVIEREN
+</button>
+
+<div id="timer">
+  90:00
+</div>
+
+<!-- Kamera -->
+<div id="cameraContainer">
+  <video
+    id="camera"
+    autoplay
+    playsinline
+    muted
+  ></video>
+
+  <canvas id="cameraCanvas"></canvas>
+</div>
+
+<!--
+  WICHTIG:
+  Diese Datei muss in eurem Repository unter
+  /audio/Stromausfall Escape Room.m4a
+  liegen.
+-->
+<audio
+  id="mailboxAudio"
+  preload="auto"
+  src="audio/Stromausfall%20Escape%20Room.m4a"
+></audio>
 
 
-  <script>
+<script>
 
-    const eye = document.getElementById("eye");
-    const response = document.getElementById("response");
-    const status = document.getElementById("status");
-    const wave = document.getElementById("wave");
-    const mailboxAudio = document.getElementById("mailboxAudio");
+/* ==================================================
+   ELEMENTE
+================================================== */
+
+const eye =
+  document.getElementById("eye");
+
+const status =
+  document.getElementById("status");
+
+const response =
+  document.getElementById("response");
+
+const wave =
+  document.getElementById("wave");
+
+const activateButton =
+  document.getElementById("activate");
+
+const timerElement =
+  document.getElementById("timer");
+
+const mailboxAudio =
+  document.getElementById("mailboxAudio");
+
+const camera =
+  document.getElementById("camera");
+
+const canvas =
+  document.getElementById("cameraCanvas");
+
+const ctx =
+  canvas.getContext("2d");
 
 
-    /* =========================
-       BLINZELN
-    ========================= */
+/* ==================================================
+   SYSTEMZUSTAND
+================================================== */
 
-    function blink() {
+let observerActivated = false;
 
-      eye.classList.add("blink");
+let timerStarted = false;
 
-      setTimeout(() => {
-        eye.classList.remove("blink");
-      }, 180);
+let remainingSeconds = 90 * 60;
 
+let timerInterval = null;
+
+let emergencyMode = false;
+
+let emergencyPause = false;
+
+let mailboxPlaying = false;
+
+let waitingForEmergencyNumber = false;
+
+let recognition = null;
+
+let recognitionAvailable = false;
+
+let cameraReady = false;
+
+let cameraInterval = null;
+
+let lastCameraState = "unknown";
+
+let cameraCooldown = false;
+
+
+/* ==================================================
+   90-MINUTEN-TIMER
+================================================== */
+
+/*
+  NICHT beim Observer-Aktivieren starten.
+
+  Diese Funktion wird später mit dem Öffnen
+  des Duschvorhangs verbunden.
+*/
+
+function startEscapeRoom() {
+
+  if (timerStarted) {
+    return;
+  }
+
+  timerStarted = true;
+
+  remainingSeconds = 90 * 60;
+
+  updateTimer();
+
+  timerInterval = setInterval(() => {
+
+    if (remainingSeconds <= 0) {
+
+      clearInterval(timerInterval);
+
+      remainingSeconds = 0;
+
+      updateTimer();
+
+      return;
     }
 
-    setInterval(blink, 10000);
+    remainingSeconds--;
 
+    updateTimer();
 
-    /* =========================
-       SPRACHERKENNUNG
-    ========================= */
+  }, 1000);
+}
 
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
 
-    let recognition = null;
+function updateTimer() {
 
+  const minutes =
+    Math.floor(remainingSeconds / 60);
 
-    if (SpeechRecognition) {
+  const seconds =
+    remainingSeconds % 60;
 
-      recognition = new SpeechRecognition();
+  timerElement.textContent =
+    String(minutes).padStart(2, "0")
+    + ":"
+    +
+    String(seconds).padStart(2, "0");
+}
 
-      recognition.lang = "de-DE";
-      recognition.continuous = true;
-      recognition.interimResults = false;
 
+/*
+  BEISPIEL:
 
-      function startListening() {
+  Wenn ihr später einen echten Sensor,
+  Button oder Mechanismus für den
+  Duschvorhang habt, ruft dieser:
 
-        try {
-          recognition.start();
-        } catch (error) {
-          // Läuft bereits.
-        }
+      startEscapeRoom();
 
-      }
+  auf.
+*/
 
 
-      /* =========================
-         SPRACHE ERKANNT
-      ========================= */
+/* ==================================================
+   NORMALES BLINZELN
+================================================== */
 
-      recognition.onresult = (event) => {
+/*
+  Alle 10 Sekunden ein normales Blinzeln.
+*/
 
-        const result =
-          event.results[event.results.length - 1];
+function blink() {
 
-        if (!result.isFinal) {
-          return;
-        }
+  eye.classList.add("blink");
 
-        let command =
-          result[0].transcript
-            .toLowerCase()
-            .trim();
+  setTimeout(() => {
 
-        command = command
-          .replace(/[.,!?;:]/g, "")
-          .trim();
+    eye.classList.remove("blink");
 
-        console.log("Erkannt:", command);
+  }, 180);
+}
 
 
-        /* =========================
-           HALLO
-        ========================= */
+setInterval(() => {
 
-        if (command === "hallo") {
+  if (
+    observerActivated &&
+    !emergencyPause
+  ) {
+    blink();
+  }
 
-          respond(
-            "Hallo.",
-            "hallo"
-          );
+}, 10000);
 
-          return;
-        }
 
+/* ==================================================
+   MORSE-BLINZELN
+================================================== */
 
-        /* =========================
-           WAS
-        ========================= */
+/*
+  Punkt = kurzer Blink
+  Strich = langer Blink
 
-        if (command === "was") {
+  Die eigentliche geheime Nachricht
+  könnt ihr später hier festlegen.
+*/
 
-          respond(
-            "Was?",
-            "was"
-          );
+function blinkMorse(symbol) {
 
-          return;
-        }
+  if (!observerActivated) {
+    return;
+  }
 
+  eye.classList.add("blink");
 
-        /* =========================
-           WER BIST DU
-        ========================= */
+  const duration =
+    symbol === "."
+      ? 180
+      : 500;
 
-        if (command.includes("wer bist du")) {
+  setTimeout(() => {
 
-          respond(
-            "Observer Typ 0.4",
-            "wer"
-          );
+    eye.classList.remove("blink");
 
-          return;
-        }
+  }, duration);
+}
 
 
-        /* =========================
-           WO SIND WIR
-        ========================= */
+/*
+  Beispiel für eine Morsefolge:
 
-        if (command.includes("wo sind wir")) {
+  blinkMorse(".");
+  blinkMorse(".");
+  blinkMorse("-");
+*/
 
-          respond(
-            "Ihr wurdet von zwei Männern hier reingebracht, " +
-            "sie trugen einen schwarzen Hoodie und eine " +
-            "schwarze Winterjacke, der eine hatte einen Zettel " +
-            "darin versteckt",
-            "wo"
-          );
 
-          return;
-        }
+/* ==================================================
+   OBSERVER SPRICHT
+================================================== */
 
+function observerSpeak(
+  text,
+  finished = null
+) {
 
-        /* =========================
-           HILFE
-        ========================= */
+  if (!observerActivated) {
+    return;
+  }
 
-        if (command.includes("hilfe")) {
+  response.textContent = text;
 
-          respond(
-            "Ich bin nicht fürs Helfen da",
-            "hilfe"
-          );
+  status.textContent =
+    "OBSERVER SPRICHT";
 
-          return;
-        }
+  wave.classList.add("active");
 
 
-        /* =========================
-           WASCHMASCHINE
-        ========================= */
+  if (!("speechSynthesis" in window)) {
 
-        if (command.includes("waschmaschine")) {
+    wave.classList.remove("active");
 
-          respond(
-            "Ich bin nicht für eine Wäsche gemacht",
-            "waschmaschine"
-          );
+    if (finished) {
+      finished();
+    }
 
-          return;
-        }
+    return;
+  }
 
 
-        /* =========================
-           WIE KOMMEN WIR RAUS
-        ========================= */
+  /*
+    Alte Sprachausgabe beenden.
+  */
 
-        if (
-          command.includes("wie kommen wir raus") ||
-          command.includes("wie kommen wir hier raus") ||
-          command.includes("wie kommen wir heraus") ||
-          command.includes("wie kommen wir hier heraus") ||
-          command.includes("wie kommen wir wieder raus")
-        ) {
+  window.speechSynthesis.cancel();
 
-          respond(
-            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert",
-            "raus"
-          );
 
-          return;
-        }
+  const utterance =
+    new SpeechSynthesisUtterance(text);
 
+  utterance.lang = "de-DE";
 
-        /* =========================
-           WASSER IN DIE FLASCHE
-        ========================= */
+  utterance.rate = 0.85;
 
-        if (
-          command.includes("wasser") &&
-          command.includes("flasche") &&
-          (
-            command.includes("füllen") ||
-            command.includes("fuellen")
-          )
-        ) {
+  utterance.pitch = 0.8;
 
-          respond(
-            "Vorsichtsmaßnahme erkannt, stellt sicher das ich kein Wasser abbekomme und sonst zurück zu euer Frage, Ja!",
-            "wasser"
-          );
+  utterance.volume = 1;
 
-          return;
-        }
 
+  utterance.onend = () => {
 
-        /* =========================
-           MAILBOX ABSPIELEN
-        ========================= */
+    wave.classList.remove("active");
 
-        if (
-          command.includes("spiele die mailbox ab") ||
-          command.includes("spiele mailbox ab") ||
-          command.includes("spiel die mailbox ab") ||
-          command.includes("spiel mailbox ab") ||
-          command.includes("mailbox abspielen")
-        ) {
+    response.textContent = "";
 
-          playMailbox();
+    status.textContent =
+      "BEOBACHTUNG AKTIV";
 
-          return;
-        }
+    if (finished) {
+      finished();
+    }
 
+  };
 
-        /*
-          Alles andere wird ignoriert.
-        */
 
-      };
+  utterance.onerror = () => {
 
+    wave.classList.remove("active");
 
-      /* =========================
-         OBSERVER ANTWORT
-      ========================= */
+    if (finished) {
+      finished();
+    }
 
-      function respond(text, type) {
+  };
 
-        if (
-          window.lastCommand === type &&
-          window.speechSynthesis &&
-          window.speechSynthesis.speaking
-        ) {
 
-          return;
-        }
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
 
-        window.lastCommand = type;
 
-        response.textContent = text;
+/* ==================================================
+   MAILBOX
+================================================== */
 
-        status.textContent =
-          "OBSERVER SPRICHT";
+/*
+  Befehl:
 
-        wave.classList.add("active");
+  "Spiele die Mailbox ab."
 
+  Danach:
 
-        if ("speechSynthesis" in window) {
+  Observer spricht EINMAL.
 
-          window.speechSynthesis.cancel();
+  Danach startet die M4A.
 
-          const utterance =
-            new SpeechSynthesisUtterance(text);
+  Währenddessen werden keine Befehle
+  verarbeitet.
 
-          utterance.lang = "de-DE";
-          utterance.rate = 0.85;
-          utterance.pitch = 0.8;
-          utterance.volume = 1;
+  Nach Ende der M4A kehrt der Observer
+  automatisch zurück.
+*/
 
+function playMailbox() {
 
-          utterance.onend = () => {
+  if (
+    mailboxPlaying ||
+    emergencyPause
+  ) {
+    return;
+  }
 
-            wave.classList.remove("active");
+  mailboxPlaying = true;
 
-            response.textContent = "";
+  status.textContent =
+    "MAILBOX WIRD ABGESPIELT";
 
-            status.textContent =
-              "BEOBACHTUNG AKTIV";
+  response.textContent =
+    "Ich spiele die Mailbox ab.";
 
-          };
+  wave.classList.add("active");
 
 
-          window.speechSynthesis.speak(
-            utterance
-          );
+  if ("speechSynthesis" in window) {
 
-        }
+    window.speechSynthesis.cancel();
 
-      }
+  }
 
 
-      /* =========================
-         MAILBOX
-      ========================= */
+  const intro =
+    new SpeechSynthesisUtterance(
+      "Ich spiele die Mailbox ab."
+    );
 
-      function playMailbox() {
+  intro.lang = "de-DE";
 
-        // Text anzeigen
-        response.textContent =
-          "Ich spiele die Mailbox ab.";
+  intro.rate = 0.85;
 
-        status.textContent =
-          "MAILBOX WIRD ABGESPIELT";
+  intro.pitch = 0.8;
 
-        wave.classList.add("active");
+  intro.volume = 1;
 
 
-        /*
-          Falls gerade eine andere OBSERVER-Stimme
-          läuft, wird sie beendet.
-        */
+  intro.onend = () => {
 
-        if ("speechSynthesis" in window) {
-          window.speechSynthesis.cancel();
-        }
+    response.textContent = "";
 
+    status.textContent =
+      "MAILBOX";
 
-        const intro =
-          new SpeechSynthesisUtterance(
-            "Ich spiele die Mailbox ab."
-          );
+    mailboxAudio.currentTime = 0;
 
-        intro.lang = "de-DE";
-        intro.rate = 0.85;
-        intro.pitch = 0.8;
-        intro.volume = 1;
 
+    mailboxAudio
+      .play()
+      .catch(error => {
 
-        intro.onend = () => {
-
-          wave.classList.remove("active");
-
-          response.textContent = "";
-
-          status.textContent =
-            "MAILBOX";
-
-
-          /*
-            Audio starten
-          */
-
-          mailboxAudio.currentTime = 0;
-
-          mailboxAudio.play()
-            .then(() => {
-
-              console.log(
-                "Mailbox wird abgespielt."
-              );
-
-            })
-            .catch((error) => {
-
-              console.error(
-                "Audio konnte nicht gestartet werden:",
-                error
-              );
-
-              response.textContent =
-                "AUDIO NICHT VERFÜGBAR";
-
-              status.textContent =
-                "FEHLER";
-
-            });
-
-        };
-
-
-        window.speechSynthesis.speak(intro);
-
-
-        /*
-          Wenn die Mailbox fertig ist
-        */
-
-        mailboxAudio.onended = () => {
-
-          response.textContent = "";
-
-          status.textContent =
-            "BEOBACHTUNG AKTIV";
-
-        };
-
-      }
-
-
-      /* =========================
-         ERKENNUNG ENDET
-      ========================= */
-
-      recognition.onend = () => {
-
-        setTimeout(() => {
-
-          startListening();
-
-        }, 500);
-
-      };
-
-
-      /* =========================
-         FEHLER
-      ========================= */
-
-      recognition.onerror = (event) => {
-
-        console.log(
-          "Spracherkennung:",
-          event.error
+        console.error(
+          "Mailbox konnte nicht abgespielt werden:",
+          error
         );
 
-        if (
-          event.error !== "not-allowed" &&
-          event.error !== "service-not-allowed"
-        ) {
+        finishMailbox();
 
-          setTimeout(() => {
+      });
 
-            startListening();
-
-          }, 1000);
-
-        }
-
-      };
+  };
 
 
-      /* =========================
-         START
-      ========================= */
+  intro.onerror = () => {
 
-      startListening();
+    /*
+      Falls Safari die Sprachansage
+      nicht sauber beendet, trotzdem
+      die Mailbox starten.
+    */
+
+    mailboxAudio.currentTime = 0;
+
+    mailboxAudio
+      .play()
+      .catch(() => finishMailbox());
+
+  };
+
+
+  window.speechSynthesis.speak(
+    intro
+  );
+}
+
+
+mailboxAudio.addEventListener(
+  "ended",
+  finishMailbox
+);
+
+
+function finishMailbox() {
+
+  mailboxPlaying = false;
+
+  wave.classList.remove("active");
+
+  response.textContent = "";
+
+  status.textContent =
+    "BEOBACHTUNG AKTIV";
+}
+
+
+/* ==================================================
+   NOTFALLSEQUENZ
+================================================== */
+
+function startEmergency() {
+
+  if (emergencyMode) {
+    return;
+  }
+
+  emergencyMode = true;
+
+  emergencyPause = true;
+
+  waitingForEmergencyNumber = false;
+
+
+  observerSpeak(
+    "Notfall erkannt, Maßnahmen werden eingeleitet.",
+    () => {
+
+      /*
+        Kurze Pause.
+        Währenddessen werden keine
+        anderen Befehle akzeptiert.
+      */
+
+      setTimeout(() => {
+
+        emergencyAnnouncement();
+
+      }, 5000);
+
+    }
+  );
+}
+
+
+function emergencyAnnouncement() {
+
+  const text =
+    "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.";
+
+  response.textContent = text;
+
+  status.textContent =
+    "NOTFALLPROTOKOLL";
+
+  wave.classList.add("active");
+
+
+  if (!("speechSynthesis" in window)) {
+
+    finishEmergencyAnnouncement();
+
+    return;
+  }
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  utterance.lang = "de-DE";
+
+  utterance.rate = 0.82;
+
+  utterance.pitch = 0.8;
+
+  utterance.volume = 1;
+
+
+  utterance.onend =
+    finishEmergencyAnnouncement;
+
+
+  utterance.onerror =
+    finishEmergencyAnnouncement;
+
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
+
+
+function finishEmergencyAnnouncement() {
+
+  wave.classList.remove("active");
+
+  response.textContent = "";
+
+  status.textContent =
+    "BEOBACHTUNG AKTIV";
+
+  emergencyPause = false;
+}
+
+
+/* ==================================================
+   SPRACHERKENNUNG
+================================================== */
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+
+if (SpeechRecognition) {
+
+  recognitionAvailable = true;
+
+  recognition =
+    new SpeechRecognition();
+
+  recognition.lang = "de-DE";
+
+  recognition.continuous = true;
+
+  recognition.interimResults = false;
+
+  recognition.maxAlternatives = 1;
+
+
+  recognition.onresult =
+    handleSpeech;
+
+
+  recognition.onend = () => {
+
+    /*
+      Safari beendet continuous recognition
+      gelegentlich.
+
+      Wenn der Observer noch aktiv ist,
+      starten wir sie wieder.
+    */
+
+    if (
+      observerActivated &&
+      !mailboxPlaying
+    ) {
+
+      setTimeout(
+        startRecognition,
+        400
+      );
 
     }
 
-    else {
+  };
 
-      status.textContent =
-        "SPRACHERKENNUNG NICHT VERFÜGBAR";
+
+  recognition.onerror = event => {
+
+    console.log(
+      "Spracherkennung:",
+      event.error
+    );
+
+  };
+
+}
+
+
+function startRecognition() {
+
+  if (
+    !recognitionAvailable ||
+    !observerActivated
+  ) {
+    return;
+  }
+
+  try {
+
+    recognition.start();
+
+  } catch (error) {
+
+    /*
+      start() kann einen Fehler geben,
+      wenn die Erkennung bereits läuft.
+    */
+
+  }
+}
+
+
+/* ==================================================
+   SPRACHBEFEHLE
+================================================== */
+
+function handleSpeech(event) {
+
+  if (!event.results.length) {
+    return;
+  }
+
+
+  const result =
+    event.results[
+      event.results.length - 1
+    ];
+
+
+  if (!result.isFinal) {
+    return;
+  }
+
+
+  let command =
+    result[0].transcript
+      .toLowerCase()
+      .trim();
+
+
+  command =
+    command.replace(
+      /[.,!?;:]/g,
+      ""
+    );
+
+
+  console.log(
+    "Erkannt:",
+    command
+  );
+
+
+  /*
+    Während einer Mailbox:
+    NICHTS tun.
+  */
+
+  if (mailboxPlaying) {
+    return;
+  }
+
+
+  /*
+    Während der Notfallsequenz:
+    NICHTS tun.
+  */
+
+  if (emergencyPause) {
+    return;
+  }
+
+
+  /* ==========================
+     NOTFALLNUMMERN
+  ========================== */
+
+  if (
+    command.includes("notfallnummern")
+  ) {
+
+    waitingForEmergencyNumber = true;
+
+    observerSpeak(
+      "Nennen Sie jetzt die Notfallnummer."
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     NOTFALLNUMMER 03
+  ========================== */
+
+  if (
+    waitingForEmergencyNumber
+  ) {
+
+    const is03 =
+      command === "03" ||
+      command === "0 3" ||
+      command === "null drei" ||
+      command === "null drei" ||
+      command === "drei";
+
+    if (is03) {
+
+      startEmergency();
+
+      return;
+    }
+
+  }
+
+
+  /* ==========================
+     MAILBOX
+  ========================== */
+
+  if (
+    command.includes(
+      "spiele die mailbox ab"
+    ) ||
+    command.includes(
+      "spiel die mailbox ab"
+    ) ||
+    command.includes(
+      "spiele mailbox ab"
+    ) ||
+    command.includes(
+      "spiel mailbox ab"
+    ) ||
+    command.includes(
+      "mailbox abspielen"
+    )
+  ) {
+
+    playMailbox();
+
+    return;
+  }
+
+
+  /* ==========================
+     HALLO
+  ========================== */
+
+  if (
+    command === "hallo"
+  ) {
+
+    observerSpeak(
+      "Hallo."
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     WAS
+  ========================== */
+
+  if (
+    command === "was"
+  ) {
+
+    observerSpeak(
+      "Was?"
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     WER BIST DU
+  ========================== */
+
+  if (
+    command.includes(
+      "wer bist du"
+    )
+  ) {
+
+    observerSpeak(
+      "Observer Typ 0.4"
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     WO SIND WIR
+  ========================== */
+
+  if (
+    command.includes(
+      "wo sind wir"
+    )
+  ) {
+
+    observerSpeak(
+      "Ihr wurdet von zwei Männern hier reingebracht, sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, der eine hatte einen Zettel darin versteckt."
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     HILFE
+  ========================== */
+
+  if (
+    command.includes("hilfe")
+  ) {
+
+    observerSpeak(
+      "Ich bin nicht fürs Helfen da."
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     WASCHMASCHINE
+  ========================== */
+
+  /*
+    Wichtig:
+
+    "Waschmaschine" funktioniert
+    auch innerhalb eines ganzen Satzes.
+
+    Beispiele:
+
+    "Hast du eine Waschmaschine?"
+
+    "Was ist mit der Waschmaschine?"
+
+    "Ich war gerade bei der Waschmaschine."
+
+    → immer gleiche Reaktion.
+  */
+
+  if (
+    command.includes(
+      "waschmaschine"
+    )
+  ) {
+
+    observerSpeak(
+      "Ich bin nicht für eine Wäsche gemacht."
+    );
+
+    return;
+  }
+
+
+  /* ==========================
+     WIE KOMMEN WIR RAUS
+  ========================== */
+
+  if (
+    command.includes(
+      "wie kommen wir raus"
+    ) ||
+    command.includes(
+      "wie kommen wir hier raus"
+    ) ||
+    command.includes(
+      "wie kommen wir heraus"
+    ) ||
+    command.includes(
+      "wie kommen wir hier heraus"
+    ) ||
+    command.includes(
+      "wie kommen wir wieder raus"
+    ) ||
+    (
+      command.includes("wie")
+      &&
+      command.includes("raus")
+    )
+  ) {
+
+    observerSpeak(
+      "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+    );
+
+    return;
+  }
+
+
+  /*
+    ALLES ANDERE:
+
+    Keine Reaktion.
+
+    Kein "Befehl nicht erkannt".
+
+    Das Auge macht nichts Besonderes.
+  */
+
+}
+
+
+/* ==================================================
+   KAMERA
+================================================== */
+
+async function startCamera() {
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    console.log(
+      "Kamera wird vom Browser nicht unterstützt."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const stream =
+      await navigator.mediaDevices
+        .getUserMedia({
+
+          video: {
+            facingMode: "user"
+          },
+
+          audio: false
+
+        });
+
+
+    camera.srcObject = stream;
+
+    cameraReady = true;
+
+
+    if (!cameraInterval) {
+
+      cameraInterval =
+        setInterval(
+          detectCameraPattern,
+          1000
+        );
 
     }
 
-  </script>
+  } catch (error) {
+
+    console.log(
+      "Kamera konnte nicht gestartet werden:",
+      error
+    );
+
+  }
+}
+
+
+/* ==================================================
+   KAMERA-MUSTER
+================================================== */
+
+/*
+  AKTUELLE TESTVERSION:
+
+  Ein sehr helles Muster vor der Kamera
+  wird als Muster erkannt.
+
+  Später können wir daraus eure echten
+  Dreieck/Kreis/Quadrat-Muster machen.
+*/
+
+function detectCameraPattern() {
+
+  if (
+    !observerActivated ||
+    !cameraReady ||
+    cameraCooldown ||
+    mailboxPlaying ||
+    emergencyPause
+  ) {
+    return;
+  }
+
+
+  if (
+    camera.videoWidth === 0 ||
+    camera.videoHeight === 0
+  ) {
+    return;
+  }
+
+
+  canvas.width = 80;
+  canvas.height = 60;
+
+
+  ctx.drawImage(
+    camera,
+    0,
+    0,
+    80,
+    60
+  );
+
+
+  const image =
+    ctx.getImageData(
+      0,
+      0,
+      80,
+      60
+    );
+
+
+  let brightness = 0;
+
+  const pixels =
+    image.data.length / 4;
+
+
+  for (
+    let i = 0;
+    i < image.data.length;
+    i += 4
+  ) {
+
+    brightness +=
+      (
+        image.data[i] +
+        image.data[i + 1] +
+        image.data[i + 2]
+      ) / 3;
+
+  }
+
+
+  brightness /= pixels;
+
+
+  let state;
+
+
+  if (brightness > 220) {
+
+    state = "white";
+
+  } else if (brightness < 35) {
+
+    state = "black";
+
+  } else {
+
+    state = "neutral";
+
+  }
+
+
+  if (
+    state === lastCameraState
+  ) {
+    return;
+  }
+
+
+  lastCameraState = state;
+
+
+  if (
+    state === "white"
+  ) {
+
+    cameraCooldown = true;
+
+    observerSpeak(
+      "Muster erkannt."
+    );
+
+
+    setTimeout(() => {
+
+      cameraCooldown = false;
+
+    }, 5000);
+
+  }
+
+}
+
+
+/* ==================================================
+   OBSERVER AKTIVIEREN
+================================================== */
+
+activateButton.addEventListener(
+  "click",
+  async () => {
+
+    observerActivated = true;
+
+    activateButton.classList.add(
+      "hidden"
+    );
+
+    status.textContent =
+      "BEOBACHTUNG AKTIV";
+
+
+    /*
+      iPad/Safari Audio-Unlock.
+
+      Diese Aktion kommt direkt vom
+      Benutzer und ist deshalb wichtig
+      für die spätere Sprachausgabe.
+    */
+
+    if (
+      "speechSynthesis" in window
+    ) {
+
+      window.speechSynthesis.cancel();
+
+      const unlock =
+        new SpeechSynthesisUtterance("");
+
+      unlock.lang = "de-DE";
+
+      unlock.volume = 0;
+
+      window.speechSynthesis.speak(
+        unlock
+      );
+
+    }
+
+
+    /*
+      Mikrofon starten
+    */
+
+    startRecognition();
+
+
+    /*
+      Kamera starten
+    */
+
+    await startCamera();
+
+
+    /*
+      TIMER ABSICHTLICH NICHT STARTEN.
+
+      Der Timer startet erst beim
+      Öffnen des Duschvorhangs.
+    */
+
+  }
+);
+
+
+/* ==================================================
+   INITIALER ZUSTAND
+================================================== */
+
+updateTimer();
+
+</script>
 
 </body>
 </html>
+```
