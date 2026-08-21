@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -15,7 +16,9 @@
 <title>Observer Test</title>
 
 <style>
-html, body {
+
+html,
+body {
     margin: 0;
     width: 100%;
     height: 100%;
@@ -60,12 +63,13 @@ body {
 #start {
     margin-top: 25px;
     padding: 14px 24px;
-    background: black;
-    color: white;
-    border: 1px solid white;
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
     border-radius: 5px;
     font-size: 14px;
 }
+
 </style>
 </head>
 
@@ -88,6 +92,7 @@ const text =
 
 const start =
     document.getElementById("start");
+
 
 let recognition = null;
 
@@ -120,7 +125,7 @@ if (SpeechRecognition) {
         false;
 
     recognition.maxAlternatives =
-        1;
+        3;
 
 
     recognition.onstart = () => {
@@ -128,7 +133,7 @@ if (SpeechRecognition) {
         listening = true;
 
         console.log(
-            "Mikrofon hört zu"
+            "Observer hört zu."
         );
 
     };
@@ -140,65 +145,80 @@ if (SpeechRecognition) {
             return;
         }
 
-        const result =
-            event.results[
-                event.results.length - 1
-            ];
 
-        if (!result.isFinal) {
-            return;
-        }
-
-        const heard =
-            result[0]
-                .transcript
-                .toLowerCase()
-                .trim();
-
-        console.log(
-            "Gehört:",
-            heard
-        );
-
-
-        if (
-            heard.includes("hallo")
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
         ) {
 
-            sayHello();
+            const result =
+                event.results[i];
+
+
+            if (!result.isFinal) {
+                continue;
+            }
+
+
+            const heard =
+                result[0]
+                    .transcript
+                    .toLowerCase()
+                    .trim();
+
+
+            console.log(
+                "Gehört:",
+                heard
+            );
+
+
+            if (
+                heard.includes("hallo")
+            ) {
+
+                sayHello();
+
+                return;
+
+            }
 
         }
 
     };
 
 
-    recognition.onerror = event => {
+    recognition.onerror =
+        event => {
 
-        console.log(
-            "Speech error:",
-            event.error
-        );
+            listening = false;
 
-    };
+            console.log(
+                "Erkennungsfehler:",
+                event.error
+            );
+
+        };
 
 
     recognition.onend = () => {
 
         listening = false;
 
+
         /*
-           NICHT sofort neu starten.
-           Erst nach kurzer Pause.
+           NICHT ständig automatisch
+           neu starten.
+
+           Nur nach einer Antwort.
         */
 
         if (
-            !speaking
+            speaking
         ) {
 
-            setTimeout(
-                startListening,
-                1000
-            );
+            return;
 
         }
 
@@ -208,7 +228,7 @@ if (SpeechRecognition) {
 
 
 /* =========================================
-   SPRECHEN
+   HALLO
 ========================================= */
 
 function sayHello() {
@@ -217,12 +237,15 @@ function sayHello() {
         return;
     }
 
+
     speaking = true;
 
 
     /*
-       Mikrofon während der Antwort
-       vollständig stoppen.
+       Mikrofon stoppen,
+       damit man den Observer
+       nicht während seiner Antwort
+       selbst triggert.
     */
 
     stopListening();
@@ -232,19 +255,24 @@ function sayHello() {
         "Hallo.";
 
 
+    /*
+       Alte Sprachwiedergabe löschen.
+    */
+
     if (
-        !window.speechSynthesis
+        window.speechSynthesis
     ) {
 
-        finishSpeaking();
+        window.speechSynthesis.cancel();
 
-        return;
+        window.speechSynthesis.resume();
 
     }
 
 
-    window.speechSynthesis.cancel();
-
+    /*
+       Sprachobjekt
+    */
 
     const utterance =
         new SpeechSynthesisUtterance(
@@ -256,7 +284,7 @@ function sayHello() {
         "de-DE";
 
     utterance.rate =
-        0.85;
+        0.9;
 
     utterance.pitch =
         0.8;
@@ -265,75 +293,147 @@ function sayHello() {
         1;
 
 
-    utterance.onend = () => {
-
-        finishSpeaking();
-
-    };
-
-
-    utterance.onerror = () => {
-
-        finishSpeaking();
-
-    };
-
-
     /*
-       Safari/iPad:
-       Audio direkt nach Benutzeraktion
-       vorbereiten.
+       Stimme möglichst auf Deutsch setzen.
     */
 
-    window.speechSynthesis.resume();
+    const voices =
+        window.speechSynthesis
+            ?.getVoices();
 
 
-    window.speechSynthesis.speak(
-        utterance
-    );
+    if (
+        voices &&
+        voices.length
+    ) {
 
-}
+        const germanVoice =
+            voices.find(
+                voice =>
+                    voice.lang === "de-DE"
+            )
+            ||
+            voices.find(
+                voice =>
+                    voice.lang
+                        ?.toLowerCase()
+                        .startsWith("de")
+            );
 
 
-/* =========================================
-   SPRECHEN FERTIG
-========================================= */
+        if (
+            germanVoice
+        ) {
 
-function finishSpeaking() {
+            utterance.voice =
+                germanVoice;
 
-    speaking = false;
+        }
+
+    }
 
 
     /*
-       Text SOFORT entfernen.
+       Falls iPadOS onend NICHT liefert,
+       funktioniert der Test trotzdem.
     */
 
-    text.textContent =
-        "";
+    let finished =
+        false;
+
+
+    function finish() {
+
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+
+
+        /*
+           Text nach spätestens
+           1,5 Sekunden entfernen.
+        */
+
+        text.textContent =
+            "";
+
+
+        speaking =
+            false;
+
+
+        /*
+           Danach wieder zuhören.
+        */
+
+        setTimeout(
+            startListening,
+            500
+        );
+
+    }
+
+
+    utterance.onend =
+        finish;
+
+
+    utterance.onerror =
+        finish;
 
 
     /*
-       Erst danach wieder zuhören.
+       Sicherheits-Timeout.
     */
 
     setTimeout(
-        startListening,
-        500
+        finish,
+        1500
     );
+
+
+    /*
+       WICHTIG:
+       speechSynthesis direkt aus
+       dem bereits aktivierten
+       Observer-Kontext verwenden.
+    */
+
+    try {
+
+        window.speechSynthesis
+            .speak(
+                utterance
+            );
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Sprachfehler:",
+            error
+        );
+
+        finish();
+
+    }
 
 }
 
 
 /* =========================================
-   ZUHÖREN STARTEN
+   ZUHÖREN
 ========================================= */
 
 function startListening() {
 
     if (
         !recognition ||
-        speaking ||
-        listening
+        listening ||
+        speaking
     ) {
 
         return;
@@ -350,7 +450,7 @@ function startListening() {
     catch (error) {
 
         console.log(
-            "Start error:",
+            "Startfehler:",
             error
         );
 
@@ -365,8 +465,12 @@ function startListening() {
 
 function stopListening() {
 
-    if (!recognition) {
+    if (
+        !recognition
+    ) {
+
         return;
+
     }
 
 
@@ -390,9 +494,9 @@ start.addEventListener(
     () => {
 
         /*
-           Das ist wichtig:
-           speechSynthesis wird direkt
-           durch den iPad-Tap aktiviert.
+           Sehr wichtig für iPad:
+           Audio direkt innerhalb des
+           Benutzer-Taps initialisieren.
         */
 
         if (
@@ -406,13 +510,17 @@ start.addEventListener(
         }
 
 
-        start.classList.add(
-            "hidden"
-        );
+        /*
+           Button entfernen.
+        */
 
         start.style.display =
             "none";
 
+
+        /*
+           Mikrofon starten.
+        */
 
         startListening();
 
@@ -423,3 +531,4 @@ start.addEventListener(
 
 </body>
 </html>
+```
