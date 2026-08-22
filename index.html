@@ -1,1372 +1,1384 @@
 ```html
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+  <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  >
 
-<meta name="viewport"
-      content="width=device-width,
-      initial-scale=1,
-      maximum-scale=1,
-      user-scalable=no,
-      viewport-fit=cover">
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
 
-<meta name="apple-mobile-web-app-capable"
-      content="yes">
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  >
 
-<meta name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent">
+  <title>OBSERVER</title>
 
-<title>OBSERVER</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-<style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-* {
-    box-sizing: border-box;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-html,
-body {
-
-    width: 100%;
-    height: 100%;
-
-    margin: 0;
-    padding: 0;
-
-    overflow: hidden;
-
-    background: #000;
-    color: #fff;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-}
-
-body {
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
-
-    padding:
+      padding:
         env(safe-area-inset-top)
         env(safe-area-inset-right)
         env(safe-area-inset-bottom)
         env(safe-area-inset-left);
-}
+    }
 
+    /* =========================
+       AUGE
+    ========================= */
 
-/* =========================================
-   AUGE
-========================================= */
+    #eye {
+      width: 180px;
+      height: 110px;
 
-#eye {
+      border: 4px solid #fff;
+      border-radius: 50% / 60%;
 
-    width: 180px;
-    height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-    border:
-        4px solid #fff;
+      transition: height 120ms ease;
+    }
 
-    border-radius:
-        50% / 60%;
+    #pupil {
+      width: 55px;
+      height: 55px;
 
-    display: flex;
+      background: #fff;
+      border-radius: 50%;
 
-    justify-content: center;
-    align-items: center;
+      transition: transform 120ms ease;
+    }
 
-    transition:
-        height 120ms ease;
+    #eye.blink {
+      height: 7px;
+    }
 
-}
+    #eye.blink #pupil {
+      transform: scaleY(0);
+    }
 
-#pupil {
+    /* =========================
+       SPRECHERTEXT
+    ========================= */
 
-    width: 54px;
-    height: 54px;
+    #response {
+      width: 88%;
+      max-width: 850px;
 
-    background: #fff;
+      min-height: 30px;
+      margin-top: 35px;
 
-    border-radius: 50%;
+      text-align: center;
 
-    transition:
-        transform 120ms ease;
+      font-size: 17px;
+      line-height: 1.5;
+      letter-spacing: 1px;
+    }
 
-}
+    /* =========================
+       AUDIOWELLE
+    ========================= */
 
-#eye.blink {
+    #wave {
+      height: 45px;
+      margin-top: 15px;
 
-    height: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-}
+      gap: 4px;
 
-#eye.blink #pupil {
+      opacity: 0;
 
-    transform:
-        scaleY(0);
+      transition: opacity 150ms ease;
+    }
 
-}
+    #wave.active {
+      opacity: 1;
+    }
 
+    .bar {
+      width: 4px;
+      height: 8px;
 
-/* =========================================
-   SPRECHTEXT
-========================================= */
+      background: #fff;
+      border-radius: 4px;
 
-#speakerText {
+      animation: wave 800ms ease-in-out infinite;
+    }
 
-    width: 88%;
-    max-width: 750px;
+    .bar:nth-child(1) {
+      animation-delay: 0ms;
+    }
 
-    min-height: 32px;
+    .bar:nth-child(2) {
+      animation-delay: 100ms;
+    }
 
-    margin-top: 35px;
+    .bar:nth-child(3) {
+      animation-delay: 200ms;
+    }
 
-    text-align: center;
+    .bar:nth-child(4) {
+      animation-delay: 300ms;
+    }
 
-    font-size: 18px;
+    .bar:nth-child(5) {
+      animation-delay: 200ms;
+    }
 
-    line-height: 1.45;
+    .bar:nth-child(6) {
+      animation-delay: 100ms;
+    }
 
-    letter-spacing: .5px;
+    .bar:nth-child(7) {
+      animation-delay: 0ms;
+    }
 
-}
+    @keyframes wave {
+      0%,
+      100% {
+        height: 8px;
+      }
 
+      50% {
+        height: 38px;
+      }
+    }
 
-/* =========================================
-   START
-========================================= */
+    /* =========================
+       AKTIVIEREN
+    ========================= */
 
-#start {
+    #activate {
+      margin-top: 25px;
 
-    margin-top: 28px;
+      padding: 13px 24px;
 
-    padding:
-        14px 25px;
+      background: #000;
+      color: #fff;
 
-    background: #000;
+      border: 1px solid #fff;
+      border-radius: 5px;
 
-    color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
 
-    border:
-        1px solid #fff;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
 
-    border-radius: 5px;
+    #activate.hidden {
+      display: none;
+    }
 
-    font-size: 13px;
+    /* =========================
+       KAMERA
+       Unsichtbar
+    ========================= */
 
-    letter-spacing: 2px;
+    #camera {
+      position: fixed;
 
-}
+      width: 1px;
+      height: 1px;
 
-#start.hidden {
+      right: 0;
+      bottom: 0;
 
-    display: none;
+      opacity: 0.01;
 
-}
+      pointer-events: none;
+    }
 
-
-/* =========================================
-   STATUS
-   Nur während der Einrichtung sichtbar.
-========================================= */
-
-#status {
-
-    position: fixed;
-
-    bottom: 20px;
-
-    width: 90%;
-
-    text-align: center;
-
-    font-size: 11px;
-
-    opacity: .35;
-
-}
-
-</style>
-
+    #canvas {
+      display: none;
+    }
+  </style>
 </head>
-
 
 <body>
 
+  <!-- AUGE -->
 
-<div id="eye">
-
+  <div id="eye">
     <div id="pupil"></div>
-
-</div>
-
-
-<div id="speakerText"></div>
+  </div>
 
 
-<button id="start">
-    OBSERVER STARTEN
-</button>
+  <!-- SPRECHERTEXT -->
+
+  <div id="response"></div>
 
 
-<div id="status"></div>
+  <!-- AUDIOWELLE -->
+
+  <div id="wave">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+
+  <!-- EINMALIGE AKTIVIERUNG -->
+
+  <button id="activate">
+    OBSERVER AKTIVIEREN
+  </button>
+
+
+  <!-- KAMERA -->
+
+  <video
+    id="camera"
+    autoplay
+    playsinline
+    muted
+  ></video>
+
+  <canvas id="canvas"></canvas>
 
 
 <script>
 
-/* =================================================
+/* ==================================================
    ELEMENTE
-================================================= */
+================================================== */
 
 const eye =
-    document.getElementById("eye");
+  document.getElementById("eye");
 
-const pupil =
-    document.getElementById("pupil");
+const response =
+  document.getElementById("response");
 
-const speakerText =
-    document.getElementById("speakerText");
+const wave =
+  document.getElementById("wave");
 
-const startButton =
-    document.getElementById("start");
+const activateButton =
+  document.getElementById("activate");
 
-const status =
-    document.getElementById("status");
+const camera =
+  document.getElementById("camera");
+
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext("2d");
 
 
-/* =================================================
-   ZUSTAND
-================================================= */
+/* ==================================================
+   SYSTEMZUSTAND
+================================================== */
 
-let observerStarted = false;
+let active = false;
 
-let observerSpeaking = false;
+let speaking = false;
+
+let emergencyRunning = false;
+
+let waitingForEmergencyNumber = false;
+
+let recognition = null;
 
 let recognitionRunning = false;
 
 let recognitionRestartTimer = null;
 
-let recognition = null;
+let cameraStream = null;
 
-let voice = null;
+let cameraRunning = false;
+
+let cameraCheckTimer = null;
 
 let lastCommand = "";
 
 let lastCommandTime = 0;
 
-
-/* =================================================
-   SPRACHE
-================================================= */
-
-const synth =
-    window.speechSynthesis;
+let selectedVoice = null;
 
 
-/* =================================================
-   DEUTSCHE STIMME SUCHEN
-================================================= */
+/* ==================================================
+   SPRACHSTIMME
+================================================== */
 
-function findGermanVoice() {
+function loadVoices() {
 
-    if (!synth) {
-        return null;
-    }
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
 
-    const voices =
-        synth.getVoices();
+  const voices =
+    window.speechSynthesis.getVoices();
 
-    if (!voices.length) {
-        return null;
-    }
+  if (!voices.length) {
+    return;
+  }
+
+  selectedVoice =
+    voices.find(
+      voice =>
+        voice.lang &&
+        voice.lang.toLowerCase() === "de-de"
+    )
+    ||
+    voices.find(
+      voice =>
+        voice.lang &&
+        voice.lang.toLowerCase().startsWith("de")
+    )
+    ||
+    voices.find(
+      voice => voice.default
+    )
+    ||
+    voices[0];
+}
 
 
-    /*
-       Deutsche Stimme bevorzugen.
-    */
+loadVoices();
 
-    return (
 
-        voices.find(
-            v =>
-                v.lang === "de-DE"
-        )
+if ("speechSynthesis" in window) {
 
-        ||
-
-        voices.find(
-            v =>
-                v.lang &&
-                v.lang
-                    .toLowerCase()
-                    .startsWith("de")
-        )
-
-        ||
-
-        voices.find(
-            v =>
-                v.default
-        )
-
-        ||
-
-        voices[0]
-
-    );
+  window.speechSynthesis.onvoiceschanged =
+    loadVoices;
 
 }
 
 
-/*
-   Stimmen können auf iPadOS
-   verzögert geladen werden.
-*/
-
-voice =
-    findGermanVoice();
-
-
-if (synth) {
-
-    synth.onvoiceschanged =
-        () => {
-
-            voice =
-                findGermanVoice();
-
-        };
-
-}
-
-
-/* =================================================
+/* ==================================================
    BLINZELN
-================================================= */
+================================================== */
 
 function blink() {
 
-    if (
-        !observerStarted
-    ) {
-        return;
-    }
+  if (!active) {
+    return;
+  }
 
-    eye.classList.add("blink");
+  eye.classList.add("blink");
 
-    setTimeout(
-        () => {
+  setTimeout(() => {
 
-            eye.classList.remove(
-                "blink"
-            );
+    eye.classList.remove("blink");
 
-        },
-        160
-    );
-
+  }, 180);
 }
 
 
 /*
-   Unregelmäßiges Blinzeln.
+  Alle 10 Sekunden.
 */
 
-function scheduleBlink() {
+setInterval(() => {
 
-    if (
-        !observerStarted
-    ) {
-        return;
+  if (
+    active &&
+    !emergencyRunning
+  ) {
+
+    blink();
+
+  }
+
+}, 10000);
+
+
+/* ==================================================
+   OBSERVER SPRICHT
+================================================== */
+
+function speak(text, callback = null) {
+
+  if (!active) {
+    return;
+  }
+
+  /*
+    Wenn er bereits spricht,
+    nichts doppelt starten.
+  */
+
+  if (speaking) {
+    return;
+  }
+
+  speaking = true;
+
+  response.textContent = text;
+
+  wave.classList.add("active");
+
+
+  /*
+    WICHTIG:
+
+    Recognition NICHT stoppen.
+
+    Sie darf weiterlaufen, aber
+    Ergebnisse werden während des
+    Sprechens ignoriert.
+
+    Dadurch verschwindet die ständige
+    Mikrofon-Neustart-Schleife.
+  */
+
+
+  if (!("speechSynthesis" in window)) {
+
+    finishSpeech(callback);
+
+    return;
+  }
+
+
+  loadVoices();
+
+
+  /*
+    Eventuelle alte Warteschlange entfernen.
+  */
+
+  try {
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+
+  } catch (error) {}
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+
+  utterance.lang = "de-DE";
+
+  utterance.rate = 0.88;
+
+  utterance.pitch = 0.82;
+
+  utterance.volume = 1;
+
+
+  if (selectedVoice) {
+
+    utterance.voice =
+      selectedVoice;
+
+  }
+
+
+  let finished = false;
+
+
+  function finish() {
+
+    if (finished) {
+      return;
     }
 
-    const delay =
-        4500 +
-        Math.random() * 9000;
+    finished = true;
+
+    finishSpeech(callback);
+  }
 
 
-    setTimeout(
-        () => {
+  utterance.onend = finish;
 
-            if (
-                observerStarted &&
-                !observerSpeaking
-            ) {
+  utterance.onerror = finish;
 
-                blink();
 
-            }
+  /*
+    iPad-Sicherheitsnetz.
 
-            scheduleBlink();
+    Nicht minutenlang anzeigen.
+  */
 
-        },
-        delay
+  const estimatedDuration =
+    Math.max(
+      2500,
+      Math.min(
+        16000,
+        text.length * 95
+      )
     );
 
-}
 
+  const safetyTimer =
+    setTimeout(() => {
 
-/* =================================================
-   TEXT ANZEIGEN
-================================================= */
+      finish();
 
-function showText(
-    text
-) {
+    }, estimatedDuration);
 
-    speakerText.textContent =
-        text;
 
-}
+  /*
+    Während des Sprechens regelmäßig
+    prüfen, ob Safari pausiert hat.
+  */
 
+  const keepAlive =
+    setInterval(() => {
 
-/* =================================================
-   TEXT LÖSCHEN
-================================================= */
+      if (finished) {
 
-function clearText() {
+        clearInterval(keepAlive);
+        clearTimeout(safetyTimer);
 
-    speakerText.textContent =
-        "";
+        return;
+      }
 
-}
+      try {
 
+        if (window.speechSynthesis.paused) {
 
-/* =================================================
-   SPRECHEN
-================================================= */
-
-function speak(
-    text
-) {
-
-    return new Promise(
-        resolve => {
-
-            if (
-                !observerStarted
-            ) {
-
-                resolve();
-
-                return;
-
-            }
-
-
-            /*
-               Falls bereits etwas
-               gesprochen wird:
-               nichts doppelt starten.
-            */
-
-            if (
-                observerSpeaking
-            ) {
-
-                resolve();
-
-                return;
-
-            }
-
-
-            observerSpeaking =
-                true;
-
-
-            /*
-               Während der Observer spricht,
-               darf die Erkennung KEIN Ergebnis
-               verarbeiten.
-            */
-
-            stopRecognition();
-
-
-            showText(text);
-
-
-            if (
-                !synth
-            ) {
-
-                /*
-                   Fallback:
-                   Text trotzdem nur kurz anzeigen.
-                */
-
-                setTimeout(
-                    () => {
-
-                        clearText();
-
-                        observerSpeaking =
-                            false;
-
-                        startRecognition();
-
-                        resolve();
-
-                    },
-                    1500
-                );
-
-                return;
-
-            }
-
-
-            /*
-               Alte Warteschlange vollständig
-               entfernen.
-            */
-
-            try {
-
-                synth.cancel();
-
-            }
-
-            catch (e) {}
-
-
-            voice =
-                findGermanVoice();
-
-
-            const utterance =
-                new SpeechSynthesisUtterance(
-                    text
-                );
-
-
-            utterance.lang =
-                "de-DE";
-
-
-            utterance.rate =
-                0.9;
-
-
-            utterance.pitch =
-                0.85;
-
-
-            utterance.volume =
-                1;
-
-
-            if (
-                voice
-            ) {
-
-                utterance.voice =
-                    voice;
-
-            }
-
-
-            let finished =
-                false;
-
-
-            /*
-               Sicherheitsabschluss.
-
-               Wichtig:
-               Kein minutenlanges
-               "Hallo." mehr.
-            */
-
-            let safetyTimer =
-                setTimeout(
-                    finish,
-                    Math.max(
-                        2500,
-                        text.length * 110
-                    )
-                );
-
-
-            function finish() {
-
-                if (
-                    finished
-                ) {
-
-                    return;
-
-                }
-
-
-                finished =
-                    true;
-
-
-                clearTimeout(
-                    safetyTimer
-                );
-
-
-                clearText();
-
-
-                observerSpeaking =
-                    false;
-
-
-                /*
-                   Erst jetzt wieder zuhören.
-                */
-
-                setTimeout(
-                    () => {
-
-                        startRecognition();
-
-                        resolve();
-
-                    },
-                    250
-                );
-
-            }
-
-
-            utterance.onend =
-                finish;
-
-
-            utterance.onerror =
-                finish;
-
-
-            /*
-               iPadOS kann SpeechSynthesis
-               pausieren.
-
-               Deshalb nur während dieser
-               Antwort gelegentlich prüfen.
-            */
-
-            const keepAlive =
-                setInterval(
-                    () => {
-
-                        if (
-                            finished
-                        ) {
-
-                            clearInterval(
-                                keepAlive
-                            );
-
-                            return;
-
-                        }
-
-
-                        try {
-
-                            if (
-                                synth.paused
-                            ) {
-
-                                synth.resume();
-
-                            }
-
-                        }
-
-                        catch (e) {}
-
-                    },
-                    500
-                );
-
-
-            try {
-
-                synth.resume();
-
-                synth.speak(
-                    utterance
-                );
-
-            }
-
-            catch (error) {
-
-                console.log(
-                    "Speech error:",
-                    error
-                );
-
-                clearInterval(
-                    keepAlive
-                );
-
-                finish();
-
-            }
+          window.speechSynthesis.resume();
 
         }
+
+      } catch (error) {}
+
+    }, 500);
+
+
+  try {
+
+    window.speechSynthesis.speak(
+      utterance
     );
+
+  } catch (error) {
+
+    console.log(
+      "Speech error:",
+      error
+    );
+
+    finish();
+
+  }
 
 }
 
 
-/* =================================================
+/* ==================================================
+   SPRECHEN FERTIG
+================================================== */
+
+function finishSpeech(callback) {
+
+  speaking = false;
+
+  response.textContent = "";
+
+  wave.classList.remove("active");
+
+
+  /*
+    Recognition läuft bereits weiter.
+
+    Deshalb KEIN stop/start hier.
+  */
+
+
+  if (callback) {
+
+    callback();
+
+  }
+}
+
+
+/* ==================================================
    SPRACHERKENNUNG
-================================================= */
+================================================== */
 
-const RecognitionAPI =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-
-if (
-    RecognitionAPI
-) {
-
-    recognition =
-        new RecognitionAPI();
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
 
 
-    recognition.lang =
-        "de-DE";
+if (SpeechRecognition) {
+
+  recognition =
+    new SpeechRecognition();
 
 
-    /*
-       Dauerhaft zuhören.
+  recognition.lang =
+    "de-DE";
 
-       Safari darf die Session trotzdem
-       selbst beenden.
-    */
 
-    recognition.continuous =
+  /*
+    Eine möglichst lange Session.
+
+    Wir stoppen sie nicht beim Sprechen.
+  */
+
+  recognition.continuous =
+    true;
+
+
+  recognition.interimResults =
+    false;
+
+
+  recognition.maxAlternatives =
+    3;
+
+
+  recognition.onstart =
+    () => {
+
+      recognitionRunning =
         true;
 
-
-    recognition.interimResults =
-        false;
+    };
 
 
-    recognition.maxAlternatives =
-        3;
+  recognition.onresult =
+    event => {
+
+      /*
+        Während Observer spricht:
+
+        Sprache wird bewusst verworfen.
+
+        Dadurch kann man NICHT reinreden.
+      */
+
+      if (
+        speaking ||
+        emergencyRunning
+      ) {
+
+        return;
+
+      }
 
 
-    recognition.onstart =
-        () => {
+      for (
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
+      ) {
 
-            recognitionRunning =
-                true;
-
-            status.textContent =
-                "ZUHÖREN";
-
-        };
+        const result =
+          event.results[i];
 
 
-    recognition.onresult =
-        event => {
-
-            /*
-               Während der Observer spricht:
-               Ergebnisse komplett ignorieren.
-            */
-
-            if (
-                observerSpeaking
-            ) {
-
-                return;
-
-            }
+        if (!result.isFinal) {
+          continue;
+        }
 
 
-            for (
-                let i =
-                    event.resultIndex;
+        /*
+          Mehrere Alternativen prüfen.
+        */
 
-                i <
-                    event.results.length;
+        for (
+          let j = 0;
+          j < result.length;
+          j++
+        ) {
 
-                i++
-            ) {
-
-                const result =
-                    event.results[i];
-
-
-                if (
-                    !result.isFinal
-                ) {
-
-                    continue;
-
-                }
-
-
-                for (
-                    let j = 0;
-
-                    j < result.length;
-
-                    j++
-                ) {
-
-                    const heard =
-                        normalize(
-                            result[j]
-                                .transcript
-                        );
-
-
-                    if (
-                        handleCommand(
-                            heard
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-                }
-
-            }
-
-        };
-
-
-    recognition.onerror =
-        event => {
-
-            recognitionRunning =
-                false;
-
-
-            status.textContent =
-                "ZUHÖREN";
-
-
-            console.log(
-                "Recognition:",
-                event.error
+          const command =
+            normalize(
+              result[j].transcript
             );
 
 
-            /*
-               Nicht aggressiv mehrfach
-               neu starten.
-            */
-
-            scheduleRecognitionRestart();
-
-        };
-
-
-    recognition.onend =
-        () => {
-
-            recognitionRunning =
-                false;
-
-
-            if (
-                observerStarted &&
-                !observerSpeaking
-            ) {
-
-                scheduleRecognitionRestart();
-
-            }
-
-        };
-
-}
-
-
-/* =================================================
-   NORMALISIERUNG
-================================================= */
-
-function normalize(
-    text
-) {
-
-    return text
-        .toLowerCase()
-        .trim()
-        .replace(
-            /[.,!?;:]/g,
-            ""
-        )
-        .replace(
-            /\s+/g,
-            " "
-        );
-
-}
-
-
-/* =================================================
-   RESTART
-================================================= */
-
-function scheduleRecognitionRestart() {
-
-    if (
-        recognitionRestartTimer
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        !observerStarted ||
-        observerSpeaking
-    ) {
-
-        return;
-
-    }
-
-
-    recognitionRestartTimer =
-        setTimeout(
-            () => {
-
-                recognitionRestartTimer =
-                    null;
-
-                startRecognition();
-
-            },
-            1200
-        );
-
-}
-
-
-/* =================================================
-   ZUHÖREN STARTEN
-================================================= */
-
-function startRecognition() {
-
-    if (
-        !recognition
-    ) {
-
-        status.textContent =
-            "SPRACHERKENNUNG NICHT VERFÜGBAR";
-
-        return;
-
-    }
-
-
-    if (
-        !observerStarted ||
-        observerSpeaking ||
-        recognitionRunning
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        recognition.start();
-
-    }
-
-    catch (error) {
-
-        /*
-           Kein hektisches Restart-Spam.
-        */
-
-        scheduleRecognitionRestart();
-
-    }
-
-}
-
-
-/* =================================================
-   ZUHÖREN STOPPEN
-================================================= */
-
-function stopRecognition() {
-
-    if (
-        !recognition
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        recognition.stop();
-
-    }
-
-    catch (e) {}
-
-
-    recognitionRunning =
-        false;
-
-}
-
-
-/* =================================================
-   DOPPELTE BEFEHLE VERHINDERN
-================================================= */
-
-function isDuplicate(
-    command
-) {
-
-    const now =
-        Date.now();
-
-
-    if (
-        command === lastCommand
-        &&
-        now - lastCommandTime < 2500
-    ) {
-
-        return true;
-
-    }
-
-
-    lastCommand =
-        command;
-
-    lastCommandTime =
-        now;
-
-
-    return false;
-
-}
-
-
-/* =================================================
-   BEFEHLE
-================================================= */
-
-function handleCommand(
-    command
-) {
-
-    if (
-        !command
-    ) {
-
-        return false;
-
-    }
-
-
-    if (
-        isDuplicate(command)
-    ) {
-
-        return true;
-
-    }
-
-
-    /*
-       TESTBEFEHL
-
-       Damit testen wir zuerst
-       ausschließlich die komplette
-       Zuhören -> Antwort -> Zuhören
-       Kette.
-    */
-
-    if (
-        command === "test"
-        ||
-        command.includes(
-            "test"
-        )
-    ) {
-
-        speak(
-            "Test erfolgreich."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       HALLO
-    */
-
-    if (
-        command === "hallo"
-        ||
-        command.startsWith(
-            "hallo "
-        )
-    ) {
-
-        speak(
-            "Hallo."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       WER BIST DU
-    */
-
-    if (
-        command.includes(
-            "wer bist du"
-        )
-    ) {
-
-        speak(
-            "Observer Typ 0.4."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       WO SIND WIR
-    */
-
-    if (
-        command.includes(
-            "wo sind wir"
-        )
-    ) {
-
-        speak(
-            "Ihr befindet euch in einem überwachten Bereich."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       HILFE
-    */
-
-    if (
-        command.includes(
-            "hilfe"
-        )
-    ) {
-
-        speak(
-            "Ich bin nicht fürs Helfen da."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       WASCHMASCHINE
-
-       Darf mitten im Satz vorkommen.
-    */
-
-    if (
-        command.includes(
-            "waschmaschine"
-        )
-    ) {
-
-        speak(
-            "Ich bin nicht für eine Wäsche gemacht."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       WIE KOMMEN WIR RAUS
-    */
-
-    if (
-        command.includes(
-            "wie kommen wir raus"
-        )
-        ||
-        command.includes(
-            "wie kommen wir hier raus"
-        )
-        ||
-        command.includes(
-            "wie kommen wir heraus"
-        )
-        ||
-        (
-            command.includes("wie")
-            &&
-            command.includes("kommen")
-            &&
-            (
-                command.includes("raus")
-                ||
-                command.includes("heraus")
-            )
-        )
-    ) {
-
-        speak(
-            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
-        );
-
-        return true;
-
-    }
-
-
-    /*
-       Unbekannter Satz:
-       NICHTS tun.
-
-       Keine Fehlermeldung.
-       Keine Endlosschleife.
-    */
-
-    return false;
-
-}
-
-
-/* =================================================
-   STARTBUTTON
-================================================= */
-
-startButton.addEventListener(
-    "click",
-    async () => {
-
-        if (
-            observerStarted
-        ) {
+          if (
+            handleCommand(command)
+          ) {
 
             return;
 
-        }
-
-
-        observerStarted =
-            true;
-
-
-        startButton.classList.add(
-            "hidden"
-        );
-
-
-        status.textContent =
-            "STARTE";
-
-
-        /*
-           Ganz wichtig:
-
-           Die erste Benutzeraktion
-           aktiviert die Audio-Seite.
-        */
-
-        if (
-            synth
-        ) {
-
-            try {
-
-                synth.cancel();
-
-                synth.resume();
-
-            }
-
-            catch (e) {}
+          }
 
         }
 
+      }
 
-        /*
-           Stimme laden.
-        */
-
-        voice =
-            findGermanVoice();
+    };
 
 
-        /*
-           Blinzeln starten.
-        */
+  recognition.onerror =
+    event => {
 
-        scheduleBlink();
+      recognitionRunning =
+        false;
 
 
-        /*
-           Jetzt Mikrofon starten.
-        */
+      /*
+        Kein technischer Text auf dem Display.
+      */
 
-        setTimeout(
-            () => {
+      console.log(
+        "SpeechRecognition:",
+        event.error
+      );
 
-                startRecognition();
 
-            },
-            300
-        );
+      /*
+        Nicht aggressiv neu starten.
+      */
+
+      scheduleRecognitionRestart();
+
+    };
+
+
+  recognition.onend =
+    () => {
+
+      recognitionRunning =
+        false;
+
+
+      /*
+        Nur wenn wirklich unerwartet
+        beendet.
+      */
+
+      if (
+        active &&
+        !speaking &&
+        !emergencyRunning
+      ) {
+
+        scheduleRecognitionRestart();
+
+      }
+
+    };
+
+}
+
+
+/* ==================================================
+   RECOGNITION START
+================================================== */
+
+function startRecognition() {
+
+  if (
+    !recognition ||
+    !active ||
+    recognitionRunning ||
+    emergencyRunning
+  ) {
+
+    return;
+  }
+
+
+  try {
+
+    recognition.start();
+
+  } catch (error) {
+
+    scheduleRecognitionRestart();
+
+  }
+
+}
+
+
+/* ==================================================
+   RECOGNITION RESTART
+================================================== */
+
+function scheduleRecognitionRestart() {
+
+  if (
+    recognitionRestartTimer
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !active ||
+    speaking ||
+    emergencyRunning
+  ) {
+
+    return;
+
+  }
+
+
+  recognitionRestartTimer =
+    setTimeout(() => {
+
+      recognitionRestartTimer =
+        null;
+
+
+      if (
+        active &&
+        !speaking &&
+        !emergencyRunning &&
+        !recognitionRunning
+      ) {
+
+        startRecognition();
+
+      }
+
+    }, 1500);
+
+}
+
+
+/* ==================================================
+   TEXT NORMALISIEREN
+================================================== */
+
+function normalize(text) {
+
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(
+      /[.,!?;:]/g,
+      ""
+    )
+    .replace(
+      /\s+/g,
+      " "
+    );
+
+}
+
+
+/* ==================================================
+   DOPPELTE BEFEHLE VERHINDERN
+================================================== */
+
+function isDuplicate(command) {
+
+  const now =
+    Date.now();
+
+
+  if (
+    command === lastCommand &&
+    now - lastCommandTime < 3000
+  ) {
+
+    return true;
+
+  }
+
+
+  lastCommand =
+    command;
+
+  lastCommandTime =
+    now;
+
+
+  return false;
+
+}
+
+
+/* ==================================================
+   BEFEHLE
+================================================== */
+
+function handleCommand(command) {
+
+  if (!command) {
+    return false;
+  }
+
+
+  if (isDuplicate(command)) {
+    return true;
+  }
+
+
+  /* ===============================================
+     NOTFALLNUMMERN
+  =============================================== */
+
+  if (
+    command.includes(
+      "notfallnummern"
+    )
+  ) {
+
+    waitingForEmergencyNumber =
+      true;
+
+
+    speak(
+      "Nennen Sie jetzt die Notfallnummer."
+    );
+
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     03 / 3
+  =============================================== */
+
+  if (
+    waitingForEmergencyNumber
+  ) {
+
+    if (
+      command === "3" ||
+      command === "03" ||
+      command === "0 3" ||
+      command === "drei" ||
+      command === "null drei" ||
+      command.includes("nummer drei")
+    ) {
+
+      startEmergency();
+
+      return true;
 
     }
+
+  }
+
+
+  /* ===============================================
+     HALLO
+  =============================================== */
+
+  if (
+    command === "hallo" ||
+    command.startsWith("hallo ")
+  ) {
+
+    speak("Hallo.");
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     WAS
+  =============================================== */
+
+  if (
+    command === "was"
+  ) {
+
+    speak("Was?");
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     WER BIST DU
+  =============================================== */
+
+  if (
+    command.includes("wer bist du")
+    ||
+    (
+      command.includes("wer") &&
+      command.includes("bist") &&
+      command.includes("du")
+    )
+  ) {
+
+    speak(
+      "Observer Typ 0.4."
+    );
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     WO SIND WIR
+  =============================================== */
+
+  if (
+    command.includes("wo sind wir")
+    ||
+    (
+      command.includes("wo") &&
+      command.includes("sind") &&
+      command.includes("wir")
+    )
+  ) {
+
+    speak(
+      "Ihr wurdet von zwei Männern hier reingebracht, sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, der eine hatte einen Zettel darin versteckt."
+    );
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     HILFE
+  =============================================== */
+
+  if (
+    command.includes("hilfe")
+  ) {
+
+    speak(
+      "Ich bin nicht fürs Helfen da."
+    );
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     WASCHMASCHINE
+  =============================================== */
+
+  if (
+    command.includes("waschmaschine")
+  ) {
+
+    speak(
+      "Ich bin nicht für eine Wäsche gemacht."
+    );
+
+    return true;
+
+  }
+
+
+  /* ===============================================
+     WIE KOMMEN WIR RAUS
+  =============================================== */
+
+  const how =
+    command.includes("wie");
+
+  const come =
+    command.includes("kommen");
+
+  const out =
+    command.includes("raus") ||
+    command.includes("heraus");
+
+
+  if (
+    (
+      how &&
+      come &&
+      out
+    )
+    ||
+    command.includes(
+      "wie kommen wir hier raus"
+    )
+  ) {
+
+    speak(
+      "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+    );
+
+    return true;
+
+  }
+
+
+  /*
+    Alles andere:
+    KEINE REAKTION.
+  */
+
+  return false;
+
+}
+
+
+/* ==================================================
+   NOTFALL
+================================================== */
+
+function startEmergency() {
+
+  if (emergencyRunning) {
+    return;
+  }
+
+
+  emergencyRunning =
+    true;
+
+  waitingForEmergencyNumber =
+    false;
+
+
+  /*
+    Recognition bleibt technisch aktiv.
+
+    Aber onresult verwirft während
+    emergencyRunning alles.
+
+    Dadurch gibt es keinen erneuten
+    Mikrofon-Start.
+  */
+
+
+  speak(
+    "Notfall erkannt, Maßnahmen werden eingeleitet.",
+    () => {
+
+      /*
+        FESTE PAUSE.
+
+        Auch während dieser 5 Sekunden:
+        alles blockiert.
+      */
+
+      setTimeout(() => {
+
+        emergencySecondMessage();
+
+      }, 5000);
+
+    }
+  );
+
+}
+
+
+function emergencySecondMessage() {
+
+  speak(
+    "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
+    () => {
+
+      finishEmergency();
+
+    }
+  );
+
+}
+
+
+function finishEmergency() {
+
+  emergencyRunning =
+    false;
+
+  waitingForEmergencyNumber =
+    false;
+
+}
+
+
+/* ==================================================
+   KAMERA
+================================================== */
+
+async function startCamera() {
+
+  if (cameraRunning) {
+    return;
+  }
+
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    return;
+  }
+
+
+  try {
+
+    cameraStream =
+      await navigator.mediaDevices.getUserMedia({
+
+        video: {
+          facingMode: "environment"
+        },
+
+        audio: false
+
+      });
+
+
+    camera.srcObject =
+      cameraStream;
+
+
+    cameraRunning =
+      true;
+
+
+    /*
+      Noch keine echte Musterlogik.
+
+      Kamera bleibt aber vollständig
+      vorbereitet.
+    */
+
+    cameraCheckTimer =
+      setInterval(
+        cameraCheck,
+        1000
+      );
+
+  } catch (error) {
+
+    console.log(
+      "Kamera:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   KAMERA CHECK
+================================================== */
+
+function cameraCheck() {
+
+  /*
+    Später kommt hier die echte
+    Mustererkennung.
+
+    Aktuell bewusst KEINE Reaktion,
+    damit die Kamera nicht aus Versehen
+    irgendetwas auslöst.
+  */
+
+}
+
+
+/* ==================================================
+   START
+================================================== */
+
+activateButton.addEventListener(
+  "click",
+  async () => {
+
+    if (active) {
+      return;
+    }
+
+
+    active =
+      true;
+
+
+    activateButton.classList.add(
+      "hidden"
+    );
+
+
+    /*
+      iPad-Speech direkt aus dem
+      Benutzer-Tap heraus initialisieren.
+    */
+
+    if (
+      "speechSynthesis" in window
+    ) {
+
+      try {
+
+        loadVoices();
+
+        window.speechSynthesis.resume();
+
+      } catch (error) {}
+
+    }
+
+
+    /*
+      Kamera einmalig erlauben.
+    */
+
+    await startCamera();
+
+
+    /*
+      Eine Recognition-Session starten.
+
+      Danach NICHT beim Sprechen stoppen.
+    */
+
+    setTimeout(() => {
+
+      startRecognition();
+
+    }, 300);
+
+  }
 );
 
 </script>
 
 </body>
+
 </html>
 ```
