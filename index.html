@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable"
+      content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="black">
 
 <title>OBSERVER</title>
+
 
 <style>
 
@@ -17,25 +26,33 @@
   box-sizing: border-box;
   -webkit-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
+
   margin: 0;
   width: 100%;
   height: 100%;
+
   overflow: hidden;
+
   background: #000;
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family: Arial, sans-serif;
 }
 
+
 body {
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
+
 }
 
 
@@ -44,35 +61,52 @@ body {
 ========================= */
 
 #eye {
-  width: 180px;
-  height: 110px;
 
-  border: 4px solid #fff;
-  border-radius: 50% / 60%;
+  width: 170px;
+  height: 100px;
+
+  border: 4px solid white;
+
+  border-radius: 50%;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  transition: height 120ms ease;
+  transition:
+    height 0.16s ease;
+
 }
+
 
 #pupil {
-  width: 55px;
-  height: 55px;
 
-  background: #fff;
+  width: 50px;
+  height: 50px;
+
+  background: white;
+
   border-radius: 50%;
 
-  transition: transform 120ms ease;
+  transition:
+    transform 0.16s ease;
+
 }
+
 
 #eye.blink {
+
   height: 7px;
+
 }
 
+
 #eye.blink #pupil {
-  transform: scaleY(0);
+
+  transform:
+    scaleY(0);
+
 }
 
 
@@ -81,19 +115,19 @@ body {
 ========================= */
 
 #response {
-  width: 88%;
-  max-width: 850px;
 
-  min-height: 30px;
+  width: 85%;
 
   margin-top: 35px;
 
+  min-height: 30px;
+
   text-align: center;
 
-  font-size: 17px;
+  font-size: 18px;
+
   line-height: 1.5;
 
-  letter-spacing: 1px;
 }
 
 
@@ -102,11 +136,13 @@ body {
 ========================= */
 
 #wave {
+
   height: 45px;
 
   margin-top: 15px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -114,39 +150,75 @@ body {
 
   opacity: 0;
 
-  transition: opacity 150ms ease;
 }
+
 
 #wave.active {
+
   opacity: 1;
+
 }
 
+
 .bar {
+
   width: 4px;
   height: 8px;
 
-  background: #fff;
+  background: white;
+
   border-radius: 4px;
 
-  animation: wave 800ms ease-in-out infinite;
+  animation:
+    wave 0.8s ease-in-out infinite;
+
 }
 
-.bar:nth-child(1) { animation-delay: 0ms; }
-.bar:nth-child(2) { animation-delay: 100ms; }
-.bar:nth-child(3) { animation-delay: 200ms; }
-.bar:nth-child(4) { animation-delay: 300ms; }
-.bar:nth-child(5) { animation-delay: 200ms; }
-.bar:nth-child(6) { animation-delay: 100ms; }
-.bar:nth-child(7) { animation-delay: 0ms; }
+
+.bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.bar:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+.bar:nth-child(6) {
+  animation-delay: 0.1s;
+}
+
+.bar:nth-child(7) {
+  animation-delay: 0s;
+}
+
 
 @keyframes wave {
-  0%, 100% {
+
+  0%,
+  100% {
+
     height: 8px;
+
   }
 
   50% {
+
     height: 38px;
+
   }
+
 }
 
 
@@ -154,25 +226,31 @@ body {
    START
 ========================= */
 
-#activate {
+#start {
+
   margin-top: 25px;
 
-  padding: 13px 24px;
+  padding: 15px 25px;
 
   background: #000;
-  color: #fff;
 
-  border: 1px solid #fff;
+  color: white;
+
+  border: 1px solid white;
+
   border-radius: 5px;
 
-  font-size: 13px;
+  font-size: 14px;
+
   letter-spacing: 2px;
 
-  cursor: pointer;
 }
 
-#activate.hidden {
+
+#start.hidden {
+
   display: none;
+
 }
 
 
@@ -181,6 +259,7 @@ body {
 ========================= */
 
 #camera {
+
   position: fixed;
 
   width: 1px;
@@ -191,25 +270,40 @@ body {
 
   opacity: 0.01;
 
-  pointer-events: none;
-}
-
-#canvas {
-  display: none;
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     AUGE
+========================= -->
+
 <div id="eye">
+
   <div id="pupil"></div>
+
 </div>
+
+
+<!-- =========================
+     SPRECHTEXT
+========================= -->
 
 <div id="response"></div>
 
+
+<!-- =========================
+     AUDIOWELLE
+========================= -->
+
 <div id="wave">
+
   <div class="bar"></div>
   <div class="bar"></div>
   <div class="bar"></div>
@@ -217,425 +311,615 @@ body {
   <div class="bar"></div>
   <div class="bar"></div>
   <div class="bar"></div>
+
 </div>
 
-<button id="activate">
-  OBSERVER AKTIVIEREN
+
+<!-- =========================
+     START
+========================= -->
+
+<button id="start">
+
+  OBSERVER STARTEN
+
 </button>
 
-<video id="camera" autoplay playsinline muted></video>
-<canvas id="canvas"></canvas>
+
+<!-- =========================
+     KAMERA
+========================= -->
+
+<video
+  id="camera"
+  autoplay
+  playsinline
+  muted
+></video>
 
 
 <script>
+
 
 /* ==================================================
    ELEMENTE
 ================================================== */
 
-const eye = document.getElementById("eye");
-const response = document.getElementById("response");
-const wave = document.getElementById("wave");
-const activateButton = document.getElementById("activate");
-const camera = document.getElementById("camera");
+const eye =
+  document.getElementById("eye");
+
+const response =
+  document.getElementById("response");
+
+const wave =
+  document.getElementById("wave");
+
+const startButton =
+  document.getElementById("start");
+
+const camera =
+  document.getElementById("camera");
 
 
 /* ==================================================
-   ZUSTAND
+   SYSTEM
 ================================================== */
 
-let active = false;
-let speaking = false;
+let observerActive =
+  false;
 
-let emergencyRunning = false;
-let waitingForNumber = false;
+let observerSpeaking =
+  false;
 
-let recognition = null;
-let recognitionRunning = false;
-let restartTimer = null;
+let emergencyRunning =
+  false;
 
-let cameraStream = null;
-let cameraRunning = false;
+let waitingForNumber =
+  false;
 
-let lastCommand = "";
-let lastCommandTime = 0;
+let recognition =
+  null;
 
-let germanVoice = null;
+let recognitionRunning =
+  false;
+
+let restartTimer =
+  null;
+
+let cameraStream =
+  null;
+
+let lastCommand =
+  "";
+
+let lastCommandTime =
+  0;
 
 
 /* ==================================================
    SPRACHSTIMME
 ================================================== */
 
-function loadVoice() {
+let germanVoice =
+  null;
 
-  if (!("speechSynthesis" in window)) {
+
+function loadGermanVoice() {
+
+  if (
+    !window.speechSynthesis
+  ) {
+
     return;
+
   }
 
-  const voices = window.speechSynthesis.getVoices();
 
-  if (!voices.length) {
+  const voices =
+    window.speechSynthesis
+      .getVoices();
+
+
+  if (
+    !voices.length
+  ) {
+
     return;
+
   }
+
 
   germanVoice =
-    voices.find(v => v.lang === "de-DE") ||
     voices.find(
-      v =>
-        v.lang &&
-        v.lang.toLowerCase().startsWith("de")
-    ) ||
+      voice =>
+        voice.lang === "de-DE"
+    )
+    ||
+    voices.find(
+      voice =>
+        voice.lang &&
+        voice.lang
+          .toLowerCase()
+          .startsWith("de")
+    )
+    ||
     voices[0];
+
 }
 
-loadVoice();
 
-if ("speechSynthesis" in window) {
-  window.speechSynthesis.onvoiceschanged = loadVoice;
+loadGermanVoice();
+
+
+if (
+  window.speechSynthesis
+) {
+
+  window.speechSynthesis
+    .onvoiceschanged =
+      loadGermanVoice;
+
 }
 
 
 /* ==================================================
-   BLINZELN
+   AUGE
 ================================================== */
 
 function blink() {
 
-  if (!active || emergencyRunning) {
+  if (
+    !observerActive ||
+    emergencyRunning
+  ) {
+
     return;
+
   }
 
-  eye.classList.add("blink");
+
+  eye.classList.add(
+    "blink"
+  );
+
 
   setTimeout(() => {
-    eye.classList.remove("blink");
+
+    eye.classList.remove(
+      "blink"
+    );
+
   }, 180);
+
 }
+
 
 setInterval(() => {
 
   if (
-    active &&
-    !speaking &&
+    observerActive &&
+    !observerSpeaking &&
     !emergencyRunning
   ) {
+
     blink();
+
   }
 
 }, 10000);
 
 
 /* ==================================================
-   MORSE
+   DIE FUNKTIONIERENDE TTS-METHODE
 ================================================== */
 
-function blinkMorse(symbol) {
+function observerSpeak(
+  text,
+  callback = null
+) {
 
-  if (!active) {
-    return;
-  }
-
-  eye.classList.add("blink");
-
-  const duration =
-    symbol === "." ? 180 : 500;
-
-  setTimeout(() => {
-    eye.classList.remove("blink");
-  }, duration);
-}
-
-
-/* ==================================================
-   SPRACHSTIMME
-================================================== */
-
-function speak(text, callback = null) {
-
-  if (!active || speaking) {
-    return;
-  }
-
-  speaking = true;
-
-  response.textContent = text;
-  wave.classList.add("active");
-
-
-  if (!("speechSynthesis" in window)) {
-
-    finishSpeech(callback);
+  if (
+    !observerActive ||
+    observerSpeaking
+  ) {
 
     return;
+
   }
 
 
-  loadVoice();
+  observerSpeaking =
+    true;
 
-  const synth = window.speechSynthesis;
+
+  response.textContent =
+    text;
+
+
+  wave.classList.add(
+    "active"
+  );
 
 
   /*
-     Nicht während jeder Antwort
-     neu initialisieren.
+     Genau wie beim funktionierenden
+     TTS-Test:
+
+     speechSynthesis.resume()
+     und danach direkt speak().
+
+     KEIN cancel().
   */
 
-  try {
-    synth.resume();
-  } catch (e) {}
+  if (
+    !window.speechSynthesis
+  ) {
 
+    finishSpeaking(
+      callback
+    );
 
-  const utterance =
-    new SpeechSynthesisUtterance(text);
+    return;
 
-  utterance.lang = "de-DE";
-  utterance.rate = 0.9;
-  utterance.pitch = 0.85;
-  utterance.volume = 1;
-
-  if (germanVoice) {
-    utterance.voice = germanVoice;
   }
 
 
-  let finished = false;
+  window.speechSynthesis.resume();
 
-  const maxSpeechTime =
-    Math.min(
-      15000,
-      Math.max(
-        2500,
-        text.length * 105
-      )
+
+  loadGermanVoice();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      text
     );
 
-  const safetyTimer =
+
+  utterance.lang =
+    "de-DE";
+
+
+  utterance.rate =
+    0.9;
+
+
+  utterance.pitch =
+    0.85;
+
+
+  utterance.volume =
+    1;
+
+
+  if (
+    germanVoice
+  ) {
+
+    utterance.voice =
+      germanVoice;
+
+  }
+
+
+  /*
+     Text verschwindet, wenn die Stimme
+     tatsächlich fertig ist.
+
+     Zusätzlich gibt es einen großzügigen
+     Fallback, damit Safari niemals
+     minutenlang Text stehen lässt.
+  */
+
+  let finished =
+    false;
+
+
+  const fallback =
     setTimeout(() => {
+
       finish();
-    }, maxSpeechTime);
+
+    }, 12000);
 
 
   function finish() {
 
-    if (finished) {
+    if (
+      finished
+    ) {
+
       return;
+
     }
 
-    finished = true;
 
-    clearTimeout(safetyTimer);
+    finished =
+      true;
 
-    finishSpeech(callback);
+
+    clearTimeout(
+      fallback
+    );
+
+
+    finishSpeaking(
+      callback
+    );
+
   }
 
 
-  utterance.onend = finish;
-  utterance.onerror = finish;
+  utterance.onend =
+    finish;
 
 
-  try {
-
-    synth.speak(utterance);
-
-  } catch (error) {
-
-    finish();
-  }
-
-}
+  utterance.onerror =
+    finish;
 
 
-function finishSpeech(callback) {
+  /*
+     Noch einmal exakt die
+     funktionierende Reihenfolge.
+  */
 
-  speaking = false;
+  window.speechSynthesis.resume();
 
-  response.textContent = "";
-  wave.classList.remove("active");
 
-  if (callback) {
-    callback();
-  }
+  window.speechSynthesis.speak(
+    utterance
+  );
+
 }
 
 
 /* ==================================================
-   SPRACHERKENNUNG
+   SPRACHE FERTIG
 ================================================== */
 
-const RecognitionAPI =
+function finishSpeaking(
+  callback
+) {
+
+  observerSpeaking =
+    false;
+
+
+  response.textContent =
+    "";
+
+
+  wave.classList.remove(
+    "active"
+  );
+
+
+  if (
+    callback
+  ) {
+
+    callback();
+
+  }
+
+}
+
+
+/* ==================================================
+   SPEECH RECOGNITION
+================================================== */
+
+const SpeechRecognition =
   window.SpeechRecognition ||
   window.webkitSpeechRecognition;
 
 
-if (RecognitionAPI) {
+if (
+  SpeechRecognition
+) {
 
   recognition =
-    new RecognitionAPI();
-
-  recognition.lang = "de-DE";
-
-  recognition.continuous = true;
-
-  recognition.interimResults = false;
-
-  recognition.maxAlternatives = 3;
+    new SpeechRecognition();
 
 
-  recognition.onstart = () => {
-    recognitionRunning = true;
-  };
+  recognition.lang =
+    "de-DE";
 
 
-  recognition.onresult = event => {
-
-    /*
-       Während der Observer spricht,
-       werden alle Ergebnisse ignoriert.
-
-       Man kann ihn dadurch nicht
-       unterbrechen.
-    */
-
-    if (
-      speaking ||
-      emergencyRunning
-    ) {
-      return;
-    }
+  recognition.continuous =
+    true;
 
 
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
+  recognition.interimResults =
+    false;
 
-      const result = event.results[i];
 
-      if (!result.isFinal) {
-        continue;
+  recognition.maxAlternatives =
+    3;
+
+
+  recognition.onstart =
+    () => {
+
+      recognitionRunning =
+        true;
+
+    };
+
+
+  recognition.onresult =
+    event => {
+
+      /*
+         Während der Observer spricht:
+
+         ALLES IGNORIEREN.
+
+         Dadurch kann niemand
+         hineinreden.
+      */
+
+      if (
+        observerSpeaking ||
+        emergencyRunning
+      ) {
+
+        return;
+
       }
 
 
-      /*
-         Mehrere Alternativen prüfen.
-      */
-
       for (
-        let j = 0;
-        j < result.length;
-        j++
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
       ) {
 
-        const command =
-          normalize(
-            result[j].transcript
-          );
+        const result =
+          event.results[i];
 
 
-        if (handleCommand(command)) {
-          return;
+        if (
+          !result.isFinal
+        ) {
+
+          continue;
+
+        }
+
+
+        /*
+           Mehrere Alternativen testen.
+        */
+
+        for (
+          let j = 0;
+          j < result.length;
+          j++
+        ) {
+
+          const command =
+            normalize(
+              result[j].transcript
+            );
+
+
+          if (
+            handleCommand(
+              command
+            )
+          ) {
+
+            return;
+
+          }
+
         }
 
       }
 
-    }
-
-  };
+    };
 
 
-  recognition.onerror = event => {
+  recognition.onerror =
+    event => {
 
-    recognitionRunning = false;
-
-    console.log(
-      "SpeechRecognition:",
-      event.error
-    );
-
-    scheduleRestart();
-  };
+      recognitionRunning =
+        false;
 
 
-  recognition.onend = () => {
+      console.log(
+        "Recognition:",
+        event.error
+      );
 
-    recognitionRunning = false;
 
-    if (
-      active &&
-      !speaking &&
-      !emergencyRunning
-    ) {
+      restartRecognition();
 
-      scheduleRestart();
-    }
+    };
 
-  };
+
+  recognition.onend =
+    () => {
+
+      recognitionRunning =
+        false;
+
+
+      if (
+        observerActive &&
+        !observerSpeaking &&
+        !emergencyRunning
+      ) {
+
+        restartRecognition();
+
+      }
+
+    };
 
 }
 
 
 /* ==================================================
-   RECOGNITION START
+   MIKROFON
 ================================================== */
 
 function startRecognition() {
 
   if (
     !recognition ||
-    !active ||
-    recognitionRunning ||
-    emergencyRunning
+    !observerActive ||
+    observerSpeaking ||
+    emergencyRunning ||
+    recognitionRunning
   ) {
+
     return;
+
   }
+
 
   try {
 
     recognition.start();
 
-  } catch (error) {
-
-    scheduleRestart();
   }
+
+  catch (error) {
+
+    restartRecognition();
+
+  }
+
 }
 
 
-/* ==================================================
-   RECOGNITION RESTART
-================================================== */
-
-function scheduleRestart() {
-
-  if (restartTimer) {
-    return;
-  }
+function restartRecognition() {
 
   if (
-    !active ||
-    speaking ||
+    restartTimer ||
+    !observerActive ||
+    observerSpeaking ||
     emergencyRunning
   ) {
+
     return;
+
   }
+
 
   restartTimer =
     setTimeout(() => {
 
-      restartTimer = null;
+      restartTimer =
+        null;
 
-      if (
-        active &&
-        !speaking &&
-        !emergencyRunning &&
-        !recognitionRunning
-      ) {
 
-        startRecognition();
-      }
+      startRecognition();
 
-    }, 1500);
+    }, 1000);
+
 }
 
 
@@ -646,31 +930,38 @@ function scheduleRestart() {
 setInterval(() => {
 
   if (
-    !active ||
-    speaking ||
-    emergencyRunning
+    observerActive &&
+    !observerSpeaking &&
+    !emergencyRunning &&
+    !recognitionRunning
   ) {
-    return;
-  }
 
-  if (!recognitionRunning) {
-    scheduleRestart();
+    restartRecognition();
+
   }
 
 }, 5000);
 
 
 /* ==================================================
-   NORMALISIEREN
+   TEXT
 ================================================== */
 
-function normalize(text) {
+function normalize(
+  text
+) {
 
   return text
     .toLowerCase()
     .trim()
-    .replace(/[.,!?;:]/g, "")
-    .replace(/\s+/g, " ");
+    .replace(
+      /[.,!?;:]/g,
+      ""
+    )
+    .replace(
+      /\s+/g,
+      " "
+    );
 
 }
 
@@ -679,21 +970,34 @@ function normalize(text) {
    DOPPELTE BEFEHLE
 ================================================== */
 
-function isDuplicate(command) {
+function duplicate(
+  command
+) {
 
-  const now = Date.now();
+  const now =
+    Date.now();
+
 
   if (
     command === lastCommand &&
     now - lastCommandTime < 3000
   ) {
+
     return true;
+
   }
 
-  lastCommand = command;
-  lastCommandTime = now;
+
+  lastCommand =
+    command;
+
+
+  lastCommandTime =
+    now;
+
 
   return false;
+
 }
 
 
@@ -701,40 +1005,59 @@ function isDuplicate(command) {
    BEFEHLE
 ================================================== */
 
-function handleCommand(command) {
-
-  if (!command) {
-    return false;
-  }
-
-  if (isDuplicate(command)) {
-    return true;
-  }
-
-
-  /* =========================
-     NOTFALLNUMMERN
-  ========================= */
+function handleCommand(
+  command
+) {
 
   if (
-    command.includes("notfallnummern")
+    !command
   ) {
 
-    waitingForNumber = true;
+    return false;
 
-    speak(
+  }
+
+
+  if (
+    duplicate(command)
+  ) {
+
+    return true;
+
+  }
+
+
+  /* ==========================
+     NOTFALLNUMMERN
+  ========================== */
+
+  if (
+    command.includes(
+      "notfallnummern"
+    )
+  ) {
+
+    waitingForNumber =
+      true;
+
+
+    observerSpeak(
       "Nennen Sie jetzt die Notfallnummer."
     );
 
+
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      03 / 3
-  ========================= */
+  ========================== */
 
-  if (waitingForNumber) {
+  if (
+    waitingForNumber
+  ) {
 
     if (
       command === "3" ||
@@ -742,51 +1065,69 @@ function handleCommand(command) {
       command === "0 3" ||
       command === "drei" ||
       command === "null drei" ||
-      command.includes("nummer drei")
+      command.includes(
+        "nummer drei"
+      )
     ) {
 
       startEmergency();
 
+
       return true;
+
     }
+
   }
 
 
-  /* =========================
+  /* ==========================
      HALLO
-  ========================= */
+  ========================== */
 
   if (
     command === "hallo" ||
-    command.startsWith("hallo ")
+    command.startsWith(
+      "hallo "
+    )
   ) {
 
-    speak("Hallo.");
+    observerSpeak(
+      "Hallo."
+    );
+
 
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      WAS
-  ========================= */
+  ========================== */
 
   if (
     command === "was"
   ) {
 
-    speak("Was?");
+    observerSpeak(
+      "Was?"
+    );
+
 
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      WER BIST DU
-  ========================= */
+  ========================== */
 
   if (
-    command.includes("wer bist du") ||
+    command.includes(
+      "wer bist du"
+    )
+    ||
     (
       command.includes("wer") &&
       command.includes("bist") &&
@@ -794,18 +1135,25 @@ function handleCommand(command) {
     )
   ) {
 
-    speak("Observer Typ 0.4.");
+    observerSpeak(
+      "Observer Typ 0.4"
+    );
+
 
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      WO SIND WIR
-  ========================= */
+  ========================== */
 
   if (
-    command.includes("wo sind wir") ||
+    command.includes(
+      "wo sind wir"
+    )
+    ||
     (
       command.includes("wo") &&
       command.includes("sind") &&
@@ -813,86 +1161,112 @@ function handleCommand(command) {
     )
   ) {
 
-    speak(
+    observerSpeak(
       "Ihr wurdet von zwei Männern hier reingebracht, sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, der eine hatte einen Zettel darin versteckt."
     );
 
+
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      HILFE
-  ========================= */
+  ========================== */
 
   if (
-    command.includes("hilfe")
+    command.includes(
+      "hilfe"
+    )
   ) {
 
-    speak(
+    observerSpeak(
       "Ich bin nicht fürs Helfen da."
     );
 
+
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      WASCHMASCHINE
-  ========================= */
+  ========================== */
 
   if (
-    command.includes("waschmaschine")
+    command.includes(
+      "waschmaschine"
+    )
   ) {
 
-    speak(
+    observerSpeak(
       "Ich bin nicht für eine Wäsche gemacht."
     );
 
+
     return true;
+
   }
 
 
-  /* =========================
+  /* ==========================
      WIE KOMMEN WIR RAUS
-  ========================= */
+  ========================== */
 
-  const how =
-    command.includes("wie");
+  const hasHow =
+    command.includes(
+      "wie"
+    );
 
-  const come =
-    command.includes("kommen");
 
-  const out =
-    command.includes("raus") ||
-    command.includes("heraus");
+  const hasCome =
+    command.includes(
+      "kommen"
+    );
+
+
+  const hasOut =
+    command.includes(
+      "raus"
+    )
+    ||
+    command.includes(
+      "heraus"
+    );
 
 
   if (
     (
-      how &&
-      come &&
-      out
-    ) ||
+      hasHow &&
+      hasCome &&
+      hasOut
+    )
+    ||
     command.includes(
       "wie kommen wir hier raus"
     )
   ) {
 
-    speak(
+    observerSpeak(
       "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
     );
 
+
     return true;
+
   }
 
 
   /*
-     Unbekannte Sätze:
-     keine Reaktion.
+     ALLES ANDERE:
+
+     Ignorieren.
   */
 
   return false;
+
 }
 
 
@@ -902,20 +1276,29 @@ function handleCommand(command) {
 
 function startEmergency() {
 
-  if (emergencyRunning) {
+  if (
+    emergencyRunning
+  ) {
+
     return;
+
   }
 
-  emergencyRunning = true;
-  waitingForNumber = false;
+
+  emergencyRunning =
+    true;
 
 
-  speak(
+  waitingForNumber =
+    false;
+
+
+  observerSpeak(
     "Notfall erkannt, Maßnahmen werden eingeleitet.",
     () => {
 
       /*
-         5 Sekunden komplette Sperrzeit.
+         5 Sekunden komplett gesperrt.
       */
 
       setTimeout(() => {
@@ -926,20 +1309,26 @@ function startEmergency() {
 
     }
   );
+
 }
 
 
 function emergencySecondPart() {
 
-  speak(
+  observerSpeak(
     "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
     () => {
 
-      emergencyRunning = false;
-      waitingForNumber = false;
+      emergencyRunning =
+        false;
+
+
+      waitingForNumber =
+        false;
 
     }
   );
+
 }
 
 
@@ -949,39 +1338,54 @@ function emergencySecondPart() {
 
 async function startCamera() {
 
-  if (cameraRunning) {
+  if (
+    cameraStream
+  ) {
+
     return;
+
   }
+
 
   if (
     !navigator.mediaDevices ||
     !navigator.mediaDevices.getUserMedia
   ) {
+
     return;
+
   }
+
 
   try {
 
     cameraStream =
-      await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "environment"
-        },
-        audio: false
-      });
+      await navigator.mediaDevices
+        .getUserMedia({
+
+          video: {
+            facingMode: "environment"
+          },
+
+          audio: false
+
+        });
+
 
     camera.srcObject =
       cameraStream;
 
-    cameraRunning = true;
+  }
 
-  } catch (error) {
+  catch (error) {
 
     console.log(
       "Kamera:",
       error
     );
+
   }
+
 }
 
 
@@ -989,49 +1393,54 @@ async function startCamera() {
    START
 ================================================== */
 
-activateButton.addEventListener(
+startButton.addEventListener(
   "click",
   async () => {
 
-    if (active) {
+    if (
+      observerActive
+    ) {
+
       return;
+
     }
 
-    active = true;
 
-    activateButton.classList.add(
+    observerActive =
+      true;
+
+
+    startButton.classList.add(
       "hidden"
     );
 
 
     /*
-       Genau dieselbe Initialisierung
-       wie bei unserem funktionierenden
-       iPad-TTS-Test.
+       EXAKT DIE FUNKTIONIERENDE
+       TTS-INITIALISIERUNG.
     */
 
-    loadVoice();
+    loadGermanVoice();
+
 
     if (
-      "speechSynthesis" in window
+      window.speechSynthesis
     ) {
 
-      try {
-        window.speechSynthesis.resume();
-      } catch (error) {}
+      window.speechSynthesis.resume();
 
     }
 
 
     /*
-       Kamera-Berechtigung einmalig.
+       Kamera.
     */
 
     await startCamera();
 
 
     /*
-       Danach zuhören.
+       Recognition.
     */
 
     setTimeout(() => {
