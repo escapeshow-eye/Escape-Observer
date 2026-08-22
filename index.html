@@ -2,21 +2,86 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Observer KI</title>
+  <title>Observer</title>
   <style>
-    body { font-family: sans-serif; background: #0d0d0d; color: #00ffcc; text-align: center; padding: 20px; }
-    video { width: 320px; height: 240px; border: 2px solid #00ffcc; border-radius: 8px; margin-top: 15px; }
-    #status { margin: 15px; font-weight: bold; font-size: 1.2em; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #050505;
+      color: #00ffcc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Anzeigetext für gesprochene Sätze */
+    #display-text {
+      font-size: 2rem;
+      min-height: 3rem;
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* Animated Observer Auge */
+    .eye-container {
+      width: 180px;
+      height: 180px;
+      border: 4px solid #00ffcc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px #00ffcc;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .pupil {
+      width: 60px;
+      height: 60px;
+      background-color: #00ffcc;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #00ffcc;
+      animation: blink 4s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 15px #00ffcc; transform: scale(1); }
+      50% { box-shadow: 0 0 35px #00ffcc; transform: scale(1.05); }
+    }
+
+    @keyframes blink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+
+    /* Kamera */
+    video {
+      width: 380px;
+      height: 285px;
+      border: 2px solid #00ffcc;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Observer KI Interface</h1>
-  <div id="status">Klicke einmal auf die Seite, um das System zu aktivieren.</div>
+  <div id="display-text"></div>
+
+  <!-- Observer Auge -->
+  <div id="eye" class="eye-container">
+    <div class="pupil"></div>
+  </div>
+
+  <!-- Kamera Element -->
   <video id="webcam" autoplay playsinline muted></video>
 
   <script>
-    // Feste Antworten für exakte Sätze
     const EXAKTE_BEFEHLE = {
       "hallo": "Hallo",
       "wo sind wir": "Sie befinden sich in einem überwachten Bereich",
@@ -25,22 +90,72 @@
     };
 
     let isSpeaking = false;
+    let cameraStream = null;
+    let cameraTimer = null;
+    let voices = [];
+
+    // Stimmen für Microsoft Edge initialisieren
+    function loadVoices() {
+      voices = window.speechSynthesis.getVoices();
+    }
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
 
     // Sprachausgabe (TTS)
     function sprich(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'de-DE';
-        utterance.pitch = 0.9; // Leicht tieferer KI-Ton
-        utterance.rate = 0.95;
+      if (!('speechSynthesis' in window)) return;
 
-        utterance.onstart = () => { isSpeaking = true; };
-        utterance.onend = () => { isSpeaking = false; };
-        utterance.onerror = () => { isSpeaking = false; };
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
 
-        window.speechSynthesis.speak(utterance);
+      // Edge-Stimme auswählen
+      if (voices.length > 0) {
+        const edgeVoice = voices.find(v => v.lang.includes('de') && v.name.includes('Microsoft'));
+        if (edgeVoice) utterance.voice = edgeVoice;
       }
+
+      utterance.pitch = 0.9;
+      utterance.rate = 0.95;
+
+      utterance.onstart = () => { isSpeaking = true; };
+      utterance.onend = () => { isSpeaking = false; };
+      utterance.onerror = () => { isSpeaking = false; };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Kamera-Funktionen
+    async function oeffneKamera() {
+      if (cameraStream) return;
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const videoElement = document.getElementById('webcam');
+        videoElement.srcObject = cameraStream;
+        videoElement.style.display = 'block';
+        document.getElementById('eye').style.display = 'none';
+
+        // Timer für automatische Schließung nach 20 Sekunden
+        clearTimeout(cameraTimer);
+        cameraTimer = setTimeout(() => {
+          schliesseKamera();
+        }, 20000);
+      } catch (err) {
+        console.error("Kamerafehler:", err);
+      }
+    }
+
+    function schliesseKamera() {
+      clearTimeout(cameraTimer);
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById('webcam').style.display = 'none';
+      document.getElementById('eye').style.display = 'flex';
     }
 
     // Spracherkennung (STT)
@@ -53,53 +168,45 @@
       recognition.lang = 'de-DE';
 
       recognition.onresult = (event) => {
-        if (isSpeaking) return; // Reagiert nicht und lässt sich nicht reinreden, während sie spricht
+        if (isSpeaking) return;
 
         const lastIndex = event.results.length - 1;
-        // Satz bereinigen (Satzzeichen entfernen & Kleinschreibung)
-        const gehoert = event.results[lastIndex][0].transcript.toLowerCase().replace(/[.,?!]/g, "").trim();
-        console.log("Gehört:", gehoert);
+        const rawText = event.results[lastIndex][0].transcript;
+        const gehoert = rawText.toLowerCase().replace(/[.,?!]/g, "").trim();
 
-        // 1. Flexibler Check: Enthält der Satz das Wort "waschmaschine"?
+        // Nur den gesprochenen Text im Bild anzeigen
+        document.getElementById('display-text').innerText = rawText;
+
+        // Kamera-Befehle
+        if (gehoert === "öffne die kamera") {
+          oeffneKamera();
+          return;
+        }
+
+        if (gehoert === "schließe die kamera") {
+          schliesseKamera();
+          return;
+        }
+
+        // Antworten verarbeiten
         if (gehoert.includes("waschmaschine")) {
-          document.getElementById('status').innerText = "Auslöser erkannt: Waschmaschine";
           sprich("Ich bin nicht für eine Wäsche gemacht");
-        } 
-        // 2. Exakter Check für alle anderen Befehle
-        else if (EXAKTE_BEFEHLE[gehoert]) {
-          document.getElementById('status').innerText = "Befehl erkannt: " + gehoert;
+        } else if (EXAKTE_BEFEHLE[gehoert]) {
           sprich(EXAKTE_BEFEHLE[gehoert]);
         }
       };
 
       recognition.onend = () => {
-        recognition.start(); // Dauerhaftes Zuhören sicherstellen
+        recognition.start();
       };
 
-      recognition.onerror = (e) => {
-        console.error("Fehler bei der Erkennung:", e.error);
-      };
-
+      // Einmaliger Klick auf den Bildschirm aktiviert Ton & Mikrofon
       document.body.addEventListener('click', () => {
         recognition.start();
-        document.getElementById('status').innerText = "Observer bereit. Höre zu...";
+        // Kurzer leerer Ton zur Aktivierung der Audio-Schnittstelle in Edge
+        sprich("");
       }, { once: true });
-
-    } else {
-      alert("Bitte Edge oder Chrome nutzen.");
     }
-
-    // Kamera-Zugriff
-    async function initKamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        document.getElementById('webcam').srcObject = stream;
-      } catch (err) {
-        console.error("Kamera-Fehler:", err);
-      }
-    }
-
-    initKamera();
   </script>
 </body>
 </html>
