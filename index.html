@@ -1,26 +1,18 @@
-```html
 <!DOCTYPE html>
-<html lang="de">
-<head>
 
+<html lang="de">
+
+<head>
 <meta charset="UTF-8">
 
 <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0,
-           maximum-scale=1.0, user-scalable=no,
-           viewport-fit=cover"
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+
 >
 
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black"
->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <title>OBSERVER</title>
 
@@ -39,31 +31,22 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-
   background: #000;
   color: #fff;
-
   font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
-  padding:
-    env(safe-area-inset-top)
-    env(safe-area-inset-right)
-    env(safe-area-inset-bottom)
-    env(safe-area-inset-left);
 }
 
 
-/* ==============================
+/* =========================
    AUGE
-============================== */
+========================= */
 
 #eye {
   width: 180px;
@@ -76,7 +59,7 @@ body {
   align-items: center;
   justify-content: center;
 
-  transition: height 0.12s ease;
+  transition: height 120ms ease;
 }
 
 #pupil {
@@ -86,7 +69,7 @@ body {
   background: #fff;
   border-radius: 50%;
 
-  transition: transform 0.12s ease;
+  transition: transform 120ms ease;
 }
 
 #eye.blink {
@@ -98,13 +81,13 @@ body {
 }
 
 
-/* ==============================
+/* =========================
    SPRECHTEXT
-============================== */
+========================= */
 
 #response {
   width: 88%;
-  max-width: 850px;
+  max-width: 800px;
 
   min-height: 30px;
   margin-top: 35px;
@@ -118,9 +101,9 @@ body {
 }
 
 
-/* ==============================
+/* =========================
    AUDIOWELLE
-============================== */
+========================= */
 
 #wave {
   height: 45px;
@@ -134,7 +117,7 @@ body {
 
   opacity: 0;
 
-  transition: opacity 0.15s ease;
+  transition: opacity 150ms ease;
 }
 
 #wave.active {
@@ -148,39 +131,56 @@ body {
   background: #fff;
   border-radius: 4px;
 
-  animation: wave 0.8s ease-in-out infinite;
+  animation: wave 800ms ease-in-out infinite;
 }
 
-.bar:nth-child(1) { animation-delay: 0s; }
-.bar:nth-child(2) { animation-delay: .1s; }
-.bar:nth-child(3) { animation-delay: .2s; }
-.bar:nth-child(4) { animation-delay: .3s; }
-.bar:nth-child(5) { animation-delay: .2s; }
-.bar:nth-child(6) { animation-delay: .1s; }
-.bar:nth-child(7) { animation-delay: 0s; }
+.bar:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.bar:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.bar:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.bar:nth-child(4) {
+  animation-delay: 300ms;
+}
+
+.bar:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.bar:nth-child(6) {
+  animation-delay: 100ms;
+}
+
+.bar:nth-child(7) {
+  animation-delay: 0ms;
+}
 
 @keyframes wave {
-
-  0%,
-  100% {
+  0%, 100% {
     height: 8px;
   }
 
   50% {
     height: 38px;
   }
-
 }
 
 
-/* ==============================
-   AKTIVIERUNG
-============================== */
+/* =========================
+   AKTIVIEREN
+========================= */
 
 #activate {
   margin-top: 25px;
 
-  padding: 13px 25px;
+  padding: 13px 24px;
 
   background: #000;
   color: #fff;
@@ -199,9 +199,9 @@ body {
 }
 
 
-/* ==============================
+/* =========================
    KAMERA
-============================== */
+========================= */
 
 #camera {
   position: fixed;
@@ -222,30 +222,18 @@ body {
 }
 
 </style>
-</head>
 
+</head>
 
 <body>
 
-
-<!-- AUGE -->
-
 <div id="eye">
-
   <div id="pupil"></div>
-
 </div>
-
-
-<!-- SPRECHTEXT -->
 
 <div id="response"></div>
 
-
-<!-- AUDIOWELLE -->
-
 <div id="wave">
-
   <div class="bar"></div>
   <div class="bar"></div>
   <div class="bar"></div>
@@ -253,84 +241,61 @@ body {
   <div class="bar"></div>
   <div class="bar"></div>
   <div class="bar"></div>
-
 </div>
-
-
-<!-- EINMALIGE AKTIVIERUNG -->
 
 <button id="activate">
   OBSERVER AKTIVIEREN
 </button>
 
-
-<!-- VERDECKTE KAMERA -->
-
 <video
-  id="camera"
-  autoplay
-  playsinline
-  muted
-></video>
+id="camera"
+autoplay
+playsinline
+muted
+
+> </video>
 
 <canvas id="canvas"></canvas>
 
-
 <script>
 
-/* ==================================================
-   ELEMENTE
-================================================== */
+const eye = document.getElementById("eye");
+const response = document.getElementById("response");
+const wave = document.getElementById("wave");
+const activate = document.getElementById("activate");
+const camera = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
 
-const eye =
-  document.getElementById("eye");
-
-const response =
-  document.getElementById("response");
-
-const wave =
-  document.getElementById("wave");
-
-const activateButton =
-  document.getElementById("activate");
-
-const camera =
-  document.getElementById("camera");
+const ctx = canvas.getContext("2d");
 
 
-/* ==================================================
-   SYSTEMZUSTAND
-================================================== */
+/* =========================
+   ZUSTAND
+========================= */
 
 let active = false;
-
 let speaking = false;
 
-let emergency = false;
-
+let emergencyRunning = false;
 let waitingForEmergencyNumber = false;
 
 let recognition = null;
-
 let recognitionRunning = false;
-
-let restartTimer = null;
+let recognitionRestartTimer = null;
 
 let cameraStream = null;
-
 let cameraRunning = false;
+let cameraTimer = null;
 
 let lastCommand = "";
-
 let lastCommandTime = 0;
-
-
-/* ==================================================
-   SPRACHSTIMME
-================================================== */
 
 let germanVoice = null;
 
+
+/* =========================
+   STIMME
+========================= */
 
 function loadVoices() {
 
@@ -338,8 +303,7 @@ function loadVoices() {
     return;
   }
 
-  const voices =
-    window.speechSynthesis.getVoices();
+  const voices = window.speechSynthesis.getVoices();
 
   if (!voices.length) {
     return;
@@ -347,43 +311,61 @@ function loadVoices() {
 
   germanVoice =
     voices.find(
-      voice =>
-        voice.lang === "de-DE"
-    )
-    ||
+      voice => voice.lang === "de-DE"
+    ) ||
     voices.find(
       voice =>
         voice.lang &&
-        voice.lang
-          .toLowerCase()
-          .startsWith("de")
-    )
-    ||
+        voice.lang.toLowerCase().startsWith("de")
+    ) ||
     voices.find(
       voice => voice.default
-    )
-    ||
+    ) ||
     voices[0];
-
 }
-
 
 loadVoices();
 
-
 if ("speechSynthesis" in window) {
-
-  window.speechSynthesis.onvoiceschanged =
-    loadVoices;
-
+  window.speechSynthesis.onvoiceschanged = loadVoices;
 }
 
 
-/* ==================================================
-   AUGE BLINKEN
-================================================== */
+/* =========================
+   BLINZELN
+========================= */
 
 function blink() {
+
+  if (!active || speaking || emergencyRunning) {
+    return;
+  }
+
+  eye.classList.add("blink");
+
+  setTimeout(() => {
+    eye.classList.remove("blink");
+  }, 180);
+}
+
+setInterval(() => {
+
+  if (
+    active &&
+    !speaking &&
+    !emergencyRunning
+  ) {
+    blink();
+  }
+
+}, 10000);
+
+
+/* =========================
+   MORSE-BLINZELN
+========================= */
+
+function blinkMorse(symbol) {
 
   if (!active) {
     return;
@@ -391,48 +373,26 @@ function blink() {
 
   eye.classList.add("blink");
 
+  const duration =
+    symbol === "."
+      ? 180
+      : 500;
+
   setTimeout(() => {
-
     eye.classList.remove("blink");
-
-  }, 180);
-
+  }, duration);
 }
 
 
-/*
-  Normales Blinzeln:
-  ungefähr alle 10 Sekunden.
-*/
-
-setInterval(() => {
-
-  if (
-    active &&
-    !emergency &&
-    !speaking
-  ) {
-
-    blink();
-
-  }
-
-}, 10000);
-
-
-/* ==================================================
+/* =========================
    OBSERVER SPRICHT
-================================================== */
+========================= */
 
 function speak(text, callback = null) {
 
   if (!active) {
     return;
   }
-
-  /*
-    Keine zwei Antworten gleichzeitig.
-  */
 
   if (speaking) {
     return;
@@ -441,20 +401,7 @@ function speak(text, callback = null) {
   speaking = true;
 
   response.textContent = text;
-
   wave.classList.add("active");
-
-
-  /*
-    Recognition bleibt technisch aktiv.
-
-    Während speaking === true werden
-    ALLE erkannten Sprachresultate
-    ignoriert.
-
-    Dadurch kann der Benutzer den
-    Observer nicht unterbrechen.
-  */
 
 
   if (!("speechSynthesis" in window)) {
@@ -467,19 +414,8 @@ function speak(text, callback = null) {
 
   loadVoices();
 
-
   try {
     window.speechSynthesis.resume();
-  } catch (error) {}
-
-
-  /*
-    Alte Warteschlange entfernen,
-    bevor der neue Satz startet.
-  */
-
-  try {
-    window.speechSynthesis.cancel();
   } catch (error) {}
 
 
@@ -487,11 +423,8 @@ function speak(text, callback = null) {
     new SpeechSynthesisUtterance(text);
 
   utterance.lang = "de-DE";
-
   utterance.rate = 0.88;
-
   utterance.pitch = 0.82;
-
   utterance.volume = 1;
 
 
@@ -500,55 +433,60 @@ function speak(text, callback = null) {
   }
 
 
-  let completed = false;
+  let finished = false;
 
 
-  function complete() {
+  function finish() {
 
-    if (completed) {
+    if (finished) {
       return;
     }
 
-    completed = true;
+    finished = true;
 
     finishSpeech(callback);
-
   }
 
 
-  utterance.onend = complete;
+  utterance.onend = finish;
 
-  utterance.onerror = event => {
+  utterance.onerror = finish;
 
-    console.log(
-      "Sprachwiedergabe:",
-      event.error
-    );
-
-    complete();
-
-  };
-
-
-  /*
-    Fallback gegen minutenlang
-    eingeblendeten Text.
-
-    Die Obergrenze liegt bei 14 Sekunden.
-  */
 
   const safetyTimer =
     setTimeout(() => {
 
-      complete();
+      finish();
 
     }, Math.min(
-      14000,
+      15000,
       Math.max(
         2200,
         text.length * 100
       )
     ));
+
+
+  const keepAlive =
+    setInterval(() => {
+
+      if (finished) {
+
+        clearInterval(keepAlive);
+        clearTimeout(safetyTimer);
+
+        return;
+      }
+
+      try {
+
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+
+      } catch (error) {}
+
+    }, 500);
 
 
   try {
@@ -557,55 +495,33 @@ function speak(text, callback = null) {
       utterance
     );
 
-  }
+  } catch (error) {
 
-  catch (error) {
-
+    clearInterval(keepAlive);
     clearTimeout(safetyTimer);
 
-    console.log(
-      "Sprachstart:",
-      error
-    );
-
-    complete();
-
+    finish();
   }
 
 }
 
-
-/* ==================================================
-   SPRACHE BEENDET
-================================================== */
 
 function finishSpeech(callback) {
 
   speaking = false;
 
   response.textContent = "";
-
   wave.classList.remove("active");
-
-
-  /*
-    Das Mikrofon wird NICHT neu gestartet.
-
-    Die laufende Recognition-Session
-    bleibt bestehen.
-  */
-
 
   if (callback) {
     callback();
   }
-
 }
 
 
-/* ==================================================
-   SPEECH RECOGNITION
-================================================== */
+/* =========================
+   SPRACHERKENNUNG
+========================= */
 
 const RecognitionAPI =
   window.SpeechRecognition ||
@@ -617,140 +533,110 @@ if (RecognitionAPI) {
   recognition =
     new RecognitionAPI();
 
+  recognition.lang = "de-DE";
 
-  recognition.lang =
-    "de-DE";
+  recognition.continuous = true;
 
+  recognition.interimResults = false;
 
-  recognition.continuous =
-    true;
-
-
-  recognition.interimResults =
-    false;
+  recognition.maxAlternatives = 3;
 
 
-  recognition.maxAlternatives =
-    3;
+  recognition.onstart = () => {
+
+    recognitionRunning = true;
+
+  };
 
 
-  recognition.onstart =
-    () => {
+  recognition.onresult = event => {
 
-      recognitionRunning = true;
+    /*
+      Während OBSERVER spricht:
+      absolut nichts auswerten.
+    */
 
-    };
+    if (
+      speaking ||
+      emergencyRunning
+    ) {
+      return;
+    }
 
 
-  recognition.onresult =
-    event => {
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
 
-      /*
-        Während der Observer spricht:
-        alles ignorieren.
-      */
+      const result =
+        event.results[i];
 
-      if (
-        speaking ||
-        emergency
-      ) {
-
-        return;
+      if (!result.isFinal) {
+        continue;
       }
 
 
       for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
+        let j = 0;
+        j < result.length;
+        j++
       ) {
 
-        const result =
-          event.results[i];
+        const command =
+          normalize(
+            result[j].transcript
+          );
 
 
-        if (!result.isFinal) {
-          continue;
-        }
-
-
-        /*
-          Mehrere Erkennungsvorschläge
-          prüfen.
-        */
-
-        for (
-          let j = 0;
-          j < result.length;
-          j++
-        ) {
-
-          const command =
-            normalize(
-              result[j].transcript
-            );
-
-
-          if (
-            handleCommand(command)
-          ) {
-
-            return;
-
-          }
-
+        if (handleCommand(command)) {
+          return;
         }
 
       }
 
-    };
+    }
+
+  };
 
 
-  recognition.onerror =
-    event => {
+  recognition.onerror = event => {
 
-      recognitionRunning = false;
+    recognitionRunning = false;
 
-      console.log(
-        "SpeechRecognition:",
-        event.error
-      );
+    console.log(
+      "Recognition:",
+      event.error
+    );
 
+    scheduleRecognitionRestart();
 
-      /*
-        Nicht bei jedem kleinen Fehler
-        sofort zehnmal neu starten.
-      */
-
-      scheduleRestart();
-
-    };
+  };
 
 
-  recognition.onend =
-    () => {
+  recognition.onend = () => {
 
-      recognitionRunning = false;
+    recognitionRunning = false;
 
+    if (
+      active &&
+      !speaking &&
+      !emergencyRunning
+    ) {
 
-      if (
-        active &&
-        !speaking &&
-        !emergency
-      ) {
+      scheduleRecognitionRestart();
 
-        scheduleRestart();
+    }
 
-      }
-
-    };
+  };
 
 }
 
 
-/* ==================================================
-   RECOGNITION START
-================================================== */
+/* =========================
+   START RECOGNITION
+========================= */
 
 function startRecognition() {
 
@@ -758,58 +644,52 @@ function startRecognition() {
     !recognition ||
     !active ||
     speaking ||
-    emergency ||
+    emergencyRunning ||
     recognitionRunning
   ) {
-
     return;
   }
-
 
   try {
 
     recognition.start();
 
-  }
+  } catch (error) {
 
-  catch (error) {
-
-    scheduleRestart();
+    scheduleRecognitionRestart();
 
   }
 
 }
 
 
-/* ==================================================
-   RECOGNITION RESTART
-================================================== */
+/* =========================
+   RESTART
+========================= */
 
-function scheduleRestart() {
+function scheduleRecognitionRestart() {
 
-  if (restartTimer) {
+  if (recognitionRestartTimer) {
     return;
   }
 
   if (
     !active ||
     speaking ||
-    emergency
+    emergencyRunning
   ) {
-
     return;
   }
 
-
-  restartTimer =
+  recognitionRestartTimer =
     setTimeout(() => {
 
-      restartTimer = null;
+      recognitionRestartTimer = null;
 
       if (
         active &&
         !speaking &&
-        !emergency &&
+        !emergencyRunning &&
         !recognitionRunning
       ) {
 
@@ -822,36 +702,49 @@ function scheduleRestart() {
 }
 
 
-/* ==================================================
-   TEXT NORMALISIEREN
-================================================== */
+/* =========================
+   WATCHDOG
+========================= */
+
+setInterval(() => {
+
+  if (
+    !active ||
+    speaking ||
+    emergencyRunning
+  ) {
+    return;
+  }
+
+  if (!recognitionRunning) {
+    scheduleRecognitionRestart();
+  }
+
+}, 5000);
+
+
+/* =========================
+   NORMALISIEREN
+========================= */
 
 function normalize(text) {
 
   return text
     .toLowerCase()
     .trim()
-    .replace(
-      /[.,!?;:]/g,
-      ""
-    )
-    .replace(
-      /\s+/g,
-      " "
-    );
+    .replace(/[.,!?;:]/g, "")
+    .replace(/\s+/g, " ");
 
 }
 
 
-/* ==================================================
-   DOPPELTE BEFEHLE FILTERN
-================================================== */
+/* =========================
+   DOPPELTE BEFEHLE
+========================= */
 
-function duplicate(command) {
+function isDuplicate(command) {
 
-  const now =
-    Date.now();
-
+  const now = Date.now();
 
   if (
     command === lastCommand &&
@@ -859,25 +752,18 @@ function duplicate(command) {
   ) {
 
     return true;
-
   }
 
-
-  lastCommand =
-    command;
-
-  lastCommandTime =
-    now;
-
+  lastCommand = command;
+  lastCommandTime = now;
 
   return false;
-
 }
 
 
-/* ==================================================
+/* =========================
    BEFEHLE
-================================================== */
+========================= */
 
 function handleCommand(command) {
 
@@ -885,43 +771,34 @@ function handleCommand(command) {
     return false;
   }
 
-
-  if (duplicate(command)) {
+  if (isDuplicate(command)) {
     return true;
   }
 
 
-  /* ===============================================
+  /* =========================
      NOTFALLNUMMERN
-  =============================================== */
+  ========================= */
 
   if (
-    command.includes(
-      "notfallnummern"
-    )
+    command.includes("notfallnummern")
   ) {
 
-    waitingForEmergencyNumber =
-      true;
-
+    waitingForEmergencyNumber = true;
 
     speak(
       "Nennen Sie jetzt die Notfallnummer."
     );
 
-
     return true;
-
   }
 
 
-  /* ===============================================
-     NOTFALL 03 / 3
-  =============================================== */
+  /* =========================
+     03 / 3
+  ========================= */
 
-  if (
-    waitingForEmergencyNumber
-  ) {
+  if (waitingForEmergencyNumber) {
 
     if (
       command === "3" ||
@@ -935,56 +812,45 @@ function handleCommand(command) {
       startEmergency();
 
       return true;
-
     }
-
   }
 
 
-  /* ===============================================
+  /* =========================
      HALLO
-  =============================================== */
+  ========================= */
 
   if (
     command === "hallo" ||
     command.startsWith("hallo ")
   ) {
 
-    speak(
-      "Hallo."
-    );
+    speak("Hallo.");
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      WAS
-  =============================================== */
+  ========================= */
 
   if (
     command === "was"
   ) {
 
-    speak(
-      "Was?"
-    );
+    speak("Was?");
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      WER BIST DU
-  =============================================== */
+  ========================= */
 
   if (
-    command.includes(
-      "wer bist du"
-    )
-    ||
+    command.includes("wer bist du") ||
     (
       command.includes("wer") &&
       command.includes("bist") &&
@@ -997,19 +863,15 @@ function handleCommand(command) {
     );
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      WO SIND WIR
-  =============================================== */
+  ========================= */
 
   if (
-    command.includes(
-      "wo sind wir"
-    )
-    ||
+    command.includes("wo sind wir") ||
     (
       command.includes("wo") &&
       command.includes("sind") &&
@@ -1022,13 +884,12 @@ function handleCommand(command) {
     );
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      HILFE
-  =============================================== */
+  ========================= */
 
   if (
     command.includes("hilfe")
@@ -1039,23 +900,15 @@ function handleCommand(command) {
     );
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      WASCHMASCHINE
-  =============================================== */
-
-  /*
-    Funktioniert auch in einem
-    längeren Satz.
-  */
+  ========================= */
 
   if (
-    command.includes(
-      "waschmaschine"
-    )
+    command.includes("waschmaschine")
   ) {
 
     speak(
@@ -1063,13 +916,12 @@ function handleCommand(command) {
     );
 
     return true;
-
   }
 
 
-  /* ===============================================
+  /* =========================
      WIE KOMMEN WIR RAUS
-  =============================================== */
+  ========================= */
 
   const hasWie =
     command.includes("wie");
@@ -1087,12 +939,10 @@ function handleCommand(command) {
       hasWie &&
       hasKommen &&
       hasRaus
-    )
-    ||
+    ) ||
     command.includes(
       "wie kommen wir hier raus"
-    )
-    ||
+    ) ||
     command.includes(
       "wie kommen wir hier heraus"
     )
@@ -1103,51 +953,35 @@ function handleCommand(command) {
     );
 
     return true;
-
   }
 
 
   /*
-    Unbekannter Satz:
+    Unbekannt:
     keine Reaktion.
   */
 
   return false;
-
 }
 
 
-/* ==================================================
-   NOTFALLSEQUENZ
-================================================== */
+/* =========================
+   NOTFALL
+========================= */
 
 function startEmergency() {
 
-  if (emergency) {
+  if (emergencyRunning) {
     return;
   }
 
-
-  emergency = true;
-
+  emergencyRunning = true;
   waitingForEmergencyNumber = false;
-
-
-  /*
-    Recognition bleibt aktiv,
-    aber onresult ignoriert während
-    emergency === true alles.
-  */
 
 
   speak(
     "Notfall erkannt, Maßnahmen werden eingeleitet.",
     () => {
-
-      /*
-        Feste Pause:
-        keine Befehle.
-      */
 
       setTimeout(() => {
 
@@ -1167,8 +1001,7 @@ function emergencySecondPart() {
     "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
     () => {
 
-      emergency = false;
-
+      emergencyRunning = false;
       waitingForEmergencyNumber = false;
 
     }
@@ -1177,9 +1010,9 @@ function emergencySecondPart() {
 }
 
 
-/* ==================================================
+/* =========================
    KAMERA
-================================================== */
+========================= */
 
 async function startCamera() {
 
@@ -1192,7 +1025,6 @@ async function startCamera() {
     !navigator.mediaDevices ||
     !navigator.mediaDevices.getUserMedia
   ) {
-
     return;
   }
 
@@ -1200,30 +1032,28 @@ async function startCamera() {
   try {
 
     cameraStream =
-      await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "environment"
-        },
-        audio: false
-      });
+      await navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            facingMode: "environment"
+          },
+          audio: false
+        });
 
 
     camera.srcObject =
       cameraStream;
 
-
     cameraRunning = true;
 
 
-    /*
-      Kamera ist bereit.
-      Die eigentliche Mustererkennung
-      kommt später.
-    */
+    cameraTimer =
+      setInterval(
+        checkCamera,
+        1000
+      );
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.log(
       "Kamera:",
@@ -1235,11 +1065,29 @@ async function startCamera() {
 }
 
 
-/* ==================================================
-   OBSERVER STARTEN
-================================================== */
+/* =========================
+   KAMERA-CHECK
+========================= */
 
-activateButton.addEventListener(
+function checkCamera() {
+
+  /*
+    Noch absichtlich keine
+    automatische Reaktion.
+
+    Die richtige Mustererkennung
+    kommt später, damit die Kamera
+    nicht versehentlich Befehle auslöst.
+  */
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+activate.addEventListener(
   "click",
   async () => {
 
@@ -1251,14 +1099,15 @@ activateButton.addEventListener(
     active = true;
 
 
-    activateButton.classList.add(
+    activate.classList.add(
       "hidden"
     );
 
 
     /*
-      iPad-Speech direkt durch
-      die Benutzeraktion vorbereiten.
+      iPad / Edge:
+      Sprachsynthese direkt durch
+      Benutzeraktion initialisieren.
     */
 
     if (
@@ -1277,14 +1126,14 @@ activateButton.addEventListener(
 
 
     /*
-      Kamera einmalig freigeben.
+      Kamera einmal erlauben.
     */
 
     await startCamera();
 
 
     /*
-      Recognition starten.
+      Erkennung starten.
     */
 
     setTimeout(() => {
@@ -1295,43 +1144,6 @@ activateButton.addEventListener(
 
   }
 );
-
-
-/* ==================================================
-   NOTFALL-WATCHDOG
-================================================== */
-
-setInterval(() => {
-
-  /*
-    Niemals während einer Antwort
-    oder Notfallsequenz eingreifen.
-  */
-
-  if (
-    !active ||
-    speaking ||
-    emergency
-  ) {
-
-    return;
-  }
-
-
-  /*
-    Nur reparieren, wenn Recognition
-    wirklich beendet wurde.
-  */
-
-  if (
-    !recognitionRunning
-  ) {
-
-    scheduleRestart();
-
-  }
-
-}, 5000);
 
 </script>
 
