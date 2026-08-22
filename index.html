@@ -2,438 +2,990 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
       content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               user-scalable=no">
+      initial-scale=1,
+      maximum-scale=1,
+      user-scalable=no,
+      viewport-fit=cover">
 
 <meta name="apple-mobile-web-app-capable"
       content="yes">
 
-<title>Observer Test</title>
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent">
+
+<title>OBSERVER</title>
 
 <style>
 
+* {
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 html,
 body {
-    margin: 0;
+
     width: 100%;
     height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
     background: #000;
     color: #fff;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 body {
+
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
     align-items: center;
+
+    padding:
+        env(safe-area-inset-top)
+        env(safe-area-inset-right)
+        env(safe-area-inset-bottom)
+        env(safe-area-inset-left);
 }
 
+
+/* =========================================
+   AUGE
+========================================= */
+
 #eye {
-    width: 170px;
-    height: 100px;
-    border: 4px solid white;
-    border-radius: 50%;
+
+    width: 180px;
+    height: 110px;
+
+    border:
+        4px solid #fff;
+
+    border-radius:
+        50% / 60%;
+
     display: flex;
+
     justify-content: center;
     align-items: center;
+
+    transition:
+        height 120ms ease;
+
 }
 
 #pupil {
-    width: 50px;
-    height: 50px;
-    background: white;
+
+    width: 54px;
+    height: 54px;
+
+    background: #fff;
+
     border-radius: 50%;
+
+    transition:
+        transform 120ms ease;
+
 }
 
-#text {
-    margin-top: 35px;
-    width: 85%;
-    text-align: center;
-    font-size: 18px;
-    min-height: 30px;
+#eye.blink {
+
+    height: 7px;
+
 }
+
+#eye.blink #pupil {
+
+    transform:
+        scaleY(0);
+
+}
+
+
+/* =========================================
+   SPRECHTEXT
+========================================= */
+
+#speakerText {
+
+    width: 88%;
+    max-width: 750px;
+
+    min-height: 32px;
+
+    margin-top: 35px;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    line-height: 1.45;
+
+    letter-spacing: .5px;
+
+}
+
+
+/* =========================================
+   START
+========================================= */
 
 #start {
-    margin-top: 25px;
-    padding: 14px 24px;
+
+    margin-top: 28px;
+
+    padding:
+        14px 25px;
+
     background: #000;
+
     color: #fff;
-    border: 1px solid #fff;
+
+    border:
+        1px solid #fff;
+
     border-radius: 5px;
-    font-size: 14px;
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+}
+
+#start.hidden {
+
+    display: none;
+
+}
+
+
+/* =========================================
+   STATUS
+   Nur während der Einrichtung sichtbar.
+========================================= */
+
+#status {
+
+    position: fixed;
+
+    bottom: 20px;
+
+    width: 90%;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    opacity: .35;
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="eye">
+
     <div id="pupil"></div>
+
 </div>
 
-<div id="text"></div>
+
+<div id="speakerText"></div>
+
 
 <button id="start">
     OBSERVER STARTEN
 </button>
 
+
+<div id="status"></div>
+
+
 <script>
 
-const text =
-    document.getElementById("text");
+/* =================================================
+   ELEMENTE
+================================================= */
 
-const start =
+const eye =
+    document.getElementById("eye");
+
+const pupil =
+    document.getElementById("pupil");
+
+const speakerText =
+    document.getElementById("speakerText");
+
+const startButton =
     document.getElementById("start");
 
+const status =
+    document.getElementById("status");
+
+
+/* =================================================
+   ZUSTAND
+================================================= */
+
+let observerStarted = false;
+
+let observerSpeaking = false;
+
+let recognitionRunning = false;
+
+let recognitionRestartTimer = null;
 
 let recognition = null;
 
-let listening = false;
+let voice = null;
 
-let speaking = false;
+let lastCommand = "";
 
-
-/* =========================================
-   SPRACHERKENNUNG
-========================================= */
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+let lastCommandTime = 0;
 
 
-if (SpeechRecognition) {
+/* =================================================
+   SPRACHE
+================================================= */
 
-    recognition =
-        new SpeechRecognition();
-
-    recognition.lang =
-        "de-DE";
-
-    recognition.continuous =
-        true;
-
-    recognition.interimResults =
-        false;
-
-    recognition.maxAlternatives =
-        3;
+const synth =
+    window.speechSynthesis;
 
 
-    recognition.onstart = () => {
+/* =================================================
+   DEUTSCHE STIMME SUCHEN
+================================================= */
 
-        listening = true;
+function findGermanVoice() {
 
-        console.log(
-            "Observer hört zu."
-        );
+    if (!synth) {
+        return null;
+    }
 
-    };
+    const voices =
+        synth.getVoices();
 
-
-    recognition.onresult = event => {
-
-        if (speaking) {
-            return;
-        }
-
-
-        for (
-            let i = event.resultIndex;
-            i < event.results.length;
-            i++
-        ) {
-
-            const result =
-                event.results[i];
+    if (!voices.length) {
+        return null;
+    }
 
 
-            if (!result.isFinal) {
-                continue;
-            }
+    /*
+       Deutsche Stimme bevorzugen.
+    */
 
+    return (
 
-            const heard =
-                result[0]
-                    .transcript
+        voices.find(
+            v =>
+                v.lang === "de-DE"
+        )
+
+        ||
+
+        voices.find(
+            v =>
+                v.lang &&
+                v.lang
                     .toLowerCase()
-                    .trim();
+                    .startsWith("de")
+        )
+
+        ||
+
+        voices.find(
+            v =>
+                v.default
+        )
+
+        ||
+
+        voices[0]
+
+    );
+
+}
 
 
-            console.log(
-                "Gehört:",
-                heard
+/*
+   Stimmen können auf iPadOS
+   verzögert geladen werden.
+*/
+
+voice =
+    findGermanVoice();
+
+
+if (synth) {
+
+    synth.onvoiceschanged =
+        () => {
+
+            voice =
+                findGermanVoice();
+
+        };
+
+}
+
+
+/* =================================================
+   BLINZELN
+================================================= */
+
+function blink() {
+
+    if (
+        !observerStarted
+    ) {
+        return;
+    }
+
+    eye.classList.add("blink");
+
+    setTimeout(
+        () => {
+
+            eye.classList.remove(
+                "blink"
             );
 
+        },
+        160
+    );
+
+}
+
+
+/*
+   Unregelmäßiges Blinzeln.
+*/
+
+function scheduleBlink() {
+
+    if (
+        !observerStarted
+    ) {
+        return;
+    }
+
+    const delay =
+        4500 +
+        Math.random() * 9000;
+
+
+    setTimeout(
+        () => {
 
             if (
-                heard.includes("hallo")
+                observerStarted &&
+                !observerSpeaking
             ) {
 
-                sayHello();
+                blink();
+
+            }
+
+            scheduleBlink();
+
+        },
+        delay
+    );
+
+}
+
+
+/* =================================================
+   TEXT ANZEIGEN
+================================================= */
+
+function showText(
+    text
+) {
+
+    speakerText.textContent =
+        text;
+
+}
+
+
+/* =================================================
+   TEXT LÖSCHEN
+================================================= */
+
+function clearText() {
+
+    speakerText.textContent =
+        "";
+
+}
+
+
+/* =================================================
+   SPRECHEN
+================================================= */
+
+function speak(
+    text
+) {
+
+    return new Promise(
+        resolve => {
+
+            if (
+                !observerStarted
+            ) {
+
+                resolve();
 
                 return;
 
             }
 
-        }
 
-    };
+            /*
+               Falls bereits etwas
+               gesprochen wird:
+               nichts doppelt starten.
+            */
+
+            if (
+                observerSpeaking
+            ) {
+
+                resolve();
+
+                return;
+
+            }
+
+
+            observerSpeaking =
+                true;
+
+
+            /*
+               Während der Observer spricht,
+               darf die Erkennung KEIN Ergebnis
+               verarbeiten.
+            */
+
+            stopRecognition();
+
+
+            showText(text);
+
+
+            if (
+                !synth
+            ) {
+
+                /*
+                   Fallback:
+                   Text trotzdem nur kurz anzeigen.
+                */
+
+                setTimeout(
+                    () => {
+
+                        clearText();
+
+                        observerSpeaking =
+                            false;
+
+                        startRecognition();
+
+                        resolve();
+
+                    },
+                    1500
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Alte Warteschlange vollständig
+               entfernen.
+            */
+
+            try {
+
+                synth.cancel();
+
+            }
+
+            catch (e) {}
+
+
+            voice =
+                findGermanVoice();
+
+
+            const utterance =
+                new SpeechSynthesisUtterance(
+                    text
+                );
+
+
+            utterance.lang =
+                "de-DE";
+
+
+            utterance.rate =
+                0.9;
+
+
+            utterance.pitch =
+                0.85;
+
+
+            utterance.volume =
+                1;
+
+
+            if (
+                voice
+            ) {
+
+                utterance.voice =
+                    voice;
+
+            }
+
+
+            let finished =
+                false;
+
+
+            /*
+               Sicherheitsabschluss.
+
+               Wichtig:
+               Kein minutenlanges
+               "Hallo." mehr.
+            */
+
+            let safetyTimer =
+                setTimeout(
+                    finish,
+                    Math.max(
+                        2500,
+                        text.length * 110
+                    )
+                );
+
+
+            function finish() {
+
+                if (
+                    finished
+                ) {
+
+                    return;
+
+                }
+
+
+                finished =
+                    true;
+
+
+                clearTimeout(
+                    safetyTimer
+                );
+
+
+                clearText();
+
+
+                observerSpeaking =
+                    false;
+
+
+                /*
+                   Erst jetzt wieder zuhören.
+                */
+
+                setTimeout(
+                    () => {
+
+                        startRecognition();
+
+                        resolve();
+
+                    },
+                    250
+                );
+
+            }
+
+
+            utterance.onend =
+                finish;
+
+
+            utterance.onerror =
+                finish;
+
+
+            /*
+               iPadOS kann SpeechSynthesis
+               pausieren.
+
+               Deshalb nur während dieser
+               Antwort gelegentlich prüfen.
+            */
+
+            const keepAlive =
+                setInterval(
+                    () => {
+
+                        if (
+                            finished
+                        ) {
+
+                            clearInterval(
+                                keepAlive
+                            );
+
+                            return;
+
+                        }
+
+
+                        try {
+
+                            if (
+                                synth.paused
+                            ) {
+
+                                synth.resume();
+
+                            }
+
+                        }
+
+                        catch (e) {}
+
+                    },
+                    500
+                );
+
+
+            try {
+
+                synth.resume();
+
+                synth.speak(
+                    utterance
+                );
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "Speech error:",
+                    error
+                );
+
+                clearInterval(
+                    keepAlive
+                );
+
+                finish();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =================================================
+   SPRACHERKENNUNG
+================================================= */
+
+const RecognitionAPI =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+if (
+    RecognitionAPI
+) {
+
+    recognition =
+        new RecognitionAPI();
+
+
+    recognition.lang =
+        "de-DE";
+
+
+    /*
+       Dauerhaft zuhören.
+
+       Safari darf die Session trotzdem
+       selbst beenden.
+    */
+
+    recognition.continuous =
+        true;
+
+
+    recognition.interimResults =
+        false;
+
+
+    recognition.maxAlternatives =
+        3;
+
+
+    recognition.onstart =
+        () => {
+
+            recognitionRunning =
+                true;
+
+            status.textContent =
+                "ZUHÖREN";
+
+        };
+
+
+    recognition.onresult =
+        event => {
+
+            /*
+               Während der Observer spricht:
+               Ergebnisse komplett ignorieren.
+            */
+
+            if (
+                observerSpeaking
+            ) {
+
+                return;
+
+            }
+
+
+            for (
+                let i =
+                    event.resultIndex;
+
+                i <
+                    event.results.length;
+
+                i++
+            ) {
+
+                const result =
+                    event.results[i];
+
+
+                if (
+                    !result.isFinal
+                ) {
+
+                    continue;
+
+                }
+
+
+                for (
+                    let j = 0;
+
+                    j < result.length;
+
+                    j++
+                ) {
+
+                    const heard =
+                        normalize(
+                            result[j]
+                                .transcript
+                        );
+
+
+                    if (
+                        handleCommand(
+                            heard
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+                }
+
+            }
+
+        };
 
 
     recognition.onerror =
         event => {
 
-            listening = false;
+            recognitionRunning =
+                false;
+
+
+            status.textContent =
+                "ZUHÖREN";
+
 
             console.log(
-                "Erkennungsfehler:",
+                "Recognition:",
                 event.error
             );
+
+
+            /*
+               Nicht aggressiv mehrfach
+               neu starten.
+            */
+
+            scheduleRecognitionRestart();
 
         };
 
 
-    recognition.onend = () => {
+    recognition.onend =
+        () => {
 
-        listening = false;
+            recognitionRunning =
+                false;
 
 
-        /*
-           NICHT ständig automatisch
-           neu starten.
+            if (
+                observerStarted &&
+                !observerSpeaking
+            ) {
 
-           Nur nach einer Antwort.
-        */
+                scheduleRecognitionRestart();
 
-        if (
-            speaking
-        ) {
+            }
 
-            return;
-
-        }
-
-    };
+        };
 
 }
 
 
-/* =========================================
-   HALLO
-========================================= */
+/* =================================================
+   NORMALISIERUNG
+================================================= */
 
-function sayHello() {
+function normalize(
+    text
+) {
 
-    if (speaking) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(
+            /[.,!?;:]/g,
+            ""
+        )
+        .replace(
+            /\s+/g,
+            " "
+        );
+
+}
+
+
+/* =================================================
+   RESTART
+================================================= */
+
+function scheduleRecognitionRestart() {
+
+    if (
+        recognitionRestartTimer
+    ) {
+
         return;
-    }
-
-
-    speaking = true;
-
-
-    /*
-       Mikrofon stoppen,
-       damit man den Observer
-       nicht während seiner Antwort
-       selbst triggert.
-    */
-
-    stopListening();
-
-
-    text.textContent =
-        "Hallo.";
-
-
-    /*
-       Alte Sprachwiedergabe löschen.
-    */
-
-    if (
-        window.speechSynthesis
-    ) {
-
-        window.speechSynthesis.cancel();
-
-        window.speechSynthesis.resume();
 
     }
-
-
-    /*
-       Sprachobjekt
-    */
-
-    const utterance =
-        new SpeechSynthesisUtterance(
-            "Hallo."
-        );
-
-
-    utterance.lang =
-        "de-DE";
-
-    utterance.rate =
-        0.9;
-
-    utterance.pitch =
-        0.8;
-
-    utterance.volume =
-        1;
-
-
-    /*
-       Stimme möglichst auf Deutsch setzen.
-    */
-
-    const voices =
-        window.speechSynthesis
-            ?.getVoices();
 
 
     if (
-        voices &&
-        voices.length
+        !observerStarted ||
+        observerSpeaking
     ) {
 
-        const germanVoice =
-            voices.find(
-                voice =>
-                    voice.lang === "de-DE"
-            )
-            ||
-            voices.find(
-                voice =>
-                    voice.lang
-                        ?.toLowerCase()
-                        .startsWith("de")
-            );
-
-
-        if (
-            germanVoice
-        ) {
-
-            utterance.voice =
-                germanVoice;
-
-        }
+        return;
 
     }
 
 
-    /*
-       Falls iPadOS onend NICHT liefert,
-       funktioniert der Test trotzdem.
-    */
-
-    let finished =
-        false;
-
-
-    function finish() {
-
-        if (finished) {
-            return;
-        }
-
-        finished = true;
-
-
-        /*
-           Text nach spätestens
-           1,5 Sekunden entfernen.
-        */
-
-        text.textContent =
-            "";
-
-
-        speaking =
-            false;
-
-
-        /*
-           Danach wieder zuhören.
-        */
-
+    recognitionRestartTimer =
         setTimeout(
-            startListening,
-            500
+            () => {
+
+                recognitionRestartTimer =
+                    null;
+
+                startRecognition();
+
+            },
+            1200
         );
-
-    }
-
-
-    utterance.onend =
-        finish;
-
-
-    utterance.onerror =
-        finish;
-
-
-    /*
-       Sicherheits-Timeout.
-    */
-
-    setTimeout(
-        finish,
-        1500
-    );
-
-
-    /*
-       WICHTIG:
-       speechSynthesis direkt aus
-       dem bereits aktivierten
-       Observer-Kontext verwenden.
-    */
-
-    try {
-
-        window.speechSynthesis
-            .speak(
-                utterance
-            );
-
-    }
-
-    catch (error) {
-
-        console.log(
-            "Sprachfehler:",
-            error
-        );
-
-        finish();
-
-    }
 
 }
 
 
-/* =========================================
-   ZUHÖREN
-========================================= */
+/* =================================================
+   ZUHÖREN STARTEN
+================================================= */
 
-function startListening() {
+function startRecognition() {
 
     if (
-        !recognition ||
-        listening ||
-        speaking
+        !recognition
+    ) {
+
+        status.textContent =
+            "SPRACHERKENNUNG NICHT VERFÜGBAR";
+
+        return;
+
+    }
+
+
+    if (
+        !observerStarted ||
+        observerSpeaking ||
+        recognitionRunning
     ) {
 
         return;
@@ -449,21 +1001,22 @@ function startListening() {
 
     catch (error) {
 
-        console.log(
-            "Startfehler:",
-            error
-        );
+        /*
+           Kein hektisches Restart-Spam.
+        */
+
+        scheduleRecognitionRestart();
 
     }
 
 }
 
 
-/* =========================================
+/* =================================================
    ZUHÖREN STOPPEN
-========================================= */
+================================================= */
 
-function stopListening() {
+function stopRecognition() {
 
     if (
         !recognition
@@ -480,49 +1033,334 @@ function stopListening() {
 
     }
 
-    catch (error) {}
+    catch (e) {}
+
+
+    recognitionRunning =
+        false;
 
 }
 
 
-/* =========================================
-   STARTBUTTON
-========================================= */
+/* =================================================
+   DOPPELTE BEFEHLE VERHINDERN
+================================================= */
 
-start.addEventListener(
+function isDuplicate(
+    command
+) {
+
+    const now =
+        Date.now();
+
+
+    if (
+        command === lastCommand
+        &&
+        now - lastCommandTime < 2500
+    ) {
+
+        return true;
+
+    }
+
+
+    lastCommand =
+        command;
+
+    lastCommandTime =
+        now;
+
+
+    return false;
+
+}
+
+
+/* =================================================
+   BEFEHLE
+================================================= */
+
+function handleCommand(
+    command
+) {
+
+    if (
+        !command
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        isDuplicate(command)
+    ) {
+
+        return true;
+
+    }
+
+
+    /*
+       TESTBEFEHL
+
+       Damit testen wir zuerst
+       ausschließlich die komplette
+       Zuhören -> Antwort -> Zuhören
+       Kette.
+    */
+
+    if (
+        command === "test"
+        ||
+        command.includes(
+            "test"
+        )
+    ) {
+
+        speak(
+            "Test erfolgreich."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       HALLO
+    */
+
+    if (
+        command === "hallo"
+        ||
+        command.startsWith(
+            "hallo "
+        )
+    ) {
+
+        speak(
+            "Hallo."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       WER BIST DU
+    */
+
+    if (
+        command.includes(
+            "wer bist du"
+        )
+    ) {
+
+        speak(
+            "Observer Typ 0.4."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       WO SIND WIR
+    */
+
+    if (
+        command.includes(
+            "wo sind wir"
+        )
+    ) {
+
+        speak(
+            "Ihr befindet euch in einem überwachten Bereich."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       HILFE
+    */
+
+    if (
+        command.includes(
+            "hilfe"
+        )
+    ) {
+
+        speak(
+            "Ich bin nicht fürs Helfen da."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       WASCHMASCHINE
+
+       Darf mitten im Satz vorkommen.
+    */
+
+    if (
+        command.includes(
+            "waschmaschine"
+        )
+    ) {
+
+        speak(
+            "Ich bin nicht für eine Wäsche gemacht."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       WIE KOMMEN WIR RAUS
+    */
+
+    if (
+        command.includes(
+            "wie kommen wir raus"
+        )
+        ||
+        command.includes(
+            "wie kommen wir hier raus"
+        )
+        ||
+        command.includes(
+            "wie kommen wir heraus"
+        )
+        ||
+        (
+            command.includes("wie")
+            &&
+            command.includes("kommen")
+            &&
+            (
+                command.includes("raus")
+                ||
+                command.includes("heraus")
+            )
+        )
+    ) {
+
+        speak(
+            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+        );
+
+        return true;
+
+    }
+
+
+    /*
+       Unbekannter Satz:
+       NICHTS tun.
+
+       Keine Fehlermeldung.
+       Keine Endlosschleife.
+    */
+
+    return false;
+
+}
+
+
+/* =================================================
+   STARTBUTTON
+================================================= */
+
+startButton.addEventListener(
     "click",
-    () => {
+    async () => {
+
+        if (
+            observerStarted
+        ) {
+
+            return;
+
+        }
+
+
+        observerStarted =
+            true;
+
+
+        startButton.classList.add(
+            "hidden"
+        );
+
+
+        status.textContent =
+            "STARTE";
+
 
         /*
-           Sehr wichtig für iPad:
-           Audio direkt innerhalb des
-           Benutzer-Taps initialisieren.
+           Ganz wichtig:
+
+           Die erste Benutzeraktion
+           aktiviert die Audio-Seite.
         */
 
         if (
-            window.speechSynthesis
+            synth
         ) {
 
-            window.speechSynthesis.cancel();
+            try {
 
-            window.speechSynthesis.resume();
+                synth.cancel();
+
+                synth.resume();
+
+            }
+
+            catch (e) {}
 
         }
 
 
         /*
-           Button entfernen.
+           Stimme laden.
         */
 
-        start.style.display =
-            "none";
+        voice =
+            findGermanVoice();
 
 
         /*
-           Mikrofon starten.
+           Blinzeln starten.
         */
 
-        startListening();
+        scheduleBlink();
+
+
+        /*
+           Jetzt Mikrofon starten.
+        */
+
+        setTimeout(
+            () => {
+
+                startRecognition();
+
+            },
+            300
+        );
 
     }
 );
