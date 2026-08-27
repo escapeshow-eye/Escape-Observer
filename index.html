@@ -1,454 +1,1229 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+<meta
+  name="viewport"
+  content="width=device-width,
+           initial-scale=1.0,
+           maximum-scale=1.0,
+           user-scalable=no,
+           viewport-fit=cover"
+>
 
-<title>Sprach-Test</title>
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black"
+>
+
+<title>OBSERVER</title>
+
 
 <style>
 
+/* =========================================
+   GRUNDLAYOUT
+========================================= */
+
+* {
+    box-sizing: border-box;
+
+    -webkit-user-select: none;
+    user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
 html,
 body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: #000;
+
+    color: #fff;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    overflow: hidden;
+
 }
 
-button {
-  padding: 15px 25px;
-  background: #000;
-  color: #fff;
-  border: 1px solid #fff;
-  border-radius: 6px;
-  font-size: 18px;
+
+/* =========================================
+   OBSERVER AUGE
+========================================= */
+
+#observerArea {
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    padding-top: 20px;
+
+    flex-shrink: 0;
+
 }
 
-#status {
-  margin-top: 25px;
-  width: 85%;
-  min-height: 30px;
+
+#eye {
+
+    width: 150px;
+
+    height: 90px;
+
+    border:
+        4px solid white;
+
+    border-radius:
+        50% / 60%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    transition:
+        height 0.12s ease;
+
+}
+
+
+#pupil {
+
+    width: 46px;
+
+    height: 46px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition:
+        transform 0.12s ease;
+
+}
+
+
+#eye.blink {
+
+    height: 6px;
+
+}
+
+
+#eye.blink #pupil {
+
+    transform:
+        scaleY(0);
+
+}
+
+
+/* =========================================
+   TITEL
+========================================= */
+
+#title {
+
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    letter-spacing: 5px;
+
+    opacity: 0.75;
+
+}
+
+
+/* =========================================
+   CHAT
+========================================= */
+
+#chat {
+
+    width: 100%;
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding:
+        20px
+        15px
+        15px;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+.message {
+
+    width: 100%;
+
+    margin-bottom: 16px;
+
+}
+
+
+.messageLabel {
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    opacity: 0.45;
+
+    margin-bottom: 5px;
+
+}
+
+
+.messageText {
+
+    font-size: 16px;
+
+    line-height: 1.45;
+
+    word-wrap: break-word;
+
+}
+
+
+/* =========================================
+   EINGABE
+========================================= */
+
+#inputArea {
+
+    width: 100%;
+
+    padding:
+        10px
+        12px
+        max(
+            12px,
+            env(safe-area-inset-bottom)
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border-top:
+        1px solid rgba(255,255,255,0.15);
+
+    background: #000;
+
+    flex-shrink: 0;
+
+}
+
+
+/* Eingabefeld */
+
+#input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 48px;
+
+    padding:
+        0 14px;
+
+    border:
+        1px solid rgba(255,255,255,0.35);
+
+    border-radius: 24px;
+
+    background: #111;
+
+    color: #fff;
+
+    outline: none;
+
+    font-size: 16px;
+
+    -webkit-user-select: text;
+
+    user-select: text;
+
+}
+
+
+#input::placeholder {
+
+    color:
+        rgba(255,255,255,0.4);
+
+}
+
+
+/* Buttons */
+
+.iconButton {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,0.4);
+
+    background: #000;
+
+    color: #fff;
+
+    font-size: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    touch-action: manipulation;
+
+}
+
+
+.iconButton.active {
+
+    background: #fff;
+
+    color: #000;
+
+}
+
+
+/* =========================================
+   MIKROFON-HINWEIS
+========================================= */
+
+#micStatus {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 80px;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease;
+
+}
+
+
+#micStatus.visible {
+
+    opacity: 0.7;
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<button id="start">
-  TEST STARTEN
-</button>
 
-<div id="status">
-  Noch nicht gestartet
+<!-- =========================================
+     OBSERVER
+========================================= -->
+
+<div id="observerArea">
+
+    <div id="eye">
+
+        <div id="pupil"></div>
+
+    </div>
+
+    <div id="title">
+        OBSERVER
+    </div>
+
 </div>
+
+
+<!-- =========================================
+     CHAT
+========================================= -->
+
+<div id="chat"></div>
+
+
+<!-- =========================================
+     EINGABE
+========================================= -->
+
+<div id="inputArea">
+
+    <button
+        class="iconButton"
+        id="micButton"
+        aria-label="Mikrofon"
+    >
+        🎤
+    </button>
+
+
+    <input
+        id="input"
+        type="text"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="sentences"
+        placeholder="Nachricht..."
+    >
+
+
+    <button
+        class="iconButton"
+        id="sendButton"
+        aria-label="Senden"
+    >
+        ➤
+    </button>
+
+</div>
+
+
+<div id="micStatus">
+    ICH HÖRE ZU ...
+</div>
+
 
 <script>
 
-const startButton =
-  document.getElementById("start");
+/* =========================================
+   ELEMENTE
+========================================= */
 
-const status =
-  document.getElementById("status");
+const eye =
+    document.getElementById("eye");
 
+const chat =
+    document.getElementById("chat");
+
+const input =
+    document.getElementById("input");
+
+const micButton =
+    document.getElementById("micButton");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const micStatus =
+    document.getElementById("micStatus");
+
+
+/* =========================================
+   ZUSTAND
+========================================= */
 
 let recognition = null;
 
-let microphoneStream = null;
+let listening = false;
 
-let speaking = false;
+let answering = false;
+
+let emergencyStep = false;
+
+let lastCommand = "";
+
+let lastCommandTime = 0;
 
 
 /* =========================================
-   STIMME LADEN
+   AUGE
 ========================================= */
 
-let germanVoice = null;
+function blink() {
 
+    eye.classList.add("blink");
 
-function loadVoice() {
+    setTimeout(() => {
 
-  if (!("speechSynthesis" in window)) {
-    return;
-  }
+        eye.classList.remove("blink");
 
-  const voices =
-    window.speechSynthesis.getVoices();
-
-  if (!voices.length) {
-    return;
-  }
-
-  germanVoice =
-    voices.find(
-      voice =>
-        voice.lang === "de-DE"
-    )
-    ||
-    voices.find(
-      voice =>
-        voice.lang &&
-        voice.lang
-          .toLowerCase()
-          .startsWith("de")
-    )
-    ||
-    voices[0];
-
-}
-
-loadVoice();
-
-
-if ("speechSynthesis" in window) {
-
-  window.speechSynthesis.onvoiceschanged =
-    loadVoice;
+    }, 170);
 
 }
 
 
+function scheduleBlink() {
+
+    const delay =
+        4500 +
+        Math.random() * 8500;
+
+
+    setTimeout(() => {
+
+        if (!answering) {
+
+            blink();
+
+        }
+
+        scheduleBlink();
+
+    }, delay);
+
+}
+
+
+scheduleBlink();
+
+
 /* =========================================
-   SPRECHEN
+   CHAT-NACHRICHT
 ========================================= */
 
-function speak(text) {
+function addMessage(
+    sender,
+    message
+) {
 
-  if (!("speechSynthesis" in window)) {
+    const wrapper =
+        document.createElement("div");
 
-    status.textContent =
-      "Sprachausgabe wird nicht unterstützt.";
-
-    return;
-
-  }
-
-
-  speaking = true;
+    wrapper.className =
+        "message";
 
 
-  status.textContent =
-    "Observer spricht: " + text;
+    const label =
+        document.createElement("div");
+
+    label.className =
+        "messageLabel";
+
+    label.textContent =
+        sender;
 
 
-  loadVoice();
+    const text =
+        document.createElement("div");
+
+    text.className =
+        "messageText";
+
+    text.textContent =
+        message;
 
 
-  const utterance =
-    new SpeechSynthesisUtterance(text);
+    wrapper.appendChild(label);
+
+    wrapper.appendChild(text);
+
+    chat.appendChild(wrapper);
 
 
-  utterance.lang =
-    "de-DE";
+    requestAnimationFrame(() => {
 
-  utterance.rate =
-    0.9;
+        chat.scrollTop =
+            chat.scrollHeight;
 
-  utterance.pitch =
-    0.85;
+    });
 
-  utterance.volume =
-    1;
+}
 
 
-  if (germanVoice) {
+/* =========================================
+   EINGABE LEEREN
+========================================= */
 
-    utterance.voice =
-      germanVoice;
+function clearInput() {
 
-  }
+    input.value = "";
 
-
-  utterance.onend =
-    () => {
-
-      speaking = false;
-
-      status.textContent =
-        "Ich höre wieder zu.";
-
-    };
+}
 
 
-  utterance.onerror =
+/* =========================================
+   TEXT NORMALISIEREN
+========================================= */
+
+function normalize(
+    value
+) {
+
+    return value
+        .toLowerCase()
+        .trim()
+        .replace(
+            /[.,!?;:]/g,
+            ""
+        )
+        .replace(
+            /\s+/g,
+            " "
+        );
+
+}
+
+
+/* =========================================
+   DOPPELTE NACHRICHTEN
+========================================= */
+
+function isDuplicate(
+    command
+) {
+
+    const now =
+        Date.now();
+
+
+    if (
+        command === lastCommand &&
+        now - lastCommandTime < 2500
+    ) {
+
+        return true;
+
+    }
+
+
+    lastCommand =
+        command;
+
+    lastCommandTime =
+        now;
+
+
+    return false;
+
+}
+
+
+/* =========================================
+   OBSERVER-ANTWORTEN
+========================================= */
+
+function observerAnswer(
+    command
+) {
+
+    command =
+        normalize(command);
+
+
+    /* -------------------------------
+       NOTFALLNUMMERN
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "notfallnummern"
+        )
+    ) {
+
+        emergencyStep =
+            true;
+
+        return (
+            "Nennen Sie jetzt die Notfallnummer."
+        );
+
+    }
+
+
+    /* -------------------------------
+       NOTFALL 03 / 3
+    -------------------------------- */
+
+    if (
+        emergencyStep
+    ) {
+
+        if (
+            command === "3" ||
+            command === "03" ||
+            command === "drei" ||
+            command === "null drei" ||
+            command.includes(
+                "nummer drei"
+            )
+        ) {
+
+            emergencyStep =
+                false;
+
+            return (
+                "Notfall erkannt, Maßnahmen werden eingeleitet."
+                +
+                "\n\n"
+                +
+                "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner."
+            );
+
+        }
+
+    }
+
+
+    /* -------------------------------
+       HALLO
+    -------------------------------- */
+
+    if (
+        command === "hallo" ||
+        command.startsWith("hallo ")
+    ) {
+
+        return "Hallo.";
+
+    }
+
+
+    /* -------------------------------
+       WER BIST DU
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "wer bist du"
+        ) ||
+        (
+            command.includes("wer") &&
+            command.includes("bist") &&
+            command.includes("du")
+        )
+    ) {
+
+        return "Observer Typ 0.4.";
+
+    }
+
+
+    /* -------------------------------
+       WAS BIST DU
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "was bist du"
+        )
+    ) {
+
+        return "Ich bin Observer Typ 0.4.";
+
+    }
+
+
+    /* -------------------------------
+       WO SIND WIR
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "wo sind wir"
+        ) ||
+        (
+            command.includes("wo") &&
+            command.includes("sind") &&
+            command.includes("wir")
+        )
+    ) {
+
+        return (
+            "Ihr wurdet von zwei Männern hier reingebracht, sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, der eine hatte einen Zettel darin versteckt."
+        );
+
+    }
+
+
+    /* -------------------------------
+       HILFE
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "hilfe"
+        )
+    ) {
+
+        return (
+            "Ich bin nicht fürs Helfen da."
+        );
+
+    }
+
+
+    /* -------------------------------
+       WASCHMASCHINE
+    -------------------------------- */
+
+    if (
+        command.includes(
+            "waschmaschine"
+        )
+    ) {
+
+        return (
+            "Ich bin nicht für eine Wäsche gemacht."
+        );
+
+    }
+
+
+    /* -------------------------------
+       RAUS
+    -------------------------------- */
+
+    const hasWie =
+        command.includes("wie");
+
+    const hasKommen =
+        command.includes("kommen");
+
+    const hasRaus =
+        command.includes("raus") ||
+        command.includes("heraus");
+
+
+    if (
+        (
+            hasWie &&
+            hasKommen &&
+            hasRaus
+        )
+        ||
+        command.includes(
+            "wie kommen wir hier raus"
+        )
+        ||
+        command.includes(
+            "wie kommen wir hier heraus"
+        )
+    ) {
+
+        return (
+            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+        );
+
+    }
+
+
+    /* -------------------------------
+       FALLBACK
+    -------------------------------- */
+
+    return (
+        "Ich habe das nicht verstanden. Wiederholen Sie das bitte."
+    );
+
+}
+
+
+/* =========================================
+   NACHRICHT SENDEN
+========================================= */
+
+function sendMessage() {
+
+    if (answering) {
+        return;
+    }
+
+
+    const raw =
+        input.value.trim();
+
+
+    if (!raw) {
+        return;
+    }
+
+
+    const command =
+        normalize(raw);
+
+
+    if (
+        isDuplicate(command)
+    ) {
+
+        clearInput();
+
+        return;
+
+    }
+
+
+    /*
+       Benutzer-Nachricht.
+    */
+
+    addMessage(
+        "DU",
+        raw
+    );
+
+
+    clearInput();
+
+
+    /*
+       Observer beschäftigt.
+    */
+
+    answering =
+        true;
+
+
+    /*
+       Kleine technische Pause,
+       damit es wie eine echte
+       Verarbeitung wirkt.
+    */
+
+    const delay =
+        250 +
+        Math.random() * 350;
+
+
+    setTimeout(() => {
+
+        const answer =
+            observerAnswer(
+                command
+            );
+
+
+        addMessage(
+            "OBSERVER",
+            answer
+        );
+
+
+        answering =
+            false;
+
+
+    }, delay);
+
+}
+
+
+/* =========================================
+   SENDEN
+========================================= */
+
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+/* Enter senden */
+
+input.addEventListener(
+    "keydown",
     event => {
 
-      speaking = false;
+        if (
+            event.key === "Enter"
+        ) {
 
-      status.textContent =
-        "Sprachfehler: " +
-        event.error;
+            event.preventDefault();
 
-    };
+            sendMessage();
 
+        }
 
-  /*
-    Genau wie beim vorherigen
-    funktionierenden TTS-Test.
-  */
-
-  window.speechSynthesis.resume();
-
-  window.speechSynthesis.speak(
-    utterance
-  );
-
-}
+    }
+);
 
 
 /* =========================================
    SPRACHERKENNUNG
 ========================================= */
 
-const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
+const RecognitionAPI =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
 
-if (!SpeechRecognition) {
+if (RecognitionAPI) {
 
-  status.textContent =
-    "Dieser Browser stellt keine Spracherkennung bereit.";
-
-}
-else {
-
-  recognition =
-    new SpeechRecognition();
-
-  recognition.lang =
-    "de-DE";
-
-  recognition.continuous =
-    true;
-
-  recognition.interimResults =
-    false;
-
-  recognition.maxAlternatives =
-    3;
+    recognition =
+        new RecognitionAPI();
 
 
-  recognition.onstart =
-    () => {
-
-      status.textContent =
-        "🎙️ Ich höre zu. Sag: Hallo";
-
-    };
+    recognition.lang =
+        "de-DE";
 
 
-  recognition.onresult =
-    event => {
-
-      /*
-        Während der Observer spricht,
-        werden neue Worte ignoriert.
-      */
-
-      if (speaking) {
-        return;
-      }
+    recognition.continuous =
+        false;
 
 
-      for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
-      ) {
-
-        const result =
-          event.results[i];
+    recognition.interimResults =
+        true;
 
 
-        if (!result.isFinal) {
-          continue;
-        }
+    recognition.maxAlternatives =
+        3;
 
 
-        for (
-          let j = 0;
-          j < result.length;
-          j++
-        ) {
+    recognition.onstart =
+        () => {
 
-          const heard =
-            result[j]
-              .transcript
-              .toLowerCase()
-              .trim();
+            listening =
+                true;
 
-
-          console.log(
-            "Gehört:",
-            heard
-          );
-
-
-          if (
-            heard.includes("hallo")
-          ) {
-
-            speak(
-              "Hallo."
+            micButton.classList.add(
+                "active"
             );
 
-            return;
+            micStatus.classList.add(
+                "visible"
+            );
 
-          }
+            micStatus.textContent =
+                "ICH HÖRE ZU ...";
 
-
-          status.textContent =
-            "Ich habe gehört: " +
-            heard;
-
-        }
-
-      }
-
-    };
+        };
 
 
-  recognition.onerror =
-    event => {
+    recognition.onresult =
+        event => {
 
-      console.log(
-        "Recognition:",
-        event.error
-      );
+            let transcript =
+                "";
 
 
-      status.textContent =
-        "Erkennungsfehler: " +
-        event.error;
+            for (
+                let i = 0;
+                i < event.results.length;
+                i++
+            ) {
 
-    };
+                transcript +=
+                    event.results[i][0]
+                        .transcript;
+
+            }
 
 
-  recognition.onend =
-    () => {
+            /*
+               Erkannten Text direkt
+               ins Eingabefeld schreiben.
+            */
 
-      /*
-        Für diesen Test noch kein
-        aggressiver automatischer Neustart.
-      */
+            input.value =
+                transcript;
 
-      console.log(
-        "Erkennung beendet."
-      );
 
-    };
+            /*
+               Nur finales Ergebnis
+               automatisch übernehmen.
+            */
+
+            const last =
+                event.results[
+                    event.results.length - 1
+                ];
+
+
+            if (
+                last.isFinal
+            ) {
+
+                micStatus.textContent =
+                    "SPRACHE ERKANNT";
+
+            }
+
+        };
+
+
+    recognition.onerror =
+        event => {
+
+            listening =
+                false;
+
+
+            micButton.classList.remove(
+                "active"
+            );
+
+
+            micStatus.classList.remove(
+                "visible"
+            );
+
+
+            console.log(
+                "Mikrofon:",
+                event.error
+            );
+
+        };
+
+
+    recognition.onend =
+        () => {
+
+            listening =
+                false;
+
+
+            micButton.classList.remove(
+                "active"
+            );
+
+
+            micStatus.classList.remove(
+                "visible"
+            );
+
+        };
 
 }
 
 
 /* =========================================
-   START
+   MIKROFON BUTTON
 ========================================= */
 
-startButton.addEventListener(
-  "click",
-  async () => {
+micButton.addEventListener(
+    "click",
+    () => {
 
-    /*
-      1. Mikrofon erlauben
-    */
+        /*
+           Während Observer antwortet
+           kein neues Zuhören.
+        */
 
-    try {
-
-      microphoneStream =
-        await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: false
-        });
-
-    }
-
-    catch (error) {
-
-      status.textContent =
-        "Mikrofon konnte nicht freigegeben werden.";
-
-      console.log(
-        "Mikrofonfehler:",
-        error
-      );
-
-      return;
-
-    }
+        if (answering) {
+            return;
+        }
 
 
-    /*
-      2. Sprache direkt aus dem
-         Benutzerklick heraus vorbereiten
-    */
+        if (!recognition) {
 
-    if (
-      "speechSynthesis" in window
-    ) {
+            micStatus.textContent =
+                "SPRACHERKENNUNG NICHT VERFÜGBAR";
 
-      loadVoice();
+            micStatus.classList.add(
+                "visible"
+            );
 
-      window.speechSynthesis.resume();
+            setTimeout(() => {
 
-    }
+                micStatus.classList.remove(
+                    "visible"
+                );
 
+            }, 2500);
 
-    /*
-      3. Button verschwinden lassen
-    */
+            return;
 
-    startButton.style.display =
-      "none";
+        }
 
 
-    /*
-      4. Spracherkennung starten
-    */
+        /*
+           Bereits aktiv:
+           wieder stoppen.
+        */
 
-    if (recognition) {
+        if (listening) {
 
-      try {
+            try {
 
-        recognition.start();
+                recognition.stop();
 
-      }
+            } catch (e) {}
 
-      catch (error) {
+            return;
 
-        status.textContent =
-          "Spracherkennung konnte nicht gestartet werden.";
+        }
 
-        console.log(
-          "Startfehler:",
-          error
-        );
 
-      }
+        /*
+           Einmalige Sprachsession.
+        */
+
+        try {
+
+            recognition.start();
+
+        }
+
+        catch (error) {
+
+            console.log(
+                "Recognition start:",
+                error
+            );
+
+        }
 
     }
-
-  }
 );
 
 </script>
 
 </body>
 </html>
+```
