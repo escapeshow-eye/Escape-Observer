@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="de">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 >
 
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,6 +16,10 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 <title>OBSERVER</title>
 
 <style>
+
+/* =========================================
+   GRUNDLAYOUT
+========================================= */
 
 * {
   box-sizing: border-box;
@@ -98,7 +101,7 @@ body {
 
 
 /* =========================================
-   NORMALES BLINZELN
+   BLINZELN
 ========================================= */
 
 #eye.normalBlink #pupil {
@@ -121,7 +124,6 @@ body {
   background: #000;
 
   z-index: 2;
-
 }
 
 #eye.normalBlink::before {
@@ -302,6 +304,12 @@ body {
   flex-shrink: 0;
 
   touch-action: manipulation;
+
+  cursor: pointer;
+}
+
+.iconButton:active {
+  transform: scale(0.94);
 }
 
 
@@ -321,6 +329,8 @@ body {
 .iconButton:disabled {
 
   opacity: 0.3;
+
+  cursor: default;
 }
 
 
@@ -349,7 +359,6 @@ body {
   opacity: 0;
 
   pointer-events: none;
-
 }
 
 #micStatus.visible {
@@ -358,42 +367,357 @@ body {
 
 
 /* =========================================
-   KAMERA
+   KAMERA-BUTTON
 ========================================= */
 
-/*
-   Die Kamera bleibt aktiv,
-   wird aber nicht sichtbar angezeigt.
-*/
+#cameraButton {
+  font-size: 21px;
+}
 
-#scannerVideo {
+
+/* =========================================
+   KAMERA-FENSTER
+========================================= */
+
+#cameraOverlay {
 
   position: fixed;
 
-  width: 2px;
+  inset: 0;
+
+  z-index: 1000;
+
+  background: #000;
+
+  display: none;
+
+  flex-direction: column;
+}
+
+#cameraOverlay.open {
+  display: flex;
+}
+
+
+/* =========================================
+   KAMERA HEADER
+========================================= */
+
+#cameraHeader {
+
+  width: 100%;
+
+  min-height: 62px;
+
+  padding:
+    10px
+    14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  background: #050505;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,0.15);
+
+  flex-shrink: 0;
+}
+
+#cameraTitle {
+
+  font-size: 13px;
+
+  letter-spacing: 3px;
+
+  opacity: 0.8;
+}
+
+
+/* =========================================
+   KAMERA SCHLIESSEN
+========================================= */
+
+#closeCameraButton {
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid
+    rgba(255,255,255,0.35);
+
+  border-radius: 50%;
+
+  background: #000;
+
+  color: #fff;
+
+  font-size: 22px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   VIDEO-BEREICH
+========================================= */
+
+#cameraViewArea {
+
+  position: relative;
+
+  width: 100%;
+
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #000;
+
+  overflow: hidden;
+}
+
+#scannerVideo {
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  background: #000;
+}
+
+
+/* =========================================
+   SCAN-RAHMEN
+========================================= */
+
+#scanFrame {
+
+  position: absolute;
+
+  width: min(72vw, 360px);
+
+  height: min(42vw, 210px);
+
+  border:
+    2px solid
+    rgba(255,255,255,0.8);
+
+  border-radius: 12px;
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 0 9999px
+    rgba(0,0,0,0.25);
+}
+
+#scanFrame::before {
+
+  content: "";
+
+  position: absolute;
+
+  left: 10%;
+
+  right: 10%;
+
+  top: 50%;
+
   height: 2px;
 
-  right: 0;
-  bottom: 0;
+  background: rgba(255,255,255,0.75);
 
-  opacity: 0.01;
+  transform: translateY(-50%);
+}
+
+
+/* =========================================
+   KAMERA STATUS
+========================================= */
+
+#cameraStatus {
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 18px;
+
+  transform:
+    translateX(-50%);
+
+  width: max-content;
+
+  max-width: 90%;
+
+  padding:
+    8px 14px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(0,0,0,0.72);
+
+  font-size: 11px;
+
+  letter-spacing: 1px;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   KAMERA STEUERUNG
+========================================= */
+
+#cameraControls {
+
+  width: 100%;
+
+  padding:
+    12px
+    12px
+    max(
+      12px,
+      env(safe-area-inset-bottom)
+    );
+
+  display: flex;
+
+  gap: 8px;
+
+  background: #050505;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,0.15);
+
+  flex-shrink: 0;
+}
+
+.cameraControlButton {
+
+  flex: 1;
+
+  min-height: 46px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.3);
+
+  border-radius: 23px;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.cameraControlButton.active {
+
+  background: #fff;
+
+  color: #000;
+
+  border-color: #fff;
+}
+
+
+/* =========================================
+   KAMERA INFO
+========================================= */
+
+#cameraInfo {
+
+  position: absolute;
+
+  top: 74px;
+
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  z-index: 3;
+
+  padding:
+    6px 10px;
+
+  background:
+    rgba(0,0,0,0.65);
+
+  border-radius: 14px;
+
+  font-size: 9px;
+
+  letter-spacing: 1px;
+
+  opacity: 0.75;
 
   pointer-events: none;
 }
 
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  #cameraTitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  #scanFrame {
+    width: 78vw;
+    height: 43vw;
+  }
+
+}
+
 </style>
 
-<!--
-  Freie ZXing Browser-Bibliothek.
-  Sie kann Barcodes und QR-Codes direkt
-  aus einem Kamerastream erkennen.
--->
 
-<script src="https://unpkg.com/@zxing/browser@0.2.1/umd/zxing-browser.min.js"></script>
+<!-- =========================================
+     ZXING
+========================================= -->
+
+<script
+  src="https://unpkg.com/@zxing/browser@0.2.1/umd/zxing-browser.min.js">
+</script>
 
 </head>
 
+
 <body>
+
 
 <!-- =========================================
      OBSERVER
@@ -402,11 +726,7 @@ body {
 <div id="observerArea">
 
   <div id="eye">
-
-```
-<div id="pupil"></div>
-```
-
+    <div id="pupil"></div>
   </div>
 
   <div id="title">
@@ -415,11 +735,13 @@ body {
 
 </div>
 
+
 <!-- =========================================
      CHAT
 ========================================= -->
 
 <div id="chat"></div>
+
 
 <!-- =========================================
      EINGABE
@@ -427,61 +749,124 @@ body {
 
 <div id="inputArea">
 
-<button
-id="micButton"
-class="iconButton"
-type="button"
-aria-label="Mikrofon"
-
->
-
-```
-🎤
-```
-
+  <button
+    id="micButton"
+    class="iconButton"
+    type="button"
+    aria-label="Mikrofon"
+  >
+    🎤
   </button>
 
-<input
-id="input"
-type="text"
-placeholder="Nachricht..."
-autocomplete="off"
-autocorrect="off"
-spellcheck="false"
 
->
+  <input
+    id="input"
+    type="text"
+    placeholder="Nachricht..."
+    autocomplete="off"
+    autocorrect="off"
+    spellcheck="false"
+  >
 
-<button
-id="sendButton"
-class="iconButton"
-type="button"
-aria-label="Senden"
 
->
+  <button
+    id="sendButton"
+    class="iconButton"
+    type="button"
+    aria-label="Senden"
+  >
+    ➤
+  </button>
 
-```
-➤
-```
 
+  <button
+    id="cameraButton"
+    class="iconButton"
+    type="button"
+    aria-label="Kamera öffnen"
+  >
+    📷
   </button>
 
 </div>
+
 
 <div id="micStatus">
   ICH HÖRE ZU
 </div>
 
+
 <!-- =========================================
-     VERDECKTE KAMERA
+     KAMERA-OVERLAY
 ========================================= -->
 
-<video
-id="scannerVideo"
-autoplay
-playsinline
-muted
+<div id="cameraOverlay">
 
-> </video>
+
+  <div id="cameraHeader">
+
+    <div id="cameraTitle">
+      OBSERVER · KAMERA
+    </div>
+
+    <button
+      id="closeCameraButton"
+      type="button"
+      aria-label="Kamera schließen"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div id="cameraViewArea">
+
+    <video
+      id="scannerVideo"
+      autoplay
+      playsinline
+      muted
+    ></video>
+
+
+    <div id="cameraInfo">
+      KAMERABILD · OBSERVER
+    </div>
+
+
+    <div id="scanFrame"></div>
+
+
+    <div id="cameraStatus">
+      KAMERA WIRD GESTARTET …
+    </div>
+
+  </div>
+
+
+  <div id="cameraControls">
+
+    <button
+      id="backCameraButton"
+      class="cameraControlButton active"
+      type="button"
+    >
+      🔄 Rückkamera
+    </button>
+
+    <button
+      id="frontCameraButton"
+      class="cameraControlButton"
+      type="button"
+    >
+      🤳 Frontkamera
+    </button>
+
+  </div>
+
+</div>
+
 
 <script>
 
@@ -504,11 +889,29 @@ const micButton =
 const sendButton =
   document.getElementById("sendButton");
 
+const cameraButton =
+  document.getElementById("cameraButton");
+
 const micStatus =
   document.getElementById("micStatus");
 
+const cameraOverlay =
+  document.getElementById("cameraOverlay");
+
+const closeCameraButton =
+  document.getElementById("closeCameraButton");
+
 const scannerVideo =
   document.getElementById("scannerVideo");
+
+const cameraStatus =
+  document.getElementById("cameraStatus");
+
+const backCameraButton =
+  document.getElementById("backCameraButton");
+
+const frontCameraButton =
+  document.getElementById("frontCameraButton");
 
 
 /* =================================================
@@ -889,8 +1292,7 @@ function getEmergencyNumber(
     command === "6" ||
     command === "06" ||
     command === "sechs" ||
-    command === "null sechs" ||
-    command.includes("nummer sechs")
+    command === "null sechs"
   ) {
     return "06";
   }
@@ -967,6 +1369,7 @@ function emergencyNumberResponse(
 
     default:
       return "Ungültiger Notfallkanal.";
+
   }
 
 }
@@ -984,10 +1387,6 @@ function getObserverAnswer(
     normalize(command);
 
 
-  /* =====================================
-     BELEIDIGUNGEN
-  ===================================== */
-
   if (
     containsInsult(command)
   ) {
@@ -996,10 +1395,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     NOTFALLNUMMERN
-  ===================================== */
 
   if (
     command.includes("notfallnummern")
@@ -1013,10 +1408,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     NOTFALLNUMMER
-  ===================================== */
 
   if (
     emergencyStep
@@ -1058,10 +1449,6 @@ function getObserverAnswer(
   }
 
 
-  /* =====================================
-     HALLO
-  ===================================== */
-
   if (
     command === "hallo" ||
     command.startsWith("hallo ") ||
@@ -1074,10 +1461,6 @@ function getObserverAnswer(
   }
 
 
-  /* =====================================
-     WAS
-  ===================================== */
-
   if (
     command === "was"
   ) {
@@ -1086,10 +1469,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     WER BIST DU
-  ===================================== */
 
   if (
     command.includes("wer bist du") ||
@@ -1102,10 +1481,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     WO SIND WIR
-  ===================================== */
 
   if (
     command.includes("wo sind wir") ||
@@ -1125,10 +1500,6 @@ function getObserverAnswer(
   }
 
 
-  /* =====================================
-     HILFE
-  ===================================== */
-
   if (
     command.includes("hilfe") ||
     command.includes("hilf uns")
@@ -1139,10 +1510,6 @@ function getObserverAnswer(
   }
 
 
-  /* =====================================
-     WASCHMASCHINE
-  ===================================== */
-
   if (
     command.includes("waschmaschine")
   ) {
@@ -1151,10 +1518,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     WIE KOMMEN WIR RAUS
-  ===================================== */
 
   const hasWie =
     command.includes("wie");
@@ -1189,10 +1552,6 @@ function getObserverAnswer(
 
   }
 
-
-  /* =====================================
-     OFF-TOPIC
-  ===================================== */
 
   if (
     !isRelevant(command)
@@ -1591,24 +1950,28 @@ let barcodeReader = null;
 
 let barcodeControls = null;
 
+let currentStream = null;
+
+let currentCameraMode = "back";
+
+let scannerStarted = false;
+
 let lastDetectedValue = "";
 
 let lastDetectedTime = 0;
 
-let scannerStarted = false;
 
-
-/*
-   Genau dieser Wert soll reagieren.
-*/
+/* =================================================
+   ZIEL-BARCODE
+================================================= */
 
 const TARGET_BARCODE =
   "000000";
 
 
-/*
-   Gewünschte Nachricht.
-*/
+/* =================================================
+   BARCODE-NACHRICHT
+================================================= */
 
 const BARCODE_MESSAGE =
   "Ich habe den Inhalt in diesem Karton gescannt:\n\n" +
@@ -1635,10 +1998,8 @@ function handleBarcode(
 
 
   /*
-     NUR 000000.
-
-     Jeder andere Barcode:
-     nichts tun.
+     Nur der Barcode 000000
+     darf reagieren.
   */
 
   if (
@@ -1649,12 +2010,6 @@ function handleBarcode(
 
   }
 
-
-  /*
-     Verhindert, dass derselbe
-     Barcode 30-mal pro Sekunde
-     eine neue Nachricht erzeugt.
-  */
 
   const now =
     Date.now();
@@ -1683,6 +2038,167 @@ function handleBarcode(
     BARCODE_MESSAGE
   );
 
+
+  /*
+     Nach erfolgreichem Scan
+     kann das Kamerafenster offen bleiben.
+     So können die Spieler sehen,
+     dass der Scan funktioniert hat.
+  */
+
+  cameraStatus.textContent =
+    "BARCODE ERKANNT";
+
+}
+
+
+/* =================================================
+   KAMERA-GERÄTE
+================================================= */
+
+async function getCameraDevices() {
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.enumerateDevices
+  ) {
+
+    return [];
+
+  }
+
+
+  try {
+
+    const devices =
+      await navigator.mediaDevices.enumerateDevices();
+
+
+    return devices.filter(
+      device =>
+        device.kind === "videoinput"
+    );
+
+  }
+
+  catch (error) {
+
+    console.log(
+      "Kamera-Geräte:",
+      error
+    );
+
+
+    return [];
+
+  }
+
+}
+
+
+/* =================================================
+   RÜCKKAMERA SUCHEN
+================================================= */
+
+function findBackCamera(
+  devices
+) {
+
+  return devices.find(
+    device =>
+      /back|rear|environment|rück|hinten/i
+        .test(
+          device.label || ""
+        )
+  );
+
+}
+
+
+/* =================================================
+   FRONTKAMERA SUCHEN
+================================================= */
+
+function findFrontCamera(
+  devices
+) {
+
+  return devices.find(
+    device =>
+      /front|user|face|vorn/i
+        .test(
+          device.label || ""
+        )
+  );
+
+}
+
+
+/* =================================================
+   KAMERA STOPPEN
+================================================= */
+
+function stopCamera() {
+
+  scannerStarted =
+    false;
+
+
+  if (
+    barcodeControls
+  ) {
+
+    try {
+
+      barcodeControls.stop();
+
+    }
+
+    catch (error) {}
+
+    barcodeControls =
+      null;
+
+  }
+
+
+  if (
+    barcodeReader
+  ) {
+
+    try {
+
+      barcodeReader.reset();
+
+    }
+
+    catch (error) {}
+
+    barcodeReader =
+      null;
+
+  }
+
+
+  if (
+    currentStream
+  ) {
+
+    currentStream
+      .getTracks()
+      .forEach(
+        track => track.stop()
+      );
+
+    currentStream =
+      null;
+
+  }
+
+
+  scannerVideo.srcObject =
+    null;
+
 }
 
 
@@ -1690,28 +2206,121 @@ function handleBarcode(
    KAMERA STARTEN
 ================================================= */
 
-async function startBarcodeScanner() {
+async function startCamera(
+  mode = "back"
+) {
 
-  /*
-     Nicht zweimal starten.
-  */
+  stopCamera();
 
-  if (
-    scannerStarted
-  ) {
 
-    return;
+  currentCameraMode =
+    mode;
+
+
+  cameraStatus.textContent =
+    "KAMERA WIRD GESTARTET …";
+
+
+  try {
+
+    /*
+       Erst versuchen wir die
+       gewünschte Kamera direkt
+       über facingMode zu bekommen.
+    */
+
+    const constraints = {
+
+      video: {
+
+        facingMode:
+          mode === "back"
+            ? { ideal: "environment" }
+            : { ideal: "user" },
+
+        width: {
+          ideal: 1280
+        },
+
+        height: {
+          ideal: 720
+        }
+
+      },
+
+      audio: false
+
+    };
+
+
+    currentStream =
+      await navigator.mediaDevices
+        .getUserMedia(
+          constraints
+        );
+
+
+    scannerVideo.srcObject =
+      currentStream;
+
+
+    await scannerVideo.play();
+
+
+    scannerStarted =
+      true;
+
+
+    updateCameraButtons();
+
+
+    cameraStatus.textContent =
+      mode === "back"
+        ? "RÜCKKAMERA · BARCODE BEREIT"
+        : "FRONTKAMERA · BARCODE BEREIT";
+
+
+    /*
+       Barcode-Erkennung starten.
+    */
+
+    await startBarcodeReader();
+
 
   }
 
+  catch (error) {
+
+    console.log(
+      "Kamera:",
+      error
+    );
+
+
+    cameraStatus.textContent =
+      "KAMERA KONNTE NICHT GESTARTET WERDEN";
+
+
+    scannerStarted =
+      false;
+
+  }
+
+}
+
+
+/* =================================================
+   BARCODE READER STARTEN
+================================================= */
+
+async function startBarcodeReader() {
 
   if (
     !window.ZXingBrowser
   ) {
 
-    console.log(
-      "ZXing konnte nicht geladen werden."
-    );
+    cameraStatus.textContent =
+      "BARCODE-SCANNER NICHT GELADEN";
 
     return;
 
@@ -1720,104 +2329,18 @@ async function startBarcodeScanner() {
 
   try {
 
-    scannerStarted =
-      true;
-
-
-    /*
-       MultiFormatReader erkennt
-       verschiedene Barcode-Typen,
-       einschließlich QR-Codes.
-
-       Wir prüfen danach aber trotzdem
-       ausschließlich auf 000000.
-    */
-
     barcodeReader =
       new ZXingBrowser.BrowserMultiFormatReader();
 
 
-    /*
-       Kamera-Geräte suchen.
-    */
-
-    const devices =
-      await ZXingBrowser.BrowserCodeReader
-        .listVideoInputDevices();
-
-
-    if (
-      !devices ||
-      devices.length === 0
-    ) {
-
-      console.log(
-        "Keine Kamera gefunden."
-      );
-
-      scannerStarted =
-        false;
-
-      return;
-
-    }
-
-
-    /*
-       Zuerst nach Rückkamera suchen.
-
-       Auf iPad heißt sie häufig
-       "back", "rear" oder ähnlich.
-    */
-
-    let selectedDevice =
-      devices.find(
-        device =>
-          /back|rear|environment|rück|hinten/i
-            .test(
-              device.label || ""
-            )
-      );
-
-
-    /*
-       Falls der Name nicht eindeutig
-       ist, letzte Kamera verwenden.
-    */
-
-    if (
-      !selectedDevice
-    ) {
-
-      selectedDevice =
-        devices[devices.length - 1];
-
-    }
-
-
-    /*
-       Dauerhaft aus der Kamera
-       lesen.
-
-       ZXing übernimmt die wiederholten
-       Scanversuche.
-    */
-
     barcodeControls =
       await barcodeReader
-        .decodeFromVideoDevice(
-          selectedDevice.deviceId,
+        .decodeFromVideoElement(
           scannerVideo,
           (
             result,
             error
           ) => {
-
-            /*
-               Kein Ergebnis:
-               völlig normal beim
-               normalen Kamerabetrieb.
-            */
 
             if (
               !result
@@ -1839,24 +2362,14 @@ async function startBarcodeScanner() {
           }
         );
 
-
   }
 
   catch (error) {
 
     console.log(
-      "Barcode-Kamera:",
+      "Barcode Reader:",
       error
     );
-
-
-    /*
-       Scanner darf später erneut
-       versucht werden.
-    */
-
-    scannerStarted =
-      false;
 
   }
 
@@ -1864,23 +2377,182 @@ async function startBarcodeScanner() {
 
 
 /* =================================================
-   KAMERA BEIM LADEN STARTEN
+   KAMERA BUTTONS AKTUALISIEREN
 ================================================= */
 
-/*
-   Einen kleinen Moment warten,
-   damit die Seite vollständig
-   geladen ist.
-*/
+function updateCameraButtons() {
 
-window.addEventListener(
-  "load",
+  backCameraButton.classList.toggle(
+    "active",
+    currentCameraMode === "back"
+  );
+
+
+  frontCameraButton.classList.toggle(
+    "active",
+    currentCameraMode === "front"
+  );
+
+}
+
+
+/* =================================================
+   KAMERA ÖFFNEN
+================================================= */
+
+cameraButton.addEventListener(
+  "click",
+  async () => {
+
+    cameraOverlay.classList.add(
+      "open"
+    );
+
+
+    cameraStatus.textContent =
+      "KAMERA WIRD GESTARTET …";
+
+
+    /*
+       Standardmäßig Rückkamera.
+    */
+
+    currentCameraMode =
+      "back";
+
+
+    updateCameraButtons();
+
+
+    await startCamera(
+      "back"
+    );
+
+  }
+);
+
+
+/* =================================================
+   KAMERA SCHLIESSEN
+================================================= */
+
+closeCameraButton.addEventListener(
+  "click",
   () => {
 
-    setTimeout(
-      startBarcodeScanner,
-      500
+    stopCamera();
+
+
+    cameraOverlay.classList.remove(
+      "open"
     );
+
+  }
+);
+
+
+/* =================================================
+   RÜCKKAMERA
+================================================= */
+
+backCameraButton.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      currentCameraMode === "back" &&
+      scannerStarted
+    ) {
+
+      return;
+
+    }
+
+
+    await startCamera(
+      "back"
+    );
+
+  }
+);
+
+
+/* =================================================
+   FRONTKAMERA
+================================================= */
+
+frontCameraButton.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      currentCameraMode === "front" &&
+      scannerStarted
+    ) {
+
+      return;
+
+    }
+
+
+    await startCamera(
+      "front"
+    );
+
+  }
+);
+
+
+/* =================================================
+   OVERLAY BEIM VERLASSEN STOPPEN
+================================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if (
+      document.hidden
+    ) {
+
+      if (
+        cameraOverlay.classList.contains(
+          "open"
+        )
+      ) {
+
+        stopCamera();
+
+      }
+
+    }
+
+  }
+);
+
+
+/* =================================================
+   ESCAPE-TASTE
+================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape" &&
+      cameraOverlay.classList.contains(
+        "open"
+      )
+    ) {
+
+      stopCamera();
+
+      cameraOverlay.classList.remove(
+        "open"
+      );
+
+    }
 
   }
 );
@@ -1889,4 +2561,3 @@ window.addEventListener(
 
 </body>
 </html>
-```
