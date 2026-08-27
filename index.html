@@ -1,60 +1,63 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
-  <title>Mikrofon Test</title>
+<title>Sprach-Test</title>
 
-  <style>
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+<style>
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
 
-    button {
-      padding: 15px 25px;
-      background: #000;
-      color: #fff;
-      border: 1px solid #fff;
-      border-radius: 6px;
-      font-size: 18px;
-    }
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
-    #status {
-      margin-top: 25px;
-      width: 85%;
-      min-height: 30px;
-    }
-  </style>
+button {
+  padding: 15px 25px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+#status {
+  margin-top: 25px;
+  width: 85%;
+  min-height: 30px;
+}
+
+</style>
 </head>
 
 <body>
 
-  <button id="start">
-    MIKROFON STARTEN
-  </button>
+<button id="start">
+  TEST STARTEN
+</button>
 
-  <div id="status">
-    Noch nicht gestartet
-  </div>
+<div id="status">
+  Noch nicht gestartet
+</div>
 
 <script>
 
@@ -64,9 +67,149 @@ const startButton =
 const status =
   document.getElementById("status");
 
+
 let recognition = null;
 
 let microphoneStream = null;
+
+let speaking = false;
+
+
+/* =========================================
+   STIMME LADEN
+========================================= */
+
+let germanVoice = null;
+
+
+function loadVoice() {
+
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+
+  const voices =
+    window.speechSynthesis.getVoices();
+
+  if (!voices.length) {
+    return;
+  }
+
+  germanVoice =
+    voices.find(
+      voice =>
+        voice.lang === "de-DE"
+    )
+    ||
+    voices.find(
+      voice =>
+        voice.lang &&
+        voice.lang
+          .toLowerCase()
+          .startsWith("de")
+    )
+    ||
+    voices[0];
+
+}
+
+loadVoice();
+
+
+if ("speechSynthesis" in window) {
+
+  window.speechSynthesis.onvoiceschanged =
+    loadVoice;
+
+}
+
+
+/* =========================================
+   SPRECHEN
+========================================= */
+
+function speak(text) {
+
+  if (!("speechSynthesis" in window)) {
+
+    status.textContent =
+      "Sprachausgabe wird nicht unterstützt.";
+
+    return;
+
+  }
+
+
+  speaking = true;
+
+
+  status.textContent =
+    "Observer spricht: " + text;
+
+
+  loadVoice();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+
+  utterance.lang =
+    "de-DE";
+
+  utterance.rate =
+    0.9;
+
+  utterance.pitch =
+    0.85;
+
+  utterance.volume =
+    1;
+
+
+  if (germanVoice) {
+
+    utterance.voice =
+      germanVoice;
+
+  }
+
+
+  utterance.onend =
+    () => {
+
+      speaking = false;
+
+      status.textContent =
+        "Ich höre wieder zu.";
+
+    };
+
+
+  utterance.onerror =
+    event => {
+
+      speaking = false;
+
+      status.textContent =
+        "Sprachfehler: " +
+        event.error;
+
+    };
+
+
+  /*
+    Genau wie beim vorherigen
+    funktionierenden TTS-Test.
+  */
+
+  window.speechSynthesis.resume();
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+
+}
 
 
 /* =========================================
@@ -81,9 +224,10 @@ const SpeechRecognition =
 if (!SpeechRecognition) {
 
   status.textContent =
-    "Spracherkennung wird von diesem Browser nicht unterstützt.";
+    "Dieser Browser stellt keine Spracherkennung bereit.";
 
-} else {
+}
+else {
 
   recognition =
     new SpeechRecognition();
@@ -101,70 +245,98 @@ if (!SpeechRecognition) {
     3;
 
 
-  recognition.onstart = () => {
+  recognition.onstart =
+    () => {
 
-    status.textContent =
-      "🎙️ Ich höre zu. Sag jetzt: Hallo";
+      status.textContent =
+        "🎙️ Ich höre zu. Sag: Hallo";
 
-  };
+    };
 
 
-  recognition.onresult = (event) => {
+  recognition.onresult =
+    event => {
 
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
+      /*
+        Während der Observer spricht,
+        werden neue Worte ignoriert.
+      */
 
-      const result =
-        event.results[i];
-
-      if (!result.isFinal) {
-        continue;
+      if (speaking) {
+        return;
       }
 
-      const heard =
-        result[0]
-          .transcript
-          .toLowerCase()
-          .trim();
 
-      console.log(
-        "Erkannt:",
-        heard
-      );
-
-
-      if (
-        heard.includes("hallo")
+      for (
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
       ) {
 
-        status.textContent =
-          "✅ Hallo erkannt!";
+        const result =
+          event.results[i];
 
-      } else {
 
-        status.textContent =
-          "Gehört: " + heard;
+        if (!result.isFinal) {
+          continue;
+        }
+
+
+        for (
+          let j = 0;
+          j < result.length;
+          j++
+        ) {
+
+          const heard =
+            result[j]
+              .transcript
+              .toLowerCase()
+              .trim();
+
+
+          console.log(
+            "Gehört:",
+            heard
+          );
+
+
+          if (
+            heard.includes("hallo")
+          ) {
+
+            speak(
+              "Hallo."
+            );
+
+            return;
+
+          }
+
+
+          status.textContent =
+            "Ich habe gehört: " +
+            heard;
+
+        }
 
       }
 
-    }
-
-  };
+    };
 
 
   recognition.onerror =
-    (event) => {
-
-      status.textContent =
-        "Fehler: " + event.error;
+    event => {
 
       console.log(
-        "SpeechRecognition Fehler:",
+        "Recognition:",
         event.error
       );
+
+
+      status.textContent =
+        "Erkennungsfehler: " +
+        event.error;
 
     };
 
@@ -172,8 +344,13 @@ if (!SpeechRecognition) {
   recognition.onend =
     () => {
 
+      /*
+        Für diesen Test noch kein
+        aggressiver automatischer Neustart.
+      */
+
       console.log(
-        "Spracherkennung beendet."
+        "Erkennung beendet."
       );
 
     };
@@ -189,17 +366,8 @@ startButton.addEventListener(
   "click",
   async () => {
 
-    startButton.disabled = true;
-
-    status.textContent =
-      "Mikrofon wird angefordert...";
-
-
     /*
-      Mikrofon ausdrücklich freigeben.
-
-      Dadurch sollte auf dem iPad
-      die Mikrofon-Abfrage erscheinen.
+      1. Mikrofon erlauben
     */
 
     try {
@@ -215,22 +383,44 @@ startButton.addEventListener(
     catch (error) {
 
       status.textContent =
-        "Mikrofon wurde nicht freigegeben.";
+        "Mikrofon konnte nicht freigegeben werden.";
 
       console.log(
         "Mikrofonfehler:",
         error
       );
 
-      startButton.disabled = false;
-
       return;
+
     }
 
 
     /*
-      Erst NACH erfolgreicher
-      Mikrofonfreigabe starten.
+      2. Sprache direkt aus dem
+         Benutzerklick heraus vorbereiten
+    */
+
+    if (
+      "speechSynthesis" in window
+    ) {
+
+      loadVoice();
+
+      window.speechSynthesis.resume();
+
+    }
+
+
+    /*
+      3. Button verschwinden lassen
+    */
+
+    startButton.style.display =
+      "none";
+
+
+    /*
+      4. Spracherkennung starten
     */
 
     if (recognition) {
@@ -250,8 +440,6 @@ startButton.addEventListener(
           "Startfehler:",
           error
         );
-
-        startButton.disabled = false;
 
       }
 
