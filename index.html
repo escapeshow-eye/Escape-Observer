@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 
@@ -7,60 +8,40 @@
 
 <meta
   name="viewport"
-  content="width=device-width,
-  initial-scale=1.0,
-  maximum-scale=1.0,
-  user-scalable=no,
-  viewport-fit=cover"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 >
 
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black"
->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <title>OBSERVER</title>
+
 
 <style>
 
 * {
   box-sizing: border-box;
-
   -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-
   width: 100%;
   height: 100%;
-
   margin: 0;
   padding: 0;
 
   background: #000;
   color: #fff;
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 
+  overflow: hidden;
 }
 
 body {
-
   display: flex;
-
   flex-direction: column;
-
-  overflow: hidden;
-
 }
 
 
@@ -71,16 +52,17 @@ body {
 #observerArea {
 
   width: 100%;
+  height: 150px;
+
+  flex-shrink: 0;
 
   display: flex;
-
   flex-direction: column;
 
   align-items: center;
+  justify-content: flex-start;
 
   padding-top: 18px;
-
-  flex-shrink: 0;
 
 }
 
@@ -91,22 +73,23 @@ body {
 
 #eye {
 
+  position: relative;
+
   width: 150px;
   height: 90px;
 
-  border:
-    4px solid white;
+  flex-shrink: 0;
 
-  border-radius:
-    50% / 60%;
+  border: 4px solid #fff;
+
+  border-radius: 50% / 60%;
 
   display: flex;
 
   justify-content: center;
   align-items: center;
 
-  transition:
-    height 120ms ease;
+  overflow: hidden;
 
 }
 
@@ -116,27 +99,57 @@ body {
   width: 46px;
   height: 46px;
 
-  background: white;
+  background: #fff;
 
   border-radius: 50%;
 
   transition:
-    transform 120ms ease;
+    opacity 120ms ease;
 
 }
 
 
-#eye.blink {
-
-  height: 6px;
-
-}
-
+/* =========================================
+   BLINZELN
+========================================= */
 
 #eye.blink #pupil {
 
-  transform:
-    scaleY(0);
+  opacity: 0;
+
+}
+
+
+#eye.blink::before,
+#eye.blink::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: -5px;
+
+  width: calc(100% + 10px);
+
+  height: 51%;
+
+  background: #000;
+
+  z-index: 2;
+
+}
+
+
+#eye.blink::before {
+
+  top: -5px;
+
+}
+
+
+#eye.blink::after {
+
+  bottom: -5px;
 
 }
 
@@ -147,13 +160,13 @@ body {
 
 #title {
 
-  margin-top: 10px;
+  margin-top: 8px;
 
   font-size: 13px;
 
   letter-spacing: 5px;
 
-  opacity: .7;
+  opacity: 0.7;
 
 }
 
@@ -171,9 +184,7 @@ body {
   overflow-y: auto;
 
   padding:
-    18px
-    14px
-    20px;
+    18px 14px 20px;
 
   -webkit-overflow-scrolling:
     touch;
@@ -181,9 +192,13 @@ body {
 }
 
 
+/* =========================================
+   CHAT-NACHRICHTEN
+========================================= */
+
 .message {
 
-  margin-bottom: 16px;
+  margin-bottom: 17px;
 
 }
 
@@ -196,7 +211,7 @@ body {
 
   letter-spacing: 2px;
 
-  opacity: .45;
+  opacity: 0.45;
 
 }
 
@@ -208,6 +223,8 @@ body {
   line-height: 1.5;
 
   word-break: break-word;
+
+  white-space: pre-wrap;
 
 }
 
@@ -236,7 +253,7 @@ body {
 
   border-top:
     1px solid
-    rgba(255,255,255,.15);
+    rgba(255,255,255,0.15);
 
   background: #000;
 
@@ -246,7 +263,7 @@ body {
 
 
 /* =========================================
-   EINGABEFELD
+   TEXTFELD
 ========================================= */
 
 #input {
@@ -257,18 +274,17 @@ body {
 
   height: 48px;
 
-  padding:
-    0 15px;
+  padding: 0 15px;
 
   border:
     1px solid
-    rgba(255,255,255,.35);
+    rgba(255,255,255,0.35);
 
   border-radius: 24px;
 
   background: #111;
 
-  color: white;
+  color: #fff;
 
   outline: none;
 
@@ -283,7 +299,7 @@ body {
 #input::placeholder {
 
   color:
-    rgba(255,255,255,.4);
+    rgba(255,255,255,0.4);
 
 }
 
@@ -301,18 +317,18 @@ body {
 
   border:
     1px solid
-    rgba(255,255,255,.4);
+    rgba(255,255,255,0.4);
 
   border-radius: 50%;
 
   background: #000;
 
-  color: white;
+  color: #fff;
 
   display: flex;
 
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
   font-size: 20px;
 
@@ -327,26 +343,17 @@ body {
 
 #micButton.active {
 
-  background: white;
+  background: #fff;
 
-  color: black;
+  color: #000;
 
-  border-color: white;
-
-}
-
-
-/* Senden */
-
-#sendButton:disabled {
-
-  opacity: .35;
+  border-color: #fff;
 
 }
 
 
 /* =========================================
-   MIKROFON-HINWEIS
+   MIKROFON-TEXT
 ========================================= */
 
 #micStatus {
@@ -355,13 +362,10 @@ body {
 
   left: 50%;
 
-  bottom: 78px;
+  bottom: 80px;
 
   transform:
     translateX(-50%);
-
-  padding:
-    5px 10px;
 
   font-size: 10px;
 
@@ -376,7 +380,7 @@ body {
 
 #micStatus.visible {
 
-  opacity: .65;
+  opacity: 0.65;
 
 }
 
@@ -399,7 +403,6 @@ body {
     <div id="pupil"></div>
 
   </div>
-
 
   <div id="title">
     OBSERVER
@@ -460,6 +463,7 @@ body {
 
 <script>
 
+
 /* =================================================
    ELEMENTE
 ================================================= */
@@ -505,11 +509,11 @@ let listening = false;
 
 let sending = false;
 
+let emergencyStep = false;
+
 let lastSentCommand = "";
 
 let lastSentTime = 0;
-
-let emergencyStep = false;
 
 
 /* =================================================
@@ -529,15 +533,19 @@ function blink() {
       "blink"
     );
 
-  }, 170);
+  }, 180);
 
 }
 
 
+/*
+   Zufälliges normales Blinzeln.
+*/
+
 function scheduleBlink() {
 
   const delay =
-    4500 +
+    5000 +
     Math.random() * 8500;
 
 
@@ -556,6 +564,203 @@ scheduleBlink();
 
 
 /* =================================================
+   MORSE-ALPHABET
+================================================= */
+
+const morse = {
+
+  A: ".-",
+  B: "-...",
+  C: "-.-.",
+  D: "-..",
+  E: ".",
+  F: "..-.",
+  G: "--.",
+  H: "....",
+  I: "..",
+  J: ".---",
+  K: "-.-",
+  L: ".-..",
+  M: "--",
+  N: "-.",
+  O: "---",
+  P: ".--.",
+  Q: "--.-",
+  R: ".-.",
+  S: "...",
+  T: "-",
+  U: "..-",
+  V: "...-",
+  W: ".--",
+  X: "-..-",
+  Y: "-.--",
+  Z: "--.."
+
+};
+
+
+/* =================================================
+   MORSE-BLINKSEQUENZ
+================================================= */
+
+/*
+   Harmloser geheimer Hinweis:
+
+   "STARTET DAS LICHT"
+
+   Punkt = kurzer Blink
+   Strich = langer Blink
+   Pause zwischen Zeichen
+   Pause zwischen Wörtern
+*/
+
+function blinkMorseMessage(
+  message
+) {
+
+  const clean =
+    message
+      .toUpperCase()
+      .replace(
+        /[^A-Z ]/g,
+        ""
+      );
+
+
+  const sequence = [];
+
+
+  for (
+    const character of clean
+  ) {
+
+    if (
+      character === " "
+    ) {
+
+      sequence.push({
+        type: "pause",
+        duration: 900
+      });
+
+      continue;
+
+    }
+
+
+    const code =
+      morse[character];
+
+
+    if (!code) {
+      continue;
+    }
+
+
+    for (
+      const symbol of code
+    ) {
+
+      sequence.push({
+
+        type: "blink",
+
+        duration:
+          symbol === "."
+            ? 180
+            : 500
+
+      });
+
+
+      sequence.push({
+
+        type: "pause",
+
+        duration: 180
+
+      });
+
+    }
+
+
+    sequence.push({
+
+      type: "pause",
+
+      duration: 500
+
+    });
+
+  }
+
+
+  runMorseSequence(
+    sequence,
+    0
+  );
+
+}
+
+
+function runMorseSequence(
+  sequence,
+  index
+) {
+
+  if (
+    index >= sequence.length
+  ) {
+
+    return;
+
+  }
+
+
+  const action =
+    sequence[index];
+
+
+  if (
+    action.type === "blink"
+  ) {
+
+    eye.classList.add(
+      "blink"
+    );
+
+    setTimeout(() => {
+
+      eye.classList.remove(
+        "blink"
+      );
+
+      runMorseSequence(
+        sequence,
+        index + 1
+      );
+
+    }, action.duration);
+
+  }
+
+  else {
+
+    setTimeout(() => {
+
+      runMorseSequence(
+        sequence,
+        index + 1
+      );
+
+    }, action.duration);
+
+  }
+
+}
+
+
+/* =================================================
    CHAT-NACHRICHT
 ================================================= */
 
@@ -569,6 +774,7 @@ function addMessage(
       "div"
     );
 
+
   wrapper.className =
     "message";
 
@@ -578,8 +784,10 @@ function addMessage(
       "div"
     );
 
+
   label.className =
     "messageLabel";
+
 
   label.textContent =
     sender;
@@ -590,8 +798,10 @@ function addMessage(
       "div"
     );
 
+
   text.className =
     "messageText";
+
 
   text.textContent =
     message;
@@ -600,6 +810,7 @@ function addMessage(
   wrapper.appendChild(
     label
   );
+
 
   wrapper.appendChild(
     text
@@ -622,14 +833,14 @@ function addMessage(
 
 
 /* =================================================
-   TEXT NORMALISIEREN
+   NORMALISIEREN
 ================================================= */
 
 function normalize(
-  text
+  value
 ) {
 
-  return text
+  return value
     .toLowerCase()
     .trim()
     .normalize("NFD")
@@ -638,7 +849,7 @@ function normalize(
       ""
     )
     .replace(
-      /[.,!?;:()[\]{}"'„“"']/g,
+      /[.,!?;:()[\]{}"'„“]/g,
       " "
     )
     .replace(
@@ -653,20 +864,7 @@ function normalize(
    BELEIDIGUNGEN
 ================================================= */
 
-/*
-   Häufige deutsche Beleidigungen /
-   Schimpfwörter.
-
-   Die Erkennung arbeitet absichtlich
-   zusätzlich mit Wortgrenzen, damit
-   normale Wörter nicht versehentlich
-   ausgelöst werden.
-
-   Das kann natürlich nicht buchstäblich
-   jede Beleidigung der Welt kennen.
-*/
-
-const insultWords = [
+const insults = [
 
   "arsch",
   "arschloch",
@@ -680,8 +878,8 @@ const insultWords = [
   "vollidiot",
   "hurensohn",
   "mistkerl",
+  "miststück",
   "miststueck",
-  "miststuck",
   "schlampe",
   "wichser",
   "penner",
@@ -699,36 +897,25 @@ function containsInsult(
     text.split(" ");
 
 
-  return insultWords.some(
-    insult =>
-      words.includes(insult)
-      ||
-      text.includes(
-        " " + insult + " "
-      )
+  return insults.some(
+    word =>
+      words.includes(word)
   );
 
 }
 
 
 /* =================================================
-   ESCAPE-ROOM-THEMA
+   OFF-TOPIC
 ================================================= */
-
-/*
-   Begriffe, die grundsätzlich zum
-   Observer / Escape Room gehören.
-
-   Alles andere wird als
-   nicht zur Show gehörend behandelt.
-*/
 
 const relevantWords = [
 
   "observer",
   "escape",
   "raum",
-  "tür",
+  "tuer",
+  "tur",
   "raus",
   "heraus",
   "hilfe",
@@ -737,34 +924,32 @@ const relevantWords = [
   "nummer",
   "drei",
   "03",
-  "männer",
   "mann",
+  "maenner",
+  "männer",
   "hoodie",
   "jacke",
   "zettel",
   "betriebssystem",
+  "ueberwachung",
   "überwachung",
   "beobachtung",
-  "ordner"
+  "ordner",
+  "show",
+  "signal",
+  "licht"
 
 ];
 
-
-/* =================================================
-   RELEVANZ PRÜFEN
-================================================= */
 
 function isRelevant(
   command
 ) {
 
-  /*
-     Bekannte direkte Befehle
-     sind immer erlaubt.
-  */
-
   if (
     command === "hallo" ||
+    command === "hi" ||
+    command === "hey" ||
     command === "was"
   ) {
 
@@ -772,11 +957,6 @@ function isRelevant(
 
   }
 
-
-  /*
-     Fragewörter + Escape-Room-Wörter
-     werden zugelassen.
-  */
 
   for (
     const word of relevantWords
@@ -793,30 +973,19 @@ function isRelevant(
   }
 
 
-  /*
-     Typische Fragen über Observer.
-  */
-
-  if (
+  return (
     command.includes("wer bist") ||
     command.includes("was bist") ||
-    command.includes("wo sind wir") ||
+    command.includes("wie heisst") ||
     command.includes("was passiert") ||
     command.includes("was sollen wir")
-  ) {
-
-    return true;
-
-  }
-
-
-  return false;
+  );
 
 }
 
 
 /* =================================================
-   DOPPELTE EINSENDUNGEN
+   DOPPELTE SENDUNGEN
 ================================================= */
 
 function isDuplicateSend(
@@ -828,8 +997,7 @@ function isDuplicateSend(
 
 
   if (
-    command === lastSentCommand
-    &&
+    command === lastSentCommand &&
     now - lastSentTime < 2500
   ) {
 
@@ -844,8 +1012,85 @@ function isDuplicateSend(
   lastSentTime =
     now;
 
-
   return false;
+
+}
+
+
+/* =================================================
+   NOTFALLNUMMER-TEXT
+================================================= */
+
+function emergencyNumberResponse(
+  number
+) {
+
+  switch (number) {
+
+
+    case "01":
+
+      return (
+        "Notfallkanal 01. Akustische Auffälligkeit registriert. Kein weiterer Vorgang erforderlich."
+      );
+
+
+    case "02":
+
+      return (
+        "Notfallkanal 02. Möglicher Fehlalarm. Überprüfen Sie die Umgebung."
+      );
+
+
+    case "04":
+
+      return (
+        "Notfallkanal 04. Keine eindeutige Gefahrenlage festgestellt."
+      );
+
+
+    case "05":
+
+      return (
+        "Notfallkanal 05. Dieser Kanal ist für den aktuellen Vorgang nicht verfügbar."
+      );
+
+
+    case "06":
+
+      return (
+        "Notfallkanal 06. Falscher Notfallkanal."
+      );
+
+
+    case "07":
+
+      return (
+        "Notfallkanal 07. Keine gültige Notfallmeldung vorhanden."
+      );
+
+
+    case "08":
+
+      return (
+        "Notfallkanal 08. Dieser Kanal ist für den aktuellen Vorfall nicht vorgesehen."
+      );
+
+
+    case "09":
+
+      return (
+        "Notfallkanal 09. Notfallcode nicht bestätigt."
+      );
+
+
+    default:
+
+      return (
+        "Ungültiger Notfallkanal."
+      );
+
+  }
 
 }
 
@@ -865,7 +1110,7 @@ function getObserverAnswer(
 
 
   /* =====================================
-     BELEIDIGUNG
+     BELEIDIGUNGEN
   ===================================== */
 
   if (
@@ -873,7 +1118,7 @@ function getObserverAnswer(
   ) {
 
     return (
-      "Bitte unterlasse das, wir sind im öffentlich-rechtlichen Fernsehen zu sehen!"
+      "Bitte unterlasse das, wir sind im öffentlich Rechtlichen Fernsehen zu sehen!"
     );
 
   }
@@ -892,6 +1137,7 @@ function getObserverAnswer(
     emergencyStep =
       true;
 
+
     return (
       "Nennen Sie jetzt die Notfallnummer."
     );
@@ -900,31 +1146,144 @@ function getObserverAnswer(
 
 
   /* =====================================
-     NOTFALL 03 / 3
+     NOTFALLNUMMER AUSWERTEN
   ===================================== */
 
   if (
     emergencyStep
   ) {
 
+    let number =
+      null;
+
+
     if (
+      command === "1" ||
+      command === "01" ||
+      command === "eins" ||
+      command === "null eins" ||
+      command.includes("nummer eins")
+    ) {
+
+      number = "01";
+
+    }
+
+
+    else if (
+      command === "2" ||
+      command === "02" ||
+      command === "zwei" ||
+      command === "null zwei" ||
+      command.includes("nummer zwei")
+    ) {
+
+      number = "02";
+
+    }
+
+
+    else if (
       command === "3" ||
       command === "03" ||
-      command === "0 3" ||
       command === "drei" ||
       command === "null drei" ||
       command.includes("nummer drei")
     ) {
 
+      number = "03";
+
+    }
+
+
+    else if (
+      command === "4" ||
+      command === "04" ||
+      command === "vier" ||
+      command === "null vier" ||
+      command.includes("nummer vier")
+    ) {
+
+      number = "04";
+
+    }
+
+
+    else if (
+      command === "5" ||
+      command === "05" ||
+      command === "fuenf" ||
+      command === "fünf" ||
+      command === "null fünf" ||
+      command.includes("nummer fünf")
+    ) {
+
+      number = "05";
+
+    }
+
+
+    else if (
+      command === "6" ||
+      command === "06" ||
+      command === "sechs" ||
+      command === "null sechs" ||
+      command.includes("nummer sechs")
+    ) {
+
+      number = "06";
+
+    }
+
+
+    else if (
+      command === "7" ||
+      command === "07" ||
+      command === "sieben" ||
+      command === "null sieben"
+    ) {
+
+      number = "07";
+
+    }
+
+
+    else if (
+      command === "8" ||
+      command === "08" ||
+      command === "acht" ||
+      command === "null acht"
+    ) {
+
+      number = "08";
+
+    }
+
+
+    else if (
+      command === "9" ||
+      command === "09" ||
+      command === "neun" ||
+      command === "null neun"
+    ) {
+
+      number = "09";
+
+    }
+
+
+    /*
+       Richtiger Kanal:
+       03
+    */
+
+    if (
+      number === "03"
+    ) {
+
       emergencyStep =
         false;
 
-
-      /*
-         Der eigentliche Ablauf
-         wird über eine Spezialantwort
-         zurückgegeben.
-      */
 
       return (
         "Notfall erkannt, Maßnahmen werden eingeleitet."
@@ -932,6 +1291,25 @@ function getObserverAnswer(
         "\n\n"
         +
         "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner."
+      );
+
+    }
+
+
+    /*
+       Falscher Kanal.
+    */
+
+    if (
+      number
+    ) {
+
+      emergencyStep =
+        false;
+
+
+      return emergencyNumberResponse(
+        number
       );
 
     }
@@ -946,6 +1324,9 @@ function getObserverAnswer(
   if (
     command === "hallo" ||
     command.startsWith("hallo ")
+    ||
+    command === "hi" ||
+    command === "hey"
   ) {
 
     return "Hallo.";
@@ -1005,10 +1386,8 @@ function getObserverAnswer(
     )
     ||
     (
-      command.includes("wo")
-      &&
-      command.includes("sind")
-      &&
+      command.includes("wo") &&
+      command.includes("sind") &&
       command.includes("wir")
     )
   ) {
@@ -1062,31 +1441,22 @@ function getObserverAnswer(
      WIE KOMMEN WIR RAUS
   ===================================== */
 
-  const hasHow =
-    command.includes(
-      "wie"
-    );
+  const hasWie =
+    command.includes("wie");
 
-  const hasCome =
-    command.includes(
-      "kommen"
-    );
+  const hasKommen =
+    command.includes("kommen");
 
-  const hasOut =
-    command.includes(
-      "raus"
-    )
-    ||
-    command.includes(
-      "heraus"
-    );
+  const hasRaus =
+    command.includes("raus") ||
+    command.includes("heraus");
 
 
   if (
     (
-      hasHow &&
-      hasCome &&
-      hasOut
+      hasWie &&
+      hasKommen &&
+      hasRaus
     )
     ||
     command.includes(
@@ -1094,7 +1464,7 @@ function getObserverAnswer(
     )
     ||
     command.includes(
-      "wie kommen wir heraus"
+      "wie kommen wir hier heraus"
     )
   ) {
 
@@ -1106,7 +1476,7 @@ function getObserverAnswer(
 
 
   /* =====================================
-     NICHT ZUR SHOW
+     OFF-TOPIC
   ===================================== */
 
   if (
@@ -1120,13 +1490,9 @@ function getObserverAnswer(
   }
 
 
-  /*
-     Etwas ist thematisch passend,
-     aber noch nicht als eigener
-     Befehl definiert.
-
-     Deshalb lieber nachfragen.
-  */
+  /* =====================================
+     THEMA ABER NICHT VERSTANDEN
+  ===================================== */
 
   return (
     "Ich habe das nicht verstanden. Stelle die Frage bitte noch einmal."
@@ -1154,8 +1520,12 @@ function sendMessage() {
     input.value.trim();
 
 
-  if (!raw) {
+  if (
+    !raw
+  ) {
+
     return;
+
   }
 
 
@@ -1167,7 +1537,8 @@ function sendMessage() {
     isDuplicateSend(command)
   ) {
 
-    input.value = "";
+    input.value =
+      "";
 
     return;
 
@@ -1177,6 +1548,7 @@ function sendMessage() {
   sending =
     true;
 
+
   sendButton.disabled =
     true;
 
@@ -1185,15 +1557,15 @@ function sendMessage() {
 
 
   /*
-     Sobald abgesendet wird:
-     Mikrofon sofort deaktivieren.
+     Mikrofon beim Absenden
+     sofort aus.
   */
 
   stopListening();
 
 
   /*
-     Nutzer-Nachricht.
+     Nachricht anzeigen.
   */
 
   addMessage(
@@ -1207,7 +1579,7 @@ function sendMessage() {
 
 
   /*
-     Sehr kurze Verarbeitungspause.
+     Observer antwortet.
   */
 
   setTimeout(() => {
@@ -1224,8 +1596,41 @@ function sendMessage() {
     );
 
 
+    /*
+       Wenn der richtige
+       Notfallcode 03 benutzt wurde,
+       zusätzlich Morse-Hinweis.
+    */
+
+    if (
+      command === "3" ||
+      command === "03" ||
+      command === "drei" ||
+      command === "null drei"
+    ) {
+
+      /*
+         Morse-Hinweis nur als
+         geheimes Auge-Signal.
+
+         Harmloser Text:
+         "STARTET DAS LICHT"
+      */
+
+      setTimeout(() => {
+
+        blinkMorseMessage(
+          "STARTET DAS LICHT"
+        );
+
+      }, 700);
+
+    }
+
+
     sending =
       false;
+
 
     sendButton.disabled =
       false;
@@ -1233,13 +1638,14 @@ function sendMessage() {
     micButton.disabled =
       false;
 
+
   }, 180);
 
 }
 
 
 /* =================================================
-   SENDEN BUTTON
+   SENDEN
 ================================================= */
 
 sendButton.addEventListener(
@@ -1291,22 +1697,9 @@ if (
     "de-DE";
 
 
-  /*
-     Nur eine Aufnahme pro
-     Mikrofon-Klick.
-
-     Das verhindert Dauer-Neustarts.
-  */
-
   recognition.continuous =
     false;
 
-
-  /*
-     Zwischenergebnisse anzeigen,
-     damit der Text beim Sprechen
-     schneller entsteht.
-  */
 
   recognition.interimResults =
     true;
@@ -1331,6 +1724,7 @@ if (
       micStatus.classList.add(
         "visible"
       );
+
 
       micStatus.textContent =
         "ICH HÖRE ZU";
@@ -1358,22 +1752,9 @@ if (
       }
 
 
-      /*
-         Während der Aufnahme
-         direkt ins Eingabefeld.
-      */
-
       input.value =
-        transcript;
+        transcript.trim();
 
-
-      /*
-         Bei finalem Ergebnis:
-         Aufnahme beenden.
-
-         Das Mikrofon geht danach
-         automatisch aus.
-      */
 
       const lastResult =
         event.results[
@@ -1385,7 +1766,8 @@ if (
         lastResult.isFinal
       ) {
 
-        stopListening();
+        micStatus.textContent =
+          "SPRACHE ERKANNT";
 
       }
 
@@ -1439,21 +1821,13 @@ if (
 
 
 /* =================================================
-   MIKROFON START / STOP
+   MIKROFON START
 ================================================= */
 
 function startListening() {
 
   if (
-    !recognition
-  ) {
-
-    return;
-
-  }
-
-
-  if (
+    !recognition ||
     listening ||
     sending
   ) {
@@ -1472,7 +1846,7 @@ function startListening() {
   catch (error) {
 
     console.log(
-      "Mikrofon konnte nicht gestartet werden:",
+      "Mikrofon:",
       error
     );
 
@@ -1480,6 +1854,10 @@ function startListening() {
 
 }
 
+
+/* =================================================
+   MIKROFON STOP
+================================================= */
 
 function stopListening() {
 
@@ -1534,11 +1912,6 @@ micButton.addEventListener(
     }
 
 
-    /*
-       Wenn aktiv:
-       Aufnahme sofort beenden.
-    */
-
     if (
       listening
     ) {
@@ -1550,25 +1923,16 @@ micButton.addEventListener(
     }
 
 
-    /*
-       Neue Aufnahme starten.
-    */
-
     startListening();
 
   }
 );
-
-
-/* =================================================
-   STARTZUSTAND
-================================================= */
-
-input.value =
-  "";
 
 </script>
 
 </body>
 
 </html>
+```
+
+Damit wird bei **03** zusätzlich das Auge in Morse blinken und **„STARTET DAS LICHT“** übertragen. So habt ihr denselben geheimen-Effekt, ohne dass der Code eine reale Brand-Anweisung enthält.
