@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 
@@ -8,16 +7,30 @@
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  content="width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no,
+  viewport-fit=cover"
 >
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black"
+>
 
 <title>OBSERVER</title>
 
-
 <style>
+
+/* =========================================
+   GRUNDLAYOUT
+========================================= */
 
 * {
   box-sizing: border-box;
@@ -26,27 +39,39 @@
 
 html,
 body {
+
   width: 100%;
   height: 100%;
+
   margin: 0;
   padding: 0;
 
   background: #000;
   color: #fff;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-  overflow: hidden;
 }
 
 body {
+
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
+
 }
 
 
 /* =========================================
    OBSERVER-BEREICH
+
+   Die Höhe bleibt immer gleich.
+   Dadurch verschiebt sich der Chat
+   beim Blinzeln NICHT.
 ========================================= */
 
 #observerArea {
@@ -57,9 +82,11 @@ body {
   flex-shrink: 0;
 
   display: flex;
+
   flex-direction: column;
 
   align-items: center;
+
   justify-content: flex-start;
 
   padding-top: 18px;
@@ -80,48 +107,53 @@ body {
 
   flex-shrink: 0;
 
-  border: 4px solid #fff;
+  border:
+    4px solid white;
 
-  border-radius: 50% / 60%;
+  border-radius:
+    50% / 60%;
 
   display: flex;
 
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   overflow: hidden;
 
 }
 
 
+/* =========================================
+   PUPILLE
+========================================= */
+
 #pupil {
 
   width: 46px;
   height: 46px;
 
-  background: #fff;
+  background: white;
 
   border-radius: 50%;
-
-  transition:
-    opacity 120ms ease;
 
 }
 
 
 /* =========================================
-   BLINZELN
+   NORMALES BLINZELN
 ========================================= */
 
-#eye.blink #pupil {
+#eye.normalBlink #pupil {
 
   opacity: 0;
 
 }
 
 
-#eye.blink::before,
-#eye.blink::after {
+/* Augenlider */
+
+#eye.normalBlink::before,
+#eye.normalBlink::after {
 
   content: "";
 
@@ -129,7 +161,8 @@ body {
 
   left: -5px;
 
-  width: calc(100% + 10px);
+  width:
+    calc(100% + 10px);
 
   height: 51%;
 
@@ -140,14 +173,64 @@ body {
 }
 
 
-#eye.blink::before {
+#eye.normalBlink::before {
 
   top: -5px;
 
 }
 
 
-#eye.blink::after {
+#eye.normalBlink::after {
+
+  bottom: -5px;
+
+}
+
+
+/* =========================================
+   MORSE-BLINZELN
+
+   Gleiche feste Augenbox.
+   Dadurch verschiebt sich darunter
+   nichts.
+========================================= */
+
+#eye.morseBlink #pupil {
+
+  opacity: 0;
+
+}
+
+
+#eye.morseBlink::before,
+#eye.morseBlink::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: -5px;
+
+  width:
+    calc(100% + 10px);
+
+  height: 51%;
+
+  background: #000;
+
+  z-index: 2;
+
+}
+
+
+#eye.morseBlink::before {
+
+  top: -5px;
+
+}
+
+
+#eye.morseBlink::after {
 
   bottom: -5px;
 
@@ -177,14 +260,16 @@ body {
 
 #chat {
 
-  flex: 1;
-
   width: 100%;
+
+  flex: 1;
 
   overflow-y: auto;
 
   padding:
-    18px 14px 20px;
+    18px
+    14px
+    20px;
 
   -webkit-overflow-scrolling:
     touch;
@@ -193,10 +278,12 @@ body {
 
 
 /* =========================================
-   CHAT-NACHRICHTEN
+   CHAT-NACHRICHT
 ========================================= */
 
 .message {
+
+  width: 100%;
 
   margin-bottom: 17px;
 
@@ -230,7 +317,7 @@ body {
 
 
 /* =========================================
-   EINGABE
+   EINGABEBEREICH
 ========================================= */
 
 #inputArea {
@@ -274,7 +361,8 @@ body {
 
   height: 48px;
 
-  padding: 0 15px;
+  padding:
+    0 15px;
 
   border:
     1px solid
@@ -284,7 +372,7 @@ body {
 
   background: #111;
 
-  color: #fff;
+  color: white;
 
   outline: none;
 
@@ -323,12 +411,12 @@ body {
 
   background: #000;
 
-  color: #fff;
+  color: white;
 
   display: flex;
 
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   font-size: 20px;
 
@@ -339,21 +427,34 @@ body {
 }
 
 
-/* Mikrofon aktiv */
+/* =========================================
+   MIKROFON AKTIV
+========================================= */
 
 #micButton.active {
 
-  background: #fff;
+  background: white;
 
-  color: #000;
+  color: black;
 
-  border-color: #fff;
+  border-color: white;
 
 }
 
 
 /* =========================================
-   MIKROFON-TEXT
+   DEAKTIVIERTE BUTTONS
+========================================= */
+
+.iconButton:disabled {
+
+  opacity: 0.3;
+
+}
+
+
+/* =========================================
+   MIKROFONSTATUS
 ========================================= */
 
 #micStatus {
@@ -367,6 +468,9 @@ body {
   transform:
     translateX(-50%);
 
+  padding:
+    5px 10px;
+
   font-size: 10px;
 
   letter-spacing: 2px;
@@ -374,6 +478,9 @@ body {
   opacity: 0;
 
   pointer-events: none;
+
+  transition:
+    opacity 150ms ease;
 
 }
 
@@ -405,7 +512,9 @@ body {
   </div>
 
   <div id="title">
+
     OBSERVER
+
   </div>
 
 </div>
@@ -430,7 +539,9 @@ body {
     type="button"
     aria-label="Mikrofon"
   >
+
     🎤
+
   </button>
 
 
@@ -450,19 +561,22 @@ body {
     type="button"
     aria-label="Senden"
   >
+
     ➤
+
   </button>
 
 </div>
 
 
 <div id="micStatus">
+
   ICH HÖRE ZU
+
 </div>
 
 
 <script>
-
 
 /* =================================================
    ELEMENTE
@@ -517,20 +631,34 @@ let lastSentTime = 0;
 
 
 /* =================================================
-   AUGE
+   NORMALES BLINZELN
 ================================================= */
 
-function blink() {
+function normalBlink() {
+
+  /*
+     Während Morse läuft,
+     kein normales Blinzeln.
+  */
+
+  if (
+    morseRunning
+  ) {
+
+    return;
+
+  }
+
 
   eye.classList.add(
-    "blink"
+    "normalBlink"
   );
 
 
   setTimeout(() => {
 
     eye.classList.remove(
-      "blink"
+      "normalBlink"
     );
 
   }, 180);
@@ -538,36 +666,11 @@ function blink() {
 }
 
 
-/*
-   Zufälliges normales Blinzeln.
-*/
-
-function scheduleBlink() {
-
-  const delay =
-    5000 +
-    Math.random() * 8500;
-
-
-  setTimeout(() => {
-
-    blink();
-
-    scheduleBlink();
-
-  }, delay);
-
-}
-
-
-scheduleBlink();
-
-
 /* =================================================
    MORSE-ALPHABET
 ================================================= */
 
-const morse = {
+const morseAlphabet = {
 
   A: ".-",
   B: "-...",
@@ -600,116 +703,242 @@ const morse = {
 
 
 /* =================================================
-   MORSE-BLINKSEQUENZ
+   MORSE EINSTELLUNGEN
 ================================================= */
 
 /*
-   Harmloser geheimer Hinweis:
+   Absichtlich langsam.
 
-   "STARTET DAS LICHT"
+   Punkt:
+   650 ms
 
-   Punkt = kurzer Blink
-   Strich = langer Blink
-   Pause zwischen Zeichen
-   Pause zwischen Wörtern
+   Strich:
+   1700 ms
+
+   Dadurch ist der Unterschied
+   sehr deutlich.
 */
 
-function blinkMorseMessage(
-  message
+const MORSE_DOT =
+  650;
+
+const MORSE_DASH =
+  1700;
+
+const MORSE_SYMBOL_PAUSE =
+  700;
+
+const MORSE_LETTER_PAUSE =
+  1700;
+
+const MORSE_WORD_PAUSE =
+  3300;
+
+
+/*
+   Zwischen zwei Durchläufen
+   sehr lange Pause.
+*/
+
+const MORSE_RESTART_PAUSE =
+  10000;
+
+
+/*
+   Drei deutliche Startblinks.
+*/
+
+const MORSE_START_BLINK =
+  350;
+
+
+/*
+   Status.
+*/
+
+let morseRunning =
+  false;
+
+
+/* =================================================
+   MORSE BLINK
+================================================= */
+
+function morseBlink(
+  duration
 ) {
 
-  const clean =
-    message
-      .toUpperCase()
-      .replace(
-        /[^A-Z ]/g,
-        ""
+  return new Promise(
+    resolve => {
+
+      eye.classList.add(
+        "morseBlink"
       );
 
 
-  const sequence = [];
+      setTimeout(() => {
+
+        eye.classList.remove(
+          "morseBlink"
+        );
 
 
-  for (
-    const character of clean
-  ) {
+        resolve();
 
-    if (
-      character === " "
-    ) {
-
-      sequence.push({
-        type: "pause",
-        duration: 900
-      });
-
-      continue;
+      }, duration);
 
     }
-
-
-    const code =
-      morse[character];
-
-
-    if (!code) {
-      continue;
-    }
-
-
-    for (
-      const symbol of code
-    ) {
-
-      sequence.push({
-
-        type: "blink",
-
-        duration:
-          symbol === "."
-            ? 180
-            : 500
-
-      });
-
-
-      sequence.push({
-
-        type: "pause",
-
-        duration: 180
-
-      });
-
-    }
-
-
-    sequence.push({
-
-      type: "pause",
-
-      duration: 500
-
-    });
-
-  }
-
-
-  runMorseSequence(
-    sequence,
-    0
   );
 
 }
 
 
-function runMorseSequence(
-  sequence,
-  index
+/* =================================================
+   MORSE PAUSE
+================================================= */
+
+function morsePause(
+  duration
+) {
+
+  return new Promise(
+    resolve => {
+
+      setTimeout(
+        resolve,
+        duration
+      );
+
+    }
+  );
+
+}
+
+
+/* =================================================
+   EIN MORSE ZEICHEN
+================================================= */
+
+async function playMorseSymbol(
+  symbol
 ) {
 
   if (
-    index >= sequence.length
+    symbol === "."
+  ) {
+
+    await morseBlink(
+      MORSE_DOT
+    );
+
+  }
+
+  else if (
+    symbol === "-"
+  ) {
+
+    await morseBlink(
+      MORSE_DASH
+    );
+
+  }
+
+
+  await morsePause(
+    MORSE_SYMBOL_PAUSE
+  );
+
+}
+
+
+/* =================================================
+   EIN BUCHSTABE
+================================================= */
+
+async function playMorseLetter(
+  letter
+) {
+
+  const code =
+    morseAlphabet[letter];
+
+
+  if (!code) {
+    return;
+  }
+
+
+  for (
+    const symbol of code
+  ) {
+
+    await playMorseSymbol(
+      symbol
+    );
+
+  }
+
+
+  await morsePause(
+    MORSE_LETTER_PAUSE
+  );
+
+}
+
+
+/* =================================================
+   MORSE-NACHRICHT
+================================================= */
+
+async function playMorseMessage() {
+
+  const message =
+    "STARTET DAS LICHT";
+
+
+  for (
+    const character of message
+  ) {
+
+    /*
+       Wortpause.
+    */
+
+    if (
+      character === " "
+    ) {
+
+      await morsePause(
+        MORSE_WORD_PAUSE
+      );
+
+      continue;
+
+    }
+
+
+    await playMorseLetter(
+      character
+    );
+
+  }
+
+}
+
+
+/* =================================================
+   DAUERHAFTER MORSE-CODE
+================================================= */
+
+async function permanentMorse() {
+
+  /*
+     Verhindert mehrere parallele
+     Morse-Schleifen.
+  */
+
+  if (
+    morseRunning
   ) {
 
     return;
@@ -717,47 +946,136 @@ function runMorseSequence(
   }
 
 
-  const action =
-    sequence[index];
+  morseRunning =
+    true;
 
 
-  if (
-    action.type === "blink"
-  ) {
+  while (true) {
 
-    eye.classList.add(
-      "blink"
+    /*
+       ======================================
+       PAUSE VOR DEM START
+       ======================================
+    */
+
+    await morsePause(
+      MORSE_RESTART_PAUSE
     );
 
-    setTimeout(() => {
 
-      eye.classList.remove(
-        "blink"
-      );
+    /*
+       ======================================
+       DEUTLICHES STARTSIGNAL
+       ======================================
 
-      runMorseSequence(
-        sequence,
-        index + 1
-      );
+       Drei lange, klar getrennte Blinks.
+    */
 
-    }, action.duration);
+    await morseBlink(
+      MORSE_START_BLINK
+    );
 
-  }
+    await morsePause(
+      600
+    );
 
-  else {
 
-    setTimeout(() => {
+    await morseBlink(
+      MORSE_START_BLINK
+    );
 
-      runMorseSequence(
-        sequence,
-        index + 1
-      );
+    await morsePause(
+      600
+    );
 
-    }, action.duration);
+
+    await morseBlink(
+      MORSE_START_BLINK
+    );
+
+
+    /*
+       Pause zwischen Startsignal
+       und tatsächlicher Nachricht.
+    */
+
+    await morsePause(
+      2500
+    );
+
+
+    /*
+       ======================================
+       MORSE-TEXT
+       ======================================
+    */
+
+    await playMorseMessage();
+
+
+    /*
+       ======================================
+       ENDE DER RUNDE
+       ======================================
+    */
+
+    await morsePause(
+      MORSE_RESTART_PAUSE
+    );
 
   }
 
 }
+
+
+/* =================================================
+   MORSE START
+================================================= */
+
+/*
+   Startet dauerhaft.
+
+   Das erste eindeutige Startsignal
+   kommt nach 10 Sekunden.
+*/
+
+permanentMorse();
+
+
+/* =================================================
+   ZUFÄLLIGES NORMALES BLINZELN
+================================================= */
+
+function scheduleNormalBlink() {
+
+  const delay =
+    6000 +
+    Math.random() * 9000;
+
+
+  setTimeout(() => {
+
+    if (
+      !morseRunning
+    ) {
+
+      normalBlink();
+
+    }
+
+
+    scheduleNormalBlink();
+
+  }, delay);
+
+}
+
+
+/*
+   Normales Blinzeln starten.
+*/
+
+scheduleNormalBlink();
 
 
 /* =================================================
@@ -793,17 +1111,17 @@ function addMessage(
     sender;
 
 
-  const text =
+  const messageText =
     document.createElement(
       "div"
     );
 
 
-  text.className =
+  messageText.className =
     "messageText";
 
 
-  text.textContent =
+  messageText.textContent =
     message;
 
 
@@ -813,7 +1131,7 @@ function addMessage(
 
 
   wrapper.appendChild(
-    text
+    messageText
   );
 
 
@@ -833,7 +1151,7 @@ function addMessage(
 
 
 /* =================================================
-   NORMALISIEREN
+   TEXT NORMALISIEREN
 ================================================= */
 
 function normalize(
@@ -873,13 +1191,13 @@ const insults = [
   "dummkopf",
   "depp",
   "trottel",
-  "blödmann",
   "blodmann",
+  "blödmann",
   "vollidiot",
   "hurensohn",
   "mistkerl",
-  "miststück",
   "miststueck",
+  "miststuck",
   "schlampe",
   "wichser",
   "penner",
@@ -898,15 +1216,17 @@ function containsInsult(
 
 
   return insults.some(
-    word =>
-      words.includes(word)
+    insult =>
+      words.includes(
+        insult
+      )
   );
 
 }
 
 
 /* =================================================
-   OFF-TOPIC
+   RELEVANTE ESCAPE-ROOM-WÖRTER
 ================================================= */
 
 const relevantWords = [
@@ -914,7 +1234,7 @@ const relevantWords = [
   "observer",
   "escape",
   "raum",
-  "tuer",
+  "tür",
   "tur",
   "raus",
   "heraus",
@@ -925,14 +1245,14 @@ const relevantWords = [
   "drei",
   "03",
   "mann",
-  "maenner",
   "männer",
+  "maenner",
   "hoodie",
   "jacke",
   "zettel",
   "betriebssystem",
-  "ueberwachung",
   "überwachung",
+  "ueberwachung",
   "beobachtung",
   "ordner",
   "show",
@@ -963,7 +1283,9 @@ function isRelevant(
   ) {
 
     if (
-      command.includes(word)
+      command.includes(
+        word
+      )
     ) {
 
       return true;
@@ -973,13 +1295,24 @@ function isRelevant(
   }
 
 
-  return (
-    command.includes("wer bist") ||
-    command.includes("was bist") ||
-    command.includes("wie heisst") ||
-    command.includes("was passiert") ||
+  if (
+    command.includes("wer bist")
+    ||
+    command.includes("was bist")
+    ||
+    command.includes("wie heisst")
+    ||
+    command.includes("was passiert")
+    ||
     command.includes("was sollen wir")
-  );
+  ) {
+
+    return true;
+
+  }
+
+
+  return false;
 
 }
 
@@ -997,7 +1330,8 @@ function isDuplicateSend(
 
 
   if (
-    command === lastSentCommand &&
+    command === lastSentCommand
+    &&
     now - lastSentTime < 2500
   ) {
 
@@ -1009,8 +1343,10 @@ function isDuplicateSend(
   lastSentCommand =
     command;
 
+
   lastSentTime =
     now;
+
 
   return false;
 
@@ -1018,7 +1354,135 @@ function isDuplicateSend(
 
 
 /* =================================================
-   NOTFALLNUMMER-TEXT
+   NOTFALLNUMMER
+================================================= */
+
+function getEmergencyNumber(
+  command
+) {
+
+  if (
+    command === "1" ||
+    command === "01" ||
+    command === "eins" ||
+    command === "null eins" ||
+    command.includes("nummer eins")
+  ) {
+
+    return "01";
+
+  }
+
+
+  if (
+    command === "2" ||
+    command === "02" ||
+    command === "zwei" ||
+    command === "null zwei" ||
+    command.includes("nummer zwei")
+  ) {
+
+    return "02";
+
+  }
+
+
+  if (
+    command === "3" ||
+    command === "03" ||
+    command === "drei" ||
+    command === "null drei" ||
+    command.includes("nummer drei")
+  ) {
+
+    return "03";
+
+  }
+
+
+  if (
+    command === "4" ||
+    command === "04" ||
+    command === "vier" ||
+    command === "null vier" ||
+    command.includes("nummer vier")
+  ) {
+
+    return "04";
+
+  }
+
+
+  if (
+    command === "5" ||
+    command === "05" ||
+    command === "fuenf" ||
+    command === "fünf" ||
+    command === "null fünf" ||
+    command.includes("nummer fünf")
+  ) {
+
+    return "05";
+
+  }
+
+
+  if (
+    command === "6" ||
+    command === "06" ||
+    command === "sechs" ||
+    command === "null sechs" ||
+    command.includes("nummer sechs")
+  ) {
+
+    return "06";
+
+  }
+
+
+  if (
+    command === "7" ||
+    command === "07" ||
+    command === "sieben" ||
+    command === "null sieben"
+  ) {
+
+    return "07";
+
+  }
+
+
+  if (
+    command === "8" ||
+    command === "08" ||
+    command === "acht" ||
+    command === "null acht"
+  ) {
+
+    return "08";
+
+  }
+
+
+  if (
+    command === "9" ||
+    command === "09" ||
+    command === "neun" ||
+    command === "null neun"
+  ) {
+
+    return "09";
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =================================================
+   FALSCHE NOTFALLNUMMERN
 ================================================= */
 
 function emergencyNumberResponse(
@@ -1026,7 +1490,6 @@ function emergencyNumberResponse(
 ) {
 
   switch (number) {
-
 
     case "01":
 
@@ -1153,152 +1616,11 @@ function getObserverAnswer(
     emergencyStep
   ) {
 
-    let number =
-      null;
-
-
-    if (
-      command === "1" ||
-      command === "01" ||
-      command === "eins" ||
-      command === "null eins" ||
-      command.includes("nummer eins")
-    ) {
-
-      number = "01";
-
-    }
-
-
-    else if (
-      command === "2" ||
-      command === "02" ||
-      command === "zwei" ||
-      command === "null zwei" ||
-      command.includes("nummer zwei")
-    ) {
-
-      number = "02";
-
-    }
-
-
-    else if (
-      command === "3" ||
-      command === "03" ||
-      command === "drei" ||
-      command === "null drei" ||
-      command.includes("nummer drei")
-    ) {
-
-      number = "03";
-
-    }
-
-
-    else if (
-      command === "4" ||
-      command === "04" ||
-      command === "vier" ||
-      command === "null vier" ||
-      command.includes("nummer vier")
-    ) {
-
-      number = "04";
-
-    }
-
-
-    else if (
-      command === "5" ||
-      command === "05" ||
-      command === "fuenf" ||
-      command === "fünf" ||
-      command === "null fünf" ||
-      command.includes("nummer fünf")
-    ) {
-
-      number = "05";
-
-    }
-
-
-    else if (
-      command === "6" ||
-      command === "06" ||
-      command === "sechs" ||
-      command === "null sechs" ||
-      command.includes("nummer sechs")
-    ) {
-
-      number = "06";
-
-    }
-
-
-    else if (
-      command === "7" ||
-      command === "07" ||
-      command === "sieben" ||
-      command === "null sieben"
-    ) {
-
-      number = "07";
-
-    }
-
-
-    else if (
-      command === "8" ||
-      command === "08" ||
-      command === "acht" ||
-      command === "null acht"
-    ) {
-
-      number = "08";
-
-    }
-
-
-    else if (
-      command === "9" ||
-      command === "09" ||
-      command === "neun" ||
-      command === "null neun"
-    ) {
-
-      number = "09";
-
-    }
-
-
-    /*
-       Richtiger Kanal:
-       03
-    */
-
-    if (
-      number === "03"
-    ) {
-
-      emergencyStep =
-        false;
-
-
-      return (
-        "Notfall erkannt, Maßnahmen werden eingeleitet."
-        +
-        "\n\n"
-        +
-        "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner."
+    const number =
+      getEmergencyNumber(
+        command
       );
 
-    }
-
-
-    /*
-       Falscher Kanal.
-    */
 
     if (
       number
@@ -1307,6 +1629,30 @@ function getObserverAnswer(
       emergencyStep =
         false;
 
+
+      /*
+         03 ist der richtige
+         Notfallkanal.
+      */
+
+      if (
+        number === "03"
+      ) {
+
+        return (
+          "Notfall erkannt, Maßnahmen werden eingeleitet."
+          +
+          "\n\n"
+          +
+          "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner."
+        );
+
+      }
+
+
+      /*
+         Alle anderen Kanäle sind falsch.
+      */
 
       return emergencyNumberResponse(
         number
@@ -1325,7 +1671,8 @@ function getObserverAnswer(
     command === "hallo" ||
     command.startsWith("hallo ")
     ||
-    command === "hi" ||
+    command === "hi"
+    ||
     command === "hey"
   ) {
 
@@ -1352,21 +1699,13 @@ function getObserverAnswer(
   ===================================== */
 
   if (
-    command.includes(
-      "wer bist du"
-    )
+    command.includes("wer bist du")
     ||
-    command.includes(
-      "was bist du"
-    )
+    command.includes("was bist du")
     ||
-    command.includes(
-      "wie heißt du"
-    )
+    command.includes("wie heißt du")
     ||
-    command.includes(
-      "wie heisst du"
-    )
+    command.includes("wie heisst du")
   ) {
 
     return (
@@ -1381,13 +1720,13 @@ function getObserverAnswer(
   ===================================== */
 
   if (
-    command.includes(
-      "wo sind wir"
-    )
+    command.includes("wo sind wir")
     ||
     (
-      command.includes("wo") &&
-      command.includes("sind") &&
+      command.includes("wo")
+      &&
+      command.includes("sind")
+      &&
       command.includes("wir")
     )
   ) {
@@ -1404,13 +1743,9 @@ function getObserverAnswer(
   ===================================== */
 
   if (
-    command.includes(
-      "hilfe"
-    )
+    command.includes("hilfe")
     ||
-    command.includes(
-      "hilf uns"
-    )
+    command.includes("hilf uns")
   ) {
 
     return (
@@ -1425,9 +1760,7 @@ function getObserverAnswer(
   ===================================== */
 
   if (
-    command.includes(
-      "waschmaschine"
-    )
+    command.includes("waschmaschine")
   ) {
 
     return (
@@ -1448,7 +1781,8 @@ function getObserverAnswer(
     command.includes("kommen");
 
   const hasRaus =
-    command.includes("raus") ||
+    command.includes("raus")
+    ||
     command.includes("heraus");
 
 
@@ -1491,7 +1825,7 @@ function getObserverAnswer(
 
 
   /* =====================================
-     THEMA ABER NICHT VERSTANDEN
+     UNKLAR
   ===================================== */
 
   return (
@@ -1502,7 +1836,7 @@ function getObserverAnswer(
 
 
 /* =================================================
-   SENDEN
+   NACHRICHT SENDEN
 ================================================= */
 
 function sendMessage() {
@@ -1534,7 +1868,9 @@ function sendMessage() {
 
 
   if (
-    isDuplicateSend(command)
+    isDuplicateSend(
+      command
+    )
   ) {
 
     input.value =
@@ -1552,21 +1888,18 @@ function sendMessage() {
   sendButton.disabled =
     true;
 
+
   micButton.disabled =
     true;
 
 
   /*
-     Mikrofon beim Absenden
-     sofort aus.
+     Falls gerade aufgenommen wird:
+     sofort beenden.
   */
 
   stopListening();
 
-
-  /*
-     Nachricht anzeigen.
-  */
 
   addMessage(
     "DU",
@@ -1579,7 +1912,7 @@ function sendMessage() {
 
 
   /*
-     Observer antwortet.
+     Kurze Verarbeitung.
   */
 
   setTimeout(() => {
@@ -1596,44 +1929,13 @@ function sendMessage() {
     );
 
 
-    /*
-       Wenn der richtige
-       Notfallcode 03 benutzt wurde,
-       zusätzlich Morse-Hinweis.
-    */
-
-    if (
-      command === "3" ||
-      command === "03" ||
-      command === "drei" ||
-      command === "null drei"
-    ) {
-
-      /*
-         Morse-Hinweis nur als
-         geheimes Auge-Signal.
-
-         Harmloser Text:
-         "STARTET DAS LICHT"
-      */
-
-      setTimeout(() => {
-
-        blinkMorseMessage(
-          "STARTET DAS LICHT"
-        );
-
-      }, 700);
-
-    }
-
-
     sending =
       false;
 
 
     sendButton.disabled =
       false;
+
 
     micButton.disabled =
       false;
@@ -1697,9 +1999,18 @@ if (
     "de-DE";
 
 
+  /*
+     Eine Aufnahme pro Klick.
+  */
+
   recognition.continuous =
     false;
 
+
+  /*
+     Zwischenergebnisse ins
+     Eingabefeld schreiben.
+  */
 
   recognition.interimResults =
     true;
@@ -1738,6 +2049,11 @@ if (
       let transcript =
         "";
 
+
+      /*
+         Alle verfügbaren Teile
+         zusammensetzen.
+      */
 
       for (
         let i = 0;
@@ -1792,7 +2108,7 @@ if (
 
 
       console.log(
-        "Spracherkennung:",
+        "SpeechRecognition:",
         event.error
       );
 
@@ -1827,8 +2143,10 @@ if (
 function startListening() {
 
   if (
-    !recognition ||
-    listening ||
+    !recognition
+    ||
+    listening
+    ||
     sending
   ) {
 
@@ -1928,11 +2246,16 @@ micButton.addEventListener(
   }
 );
 
+
+/* =================================================
+   INITIALER ZUSTAND
+================================================= */
+
+input.value =
+  "";
+
 </script>
 
 </body>
 
 </html>
-```
-
-Damit wird bei **03** zusätzlich das Auge in Morse blinken und **„STARTET DAS LICHT“** übertragen. So habt ihr denselben geheimen-Effekt, ohne dass der Code eine reale Brand-Anweisung enthält.
