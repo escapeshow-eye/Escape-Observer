@@ -1,212 +1,540 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Observer</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background-color: #050505;
-      color: #00ffcc;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    /* Anzeigetext für gesprochene Sätze */
-    #display-text {
-      font-size: 2rem;
-      min-height: 3rem;
-      margin-bottom: 20px;
-      text-align: center;
-      letter-spacing: 1px;
-    }
+<title>Observer</title>
 
-    /* Animated Observer Auge */
-    .eye-container {
-      width: 180px;
-      height: 180px;
-      border: 4px solid #00ffcc;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px #00ffcc;
-      animation: pulse 2s infinite ease-in-out;
-    }
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    color:#fff;
+    font-family:Arial,sans-serif;
+    overflow:hidden;
+}
 
-    .pupil {
-      width: 60px;
-      height: 60px;
-      background-color: #00ffcc;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #00ffcc;
-      animation: blink 4s infinite ease-in-out;
-    }
+body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 15px #00ffcc; transform: scale(1); }
-      50% { box-shadow: 0 0 35px #00ffcc; transform: scale(1.05); }
-    }
+#eye{
+    width:180px;
+    height:110px;
+    border:4px solid white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:height .12s ease;
+}
 
-    @keyframes blink {
-      0%, 90%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.1); }
-    }
+#pupil{
+    width:55px;
+    height:55px;
+    background:white;
+    border-radius:50%;
+}
 
-    /* Kamera */
-    video {
-      width: 380px;
-      height: 285px;
-      border: 2px solid #00ffcc;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-      display: none;
-    }
-  </style>
+#eye.blink{
+    height:7px;
+}
+
+#eye.blink #pupil{
+    transform:scaleY(0);
+}
+
+#text{
+    width:88%;
+    max-width:800px;
+    min-height:30px;
+    margin-top:35px;
+    text-align:center;
+    font-size:18px;
+    line-height:1.5;
+}
+
+button{
+    margin-top:30px;
+    padding:14px 24px;
+    background:#000;
+    color:#fff;
+    border:1px solid #fff;
+    border-radius:5px;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-  <div id="display-text"></div>
+<div id="eye">
+    <div id="pupil"></div>
+</div>
 
-  <!-- Observer Auge -->
-  <div id="eye" class="eye-container">
-    <div class="pupil"></div>
-  </div>
+<div id="text"></div>
 
-  <!-- Kamera Element -->
-  <video id="webcam" autoplay playsinline muted></video>
+<button id="start">
+    OBSERVER STARTEN
+</button>
 
-  <script>
-    const EXAKTE_BEFEHLE = {
-      "hallo": "Hallo",
-      "wo sind wir": "Sie befinden sich in einem überwachten Bereich",
-      "wer bist du": "Ich bin ein Observer",
-      "wie kommen wir raus": "Probiert es mal mit der Tür, ansonsten keine Ahnung"
+<script>
+
+const eye = document.getElementById("eye");
+const text = document.getElementById("text");
+const startButton = document.getElementById("start");
+
+
+let active = false;
+let speaking = false;
+let recognition = null;
+let recognitionRunning = false;
+
+let voices = [];
+let germanVoice = null;
+
+
+/* =========================================
+   STIMMEN
+========================================= */
+
+function loadVoices(){
+
+    voices = speechSynthesis.getVoices();
+
+    germanVoice =
+        voices.find(v => v.lang === "de-DE") ||
+        voices.find(
+            v =>
+                v.lang &&
+                v.lang.toLowerCase().startsWith("de")
+        ) ||
+        voices[0];
+}
+
+loadVoices();
+
+speechSynthesis.onvoiceschanged = loadVoices;
+
+
+/* =========================================
+   BLINZELN
+========================================= */
+
+function blink(){
+
+    if(!active || speaking){
+        return;
+    }
+
+    eye.classList.add("blink");
+
+    setTimeout(()=>{
+        eye.classList.remove("blink");
+    },160);
+}
+
+function randomBlink(){
+
+    if(!active){
+        return;
+    }
+
+    const delay =
+        5000 +
+        Math.random() * 7000;
+
+    setTimeout(()=>{
+        blink();
+        randomBlink();
+    },delay);
+}
+
+
+/* =========================================
+   SPRACHWIEDERGABE
+========================================= */
+
+function speak(sentence){
+
+    if(!active || speaking){
+        return;
+    }
+
+    speaking = true;
+
+    text.textContent = sentence;
+
+    const utterance =
+        new SpeechSynthesisUtterance(sentence);
+
+    utterance.lang = "de-DE";
+    utterance.rate = 0.9;
+    utterance.pitch = 0.85;
+    utterance.volume = 1;
+
+    if(germanVoice){
+        utterance.voice = germanVoice;
+    }
+
+    utterance.onend = ()=>{
+        speaking = false;
+        text.textContent = "";
     };
 
-    let isSpeaking = false;
-    let cameraStream = null;
-    let cameraTimer = null;
-    let voices = [];
+    utterance.onerror = ()=>{
+        speaking = false;
+        text.textContent = "";
+    };
 
-    // Stimmen für Microsoft Edge initialisieren
-    function loadVoices() {
-      voices = window.speechSynthesis.getVoices();
-    }
-    if ('speechSynthesis' in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
+    speechSynthesis.resume();
 
-    // Sprachausgabe (TTS)
-    function sprich(text) {
-      if (!('speechSynthesis' in window)) return;
+    speechSynthesis.speak(utterance);
+}
 
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'de-DE';
 
-      // Edge-Stimme auswählen
-      if (voices.length > 0) {
-        const edgeVoice = voices.find(v => v.lang.includes('de') && v.name.includes('Microsoft'));
-        if (edgeVoice) utterance.voice = edgeVoice;
-      }
+/* =========================================
+   TEXT NORMALISIEREN
+========================================= */
 
-      utterance.pitch = 0.9;
-      utterance.rate = 0.95;
+function normalize(value){
 
-      utterance.onstart = () => { isSpeaking = true; };
-      utterance.onend = () => { isSpeaking = false; };
-      utterance.onerror = () => { isSpeaking = false; };
+    return value
+        .toLowerCase()
+        .trim()
+        .replace(/[.,!?;:]/g,"")
+        .replace(/\s+/g," ");
 
-      window.speechSynthesis.speak(utterance);
-    }
+}
 
-    // Kamera-Funktionen
-    async function oeffneKamera() {
-      if (cameraStream) return;
 
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        const videoElement = document.getElementById('webcam');
-        videoElement.srcObject = cameraStream;
-        videoElement.style.display = 'block';
-        document.getElementById('eye').style.display = 'none';
+/* =========================================
+   MINI-KI
+========================================= */
 
-        // Timer für automatische Schließung nach 20 Sekunden
-        clearTimeout(cameraTimer);
-        cameraTimer = setTimeout(() => {
-          schliesseKamera();
-        }, 20000);
-      } catch (err) {
-        console.error("Kamerafehler:", err);
-      }
+function think(command){
+
+    const words = command.split(" ");
+
+
+    /* -------------------------
+       HALLO
+    ------------------------- */
+
+    if(
+        command.includes("hallo") ||
+        command.includes("hi") ||
+        command.includes("hey")
+    ){
+        return "Hallo.";
     }
 
-    function schliesseKamera() {
-      clearTimeout(cameraTimer);
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        cameraStream = null;
-      }
-      document.getElementById('webcam').style.display = 'none';
-      document.getElementById('eye').style.display = 'flex';
+
+    /* -------------------------
+       NAME
+    ------------------------- */
+
+    if(
+        command.includes("wer bist du") ||
+        command.includes("was bist du") ||
+        command.includes("wie heißt du")
+    ){
+        return "Observer Typ 0.4.";
     }
 
-    // Spracherkennung (STT)
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = false;
-      recognition.lang = 'de-DE';
+    /* -------------------------
+       WO
+    ------------------------- */
 
-      recognition.onresult = (event) => {
-        if (isSpeaking) return;
+    if(
+        command.includes("wo sind wir") ||
+        command.includes("wo befinden wir uns")
+    ){
+        return "Ihr befindet euch in einem überwachten Bereich.";
+    }
 
-        const lastIndex = event.results.length - 1;
-        const rawText = event.results[lastIndex][0].transcript;
-        const gehoert = rawText.toLowerCase().replace(/[.,?!]/g, "").trim();
 
-        // Nur den gesprochenen Text im Bild anzeigen
-        document.getElementById('display-text').innerText = rawText;
+    /* -------------------------
+       HILFE
+    ------------------------- */
 
-        // Kamera-Befehle
-        if (gehoert === "öffne die kamera") {
-          oeffneKamera();
-          return;
+    if(
+        command.includes("hilfe") ||
+        command.includes("hilf uns")
+    ){
+        return "Ich bin nicht fürs Helfen da.";
+    }
+
+
+    /* -------------------------
+       WASCHMASCHINE
+    ------------------------- */
+
+    if(
+        command.includes("waschmaschine")
+    ){
+        return "Ich bin nicht für eine Wäsche gemacht.";
+    }
+
+
+    /* -------------------------
+       TÜR / FLUCHT
+    ------------------------- */
+
+    if(
+        (
+            command.includes("wie") &&
+            command.includes("raus")
+        )
+        ||
+        command.includes("wie kommen wir hier raus")
+        ||
+        command.includes("wie kommen wir heraus")
+    ){
+        return "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert.";
+    }
+
+
+    /* -------------------------
+       NOTFALL
+    ------------------------- */
+
+    if(
+        command.includes("notfallnummern")
+    ){
+
+        waitingForEmergencyNumber = true;
+
+        return "Nennen Sie jetzt die Notfallnummer.";
+    }
+
+
+    /* -------------------------
+       03
+    ------------------------- */
+
+    if(
+        waitingForEmergencyNumber &&
+        (
+            command === "3" ||
+            command === "03" ||
+            command === "drei" ||
+            command === "null drei"
+        )
+    ){
+
+        waitingForEmergencyNumber = false;
+
+        runEmergency();
+
+        return null;
+    }
+
+
+    /* -------------------------
+       STANDARD
+    ------------------------- */
+
+    return "Ich habe das nicht verstanden. Wiederholen Sie das bitte.";
+}
+
+
+/* =========================================
+   NOTFALL
+========================================= */
+
+let waitingForEmergencyNumber = false;
+let emergencyRunning = false;
+
+
+function runEmergency(){
+
+    if(emergencyRunning){
+        return;
+    }
+
+    emergencyRunning = true;
+
+    speak(
+        "Notfall erkannt, Maßnahmen werden eingeleitet."
+    );
+
+    setTimeout(()=>{
+
+        if(!emergencyRunning){
+            return;
         }
 
-        if (gehoert === "schließe die kamera") {
-          schliesseKamera();
-          return;
+        speak(
+            "Es befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
+            ()=>{
+                emergencyRunning = false;
+            }
+        );
+
+    },5000);
+}
+
+
+/* =========================================
+   SPRACHERKENNUNG
+========================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+if(SpeechRecognition){
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang = "de-DE";
+
+    recognition.continuous = true;
+
+    recognition.interimResults = false;
+
+    recognition.maxAlternatives = 3;
+
+
+    recognition.onstart = ()=>{
+        recognitionRunning = true;
+    };
+
+
+    recognition.onresult = event =>{
+
+        /*
+           Während der Observer spricht:
+           Sprache ignorieren.
+        */
+
+        if(speaking || emergencyRunning){
+            return;
         }
 
-        // Antworten verarbeiten
-        if (gehoert.includes("waschmaschine")) {
-          sprich("Ich bin nicht für eine Wäsche gemacht");
-        } else if (EXAKTE_BEFEHLE[gehoert]) {
-          sprich(EXAKTE_BEFEHLE[gehoert]);
+
+        for(
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ){
+
+            const result =
+                event.results[i];
+
+            if(!result.isFinal){
+                continue;
+            }
+
+
+            for(
+                let j = 0;
+                j < result.length;
+                j++
+            ){
+
+                const command =
+                    normalize(
+                        result[j].transcript
+                    );
+
+
+                const answer =
+                    think(command);
+
+
+                if(answer){
+                    speak(answer);
+                }
+
+                return;
+            }
         }
-      };
+    };
 
-      recognition.onend = () => {
-        recognition.start();
-      };
 
-      // Einmaliger Klick auf den Bildschirm aktiviert Ton & Mikrofon
-      document.body.addEventListener('click', () => {
-        recognition.start();
-        // Kurzer leerer Ton zur Aktivierung der Audio-Schnittstelle in Edge
-        sprich("");
-      }, { once: true });
+    recognition.onerror = ()=>{
+        recognitionRunning = false;
+
+        restartRecognition();
+    };
+
+
+    recognition.onend = ()=>{
+
+        recognitionRunning = false;
+
+        restartRecognition();
+    };
+
+}
+
+
+/* =========================================
+   RESTART
+========================================= */
+
+function restartRecognition(){
+
+    if(
+        !active ||
+        speaking ||
+        emergencyRunning ||
+        recognitionRunning
+    ){
+        return;
     }
-  </script>
+
+    setTimeout(()=>{
+
+        if(
+            active &&
+            !speaking &&
+            !emergencyRunning &&
+            !recognitionRunning
+        ){
+
+            try{
+                recognition.start();
+            }catch(e){}
+
+        }
+
+    },1000);
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+startButton.addEventListener("click",()=>{
+
+    active = true;
+
+    startButton.style.display = "none";
+
+    loadVoices();
+
+    speechSynthesis.resume();
+
+    randomBlink();
+
+    startRecognition();
+
+});
+
+</script>
+
 </body>
 </html>
