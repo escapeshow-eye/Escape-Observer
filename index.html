@@ -2,461 +2,248 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>OBSERVER</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+* {
+    box-sizing: border-box;
 }
 
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-  overflow:hidden;
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
 }
 
-body{
-  display:flex;
-  flex-direction:column;
+body {
+    display: flex;
+    flex-direction: column;
 }
 
-/* =========================
-   OBSERVER
-========================= */
+/* ==============================
+   AUGE
+============================== */
 
-#observerArea{
-  height:150px;
-  flex-shrink:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding-top:18px;
+#observer {
+    height: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-#eye{
-  position:relative;
-  width:150px;
-  height:90px;
-  border:4px solid #fff;
-  border-radius:50% / 60%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+#eye {
+    width: 150px;
+    height: 85px;
+    border: 4px solid white;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-#pupil{
-  width:46px;
-  height:46px;
-  background:#fff;
-  border-radius:50%;
+#pupil {
+    width: 42px;
+    height: 42px;
+    background: white;
+    border-radius: 50%;
 }
 
-#eye.blink #pupil{
-  opacity:0;
+#eye.blink #pupil {
+    opacity: 0;
 }
 
 #eye.blink::before,
-#eye.blink::after{
-  content:"";
-  position:absolute;
-  left:-5px;
-  width:calc(100% + 10px);
-  height:51%;
-  background:#000;
-  z-index:2;
+#eye.blink::after {
+    content: "";
+    position: absolute;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: 52%;
+    background: #000;
+    z-index: 5;
 }
 
-#eye.blink::before{
-  top:-5px;
+#eye.blink::before {
+    top: -5px;
 }
 
-#eye.blink::after{
-  bottom:-5px;
+#eye.blink::after {
+    bottom: -5px;
 }
 
-#title{
-  margin-top:8px;
-  font-size:13px;
-  letter-spacing:5px;
-  opacity:.7;
+#observerName {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 5px;
+    opacity: .6;
 }
 
-#morseText{
-  margin-top:4px;
-  height:16px;
-  font-size:10px;
-  letter-spacing:3px;
-  opacity:.45;
+#morse {
+    margin-top: 5px;
+    height: 15px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    opacity: .45;
 }
 
-
-/* =========================
+/* ==============================
    CHAT
-========================= */
+============================== */
 
-#chat{
-  flex:1;
-  width:100%;
-  overflow-y:auto;
-  padding:18px 14px 20px;
+#chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
 }
 
-.message{
-  width:100%;
-  margin-bottom:17px;
+.message {
+    margin-bottom: 18px;
 }
 
-.messageLabel{
-  margin-bottom:5px;
-  font-size:10px;
-  letter-spacing:2px;
-  opacity:.45;
+.label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: .45;
+    margin-bottom: 5px;
 }
 
-.messageText{
-  font-size:16px;
-  line-height:1.5;
-  word-break:break-word;
-  white-space:pre-wrap;
+.text {
+    font-size: 16px;
+    line-height: 1.5;
+    white-space: pre-wrap;
 }
 
+/* ==============================
+   EINGABE
+============================== */
 
-/* =========================
-   INPUT
-========================= */
-
-#inputArea{
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:9px 12px max(10px,env(safe-area-inset-bottom));
-  border-top:1px solid rgba(255,255,255,.15);
-  background:#000;
-  flex-shrink:0;
+#inputArea {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid #222;
 }
 
-#input{
-  flex:1;
-  min-width:0;
-  height:48px;
-  padding:0 15px;
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:24px;
-  background:#111;
-  color:#fff;
-  outline:none;
-  font-size:16px;
+#input {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    border-radius: 25px;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+    padding: 0 15px;
+    font-size: 16px;
+    outline: none;
 }
 
-#input::placeholder{
-  color:rgba(255,255,255,.4);
+.button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
 }
 
-.iconButton{
-  width:48px;
-  height:48px;
-  padding:0;
-  border:1px solid rgba(255,255,255,.4);
-  border-radius:50%;
-  background:#000;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  flex-shrink:0;
-  cursor:pointer;
+.button:active {
+    transform: scale(.94);
 }
 
-.iconButton:active{
-  transform:scale(.94);
+#mic.active {
+    background: white;
+    color: black;
 }
 
-#micButton.active{
-  background:#fff;
-  color:#000;
-  border-color:#fff;
+#status {
+    position: fixed;
+    bottom: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: 0;
 }
 
-#micStatus{
-  position:fixed;
-  left:50%;
-  bottom:80px;
-  transform:translateX(-50%);
-  padding:5px 10px;
-  font-size:10px;
-  letter-spacing:2px;
-  opacity:0;
-  pointer-events:none;
-}
-
-#micStatus.visible{
-  opacity:.65;
-}
-
-
-/* =========================
-   KAMERA
-========================= */
-
-#cameraOverlay{
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:#000;
-  display:none;
-  flex-direction:column;
-}
-
-#cameraOverlay.open{
-  display:flex;
-}
-
-#cameraHeader{
-  min-height:62px;
-  padding:10px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#050505;
-  border-bottom:1px solid rgba(255,255,255,.15);
-}
-
-#cameraTitle{
-  font-size:13px;
-  letter-spacing:3px;
-  opacity:.8;
-}
-
-#closeCameraButton{
-  width:42px;
-  height:42px;
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:50%;
-  background:#000;
-  color:#fff;
-  font-size:22px;
-}
-
-#cameraViewArea{
-  position:relative;
-  flex:1;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#000;
-  overflow:hidden;
-}
-
-#scannerVideo{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:#000;
-}
-
-#scanFrame{
-  position:absolute;
-  width:min(72vw,360px);
-  height:min(42vw,210px);
-  border:2px solid rgba(255,255,255,.8);
-  border-radius:12px;
-  pointer-events:none;
-  box-shadow:0 0 0 9999px rgba(0,0,0,.25);
-}
-
-#scanFrame::before{
-  content:"";
-  position:absolute;
-  left:10%;
-  right:10%;
-  top:50%;
-  height:2px;
-  background:rgba(255,255,255,.75);
-}
-
-#cameraStatus{
-  position:absolute;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  width:max-content;
-  max-width:90%;
-  padding:8px 14px;
-  border-radius:20px;
-  background:rgba(0,0,0,.72);
-  font-size:11px;
-  letter-spacing:1px;
-  text-align:center;
-}
-
-#cameraControls{
-  width:100%;
-  padding:12px max(12px,env(safe-area-inset-bottom));
-  display:flex;
-  gap:8px;
-  background:#050505;
-  border-top:1px solid rgba(255,255,255,.15);
-}
-
-.cameraControlButton{
-  flex:1;
-  min-height:46px;
-  border:1px solid rgba(255,255,255,.3);
-  border-radius:23px;
-  background:#111;
-  color:#fff;
-  font-size:13px;
-}
-
-.cameraControlButton.active{
-  background:#fff;
-  color:#000;
+#status.active {
+    opacity: .6;
 }
 </style>
-
-<script src="https://unpkg.com/@zxing/browser@0.2.1/umd/index.min.js"></script>
-
 </head>
 
 <body>
 
-<!-- =========================
+<!-- ==============================
      OBSERVER AUGE
-========================= -->
+============================== -->
 
-<div id="observerArea">
+<div id="observer">
 
-  <div id="eye">
-    <div id="pupil"></div>
-  </div>
+    <div id="eye">
+        <div id="pupil"></div>
+    </div>
 
-  <div id="title">OBSERVER</div>
+    <div id="observerName">
+        OBSERVER
+    </div>
 
-  <div id="morseText"></div>
+    <div id="morse"></div>
 
 </div>
 
 
-<!-- =========================
+<!-- ==============================
      CHAT
-========================= -->
+============================== -->
 
 <div id="chat"></div>
 
 
-<!-- =========================
+<!-- ==============================
      EINGABE
-========================= -->
+============================== -->
 
 <div id="inputArea">
 
-  <button
-    id="micButton"
-    class="iconButton"
-    type="button"
-    aria-label="Mikrofon"
-  >
-    🎤
-  </button>
+    <button
+        class="button"
+        id="mic"
+        title="Mikrofon"
+    >
+        🎤
+    </button>
 
-  <input
-    id="input"
-    type="text"
-    placeholder="Nachricht..."
-    autocomplete="off"
-    autocorrect="off"
-    spellcheck="false"
-  >
+    <input
+        id="input"
+        type="text"
+        placeholder="Nachricht..."
+        autocomplete="off"
+    >
 
-  <button
-    id="sendButton"
-    class="iconButton"
-    type="button"
-    aria-label="Senden"
-  >
-    ➤
-  </button>
-
-  <button
-    id="cameraButton"
-    class="iconButton"
-    type="button"
-    aria-label="Kamera"
-  >
-    📷
-  </button>
+    <button
+        class="button"
+        id="send"
+        title="Senden"
+    >
+        ➤
+    </button>
 
 </div>
 
-<div id="micStatus">
-  ICH HÖRE ZU
-</div>
-
-
-<!-- =========================
-     KAMERA
-========================= -->
-
-<div id="cameraOverlay">
-
-  <div id="cameraHeader">
-
-    <div id="cameraTitle">
-      OBSERVER · KAMERA
-    </div>
-
-    <button id="closeCameraButton">
-      ×
-    </button>
-
-  </div>
-
-  <div id="cameraViewArea">
-
-    <video
-      id="scannerVideo"
-      autoplay
-      muted
-      playsinline
-    ></video>
-
-    <div id="scanFrame"></div>
-
-    <div id="cameraStatus">
-      KAMERA WIRD GESTARTET …
-    </div>
-
-  </div>
-
-  <div id="cameraControls">
-
-    <button
-      id="backCameraButton"
-      class="cameraControlButton active"
-    >
-      Rückkamera
-    </button>
-
-    <button
-      id="frontCameraButton"
-      class="cameraControlButton"
-    >
-      Frontkamera
-    </button>
-
-  </div>
-
+<div id="status">
+    ICH HÖRE ZU
 </div>
 
 
@@ -467,46 +254,25 @@ body{
 ================================================= */
 
 const chat =
-  document.getElementById("chat");
+    document.getElementById("chat");
 
 const input =
-  document.getElementById("input");
+    document.getElementById("input");
 
-const sendButton =
-  document.getElementById("sendButton");
+const send =
+    document.getElementById("send");
 
-const micButton =
-  document.getElementById("micButton");
+const mic =
+    document.getElementById("mic");
 
-const micStatus =
-  document.getElementById("micStatus");
+const status =
+    document.getElementById("status");
 
 const eye =
-  document.getElementById("eye");
+    document.getElementById("eye");
 
-const morseText =
-  document.getElementById("morseText");
-
-const cameraButton =
-  document.getElementById("cameraButton");
-
-const cameraOverlay =
-  document.getElementById("cameraOverlay");
-
-const closeCameraButton =
-  document.getElementById("closeCameraButton");
-
-const scannerVideo =
-  document.getElementById("scannerVideo");
-
-const cameraStatus =
-  document.getElementById("cameraStatus");
-
-const backCameraButton =
-  document.getElementById("backCameraButton");
-
-const frontCameraButton =
-  document.getElementById("frontCameraButton");
+const morse =
+    document.getElementById("morse");
 
 
 /* =================================================
@@ -514,269 +280,185 @@ const frontCameraButton =
 ================================================= */
 
 function addMessage(
-  label,
-  text
-){
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message";
-
-  const messageLabel =
-    document.createElement("div");
-
-  messageLabel.className =
-    "messageLabel";
-
-  messageLabel.textContent =
-    label;
-
-  const messageText =
-    document.createElement("div");
-
-  messageText.className =
-    "messageText";
-
-  messageText.textContent =
-    text;
-
-  message.appendChild(
-    messageLabel
-  );
-
-  message.appendChild(
-    messageText
-  );
-
-  chat.appendChild(
+    sender,
     message
-  );
+) {
 
-  requestAnimationFrame(
-    () => {
+    const wrapper =
+        document.createElement("div");
 
-      chat.scrollTop =
+    wrapper.className =
+        "message";
+
+    const label =
+        document.createElement("div");
+
+    label.className =
+        "label";
+
+    label.textContent =
+        sender;
+
+    const text =
+        document.createElement("div");
+
+    text.className =
+        "text";
+
+    text.textContent =
+        message;
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(text);
+
+    chat.appendChild(wrapper);
+
+    chat.scrollTop =
         chat.scrollHeight;
-
-    }
-  );
-
 }
 
 
 /* =================================================
-   BLINZELN
+   AUGE BLINKEN
 ================================================= */
 
-function blinkEye(){
+function blinkEye() {
 
-  eye.classList.add(
-    "blink"
-  );
+    eye.classList.add("blink");
 
-  setTimeout(
-    () => {
+    setTimeout(() => {
 
-      eye.classList.remove(
-        "blink"
-      );
+        eye.classList.remove("blink");
 
-    },
-    180
-  );
-
+    }, 180);
 }
 
 
 /* =================================================
    MORSECODE
-   SYMBOL ANZÜNDEN
 ================================================= */
 
 const morseMap = {
 
-  "A": ".-",
-  "Ä": ".-.-",
-  "B": "-...",
-  "C": "-.-.",
-  "D": "-..",
-  "E": ".",
-  "F": "..-.",
-  "G": "--.",
-  "H": "....",
-  "I": "..",
-  "J": ".---",
-  "K": "-.-",
-  "L": ".-..",
-  "M": "--",
-  "N": "-.",
-  "O": "---",
-  "Ö": "---.",
-  "P": ".--.",
-  "Q": "--.-",
-  "R": ".-.",
-  "S": "...",
-  "T": "-",
-  "U": "..-",
-  "Ü": "..--",
-  "V": "...-",
-  "W": ".--",
-  "X": "-..-",
-  "Y": "-.--",
-  "Z": "--.."
+    A: ".-",
+    B: "-...",
+    C: "-.-.",
+    D: "-..",
+    E: ".",
+    F: "..-.",
+    G: "--.",
+    H: "....",
+    I: "..",
+    J: ".---",
+    K: "-.-",
+    L: ".-..",
+    M: "--",
+    N: "-.",
+    O: "---",
+    P: ".--.",
+    Q: "--.-",
+    R: ".-.",
+    S: "...",
+    T: "-",
+    U: "..-",
+    V: "...-",
+    W: ".--",
+    X: "-..-",
+    Y: "-.--",
+    Z: "--.."
 
 };
 
-const morseSentence =
-  "SYMBOL ANZÜNDEN";
+const morseMessage =
+    "SYMBOL ANZUENDEN";
 
+let morseIndex = 0;
+let symbolIndex = 0;
 
-function getMorseLetters(){
+function morseLoop() {
 
-  return morseSentence
-    .split("")
-    .map(
-      letter => {
+    const letters =
+        morseMessage.split("");
 
-        if(
-          letter === " "
-        ){
+    if (
+        morseIndex >=
+        letters.length
+    ) {
 
-          return "/";
+        morse.textContent =
+            "— NEUSTART —";
 
-        }
+        morseIndex = 0;
+        symbolIndex = 0;
 
-        return (
-          morseMap[
-            letter
-          ] || ""
+        setTimeout(
+            morseLoop,
+            1800
         );
 
-      }
-    );
-
-}
-
-
-const morseLetters =
-  getMorseLetters();
-
-let morseIndex =
-  0;
-
-let morseSymbolIndex =
-  0;
-
-
-function playNextMorse(){
-
-  const current =
-    morseLetters[
-      morseIndex
-    ];
-
-
-  if(
-    current === "/"
-  ){
-
-    morseText.textContent =
-      "   /   ";
-
-    morseIndex++;
-
-    setTimeout(
-      playNextMorse,
-      1000
-    );
-
-    return;
-
-  }
-
-
-  if(
-    !current ||
-    morseSymbolIndex >=
-      current.length
-  ){
-
-    morseIndex++;
-
-    morseSymbolIndex =
-      0;
-
-
-    if(
-      morseIndex >=
-      morseLetters.length
-    ){
-
-      morseText.textContent =
-        "—  NEUSTART  —";
-
-
-      setTimeout(
-        () => {
-
-          morseIndex =
-            0;
-
-          morseSymbolIndex =
-            0;
-
-          playNextMorse();
-
-        },
-        1800
-      );
-
-      return;
-
+        return;
     }
 
+    const letter =
+        letters[morseIndex];
+
+    if (letter === " ") {
+
+        morse.textContent =
+            "/";
+
+        morseIndex++;
+
+        symbolIndex = 0;
+
+        setTimeout(
+            morseLoop,
+            1200
+        );
+
+        return;
+    }
+
+    const code =
+        morseMap[letter];
+
+    if (
+        symbolIndex >=
+        code.length
+    ) {
+
+        morseIndex++;
+        symbolIndex = 0;
+
+        setTimeout(
+            morseLoop,
+            800
+        );
+
+        return;
+    }
+
+    const symbol =
+        code[symbolIndex];
+
+    morse.textContent =
+        symbol === "."
+            ? "•"
+            : "—";
+
+    blinkEye();
+
+    symbolIndex++;
 
     setTimeout(
-      playNextMorse,
-      700
+        morseLoop,
+        symbol === "."
+            ? 900
+            : 1500
     );
-
-    return;
-
-  }
-
-
-  const symbol =
-    current[
-      morseSymbolIndex
-    ];
-
-
-  morseText.textContent =
-    symbol === "."
-      ? "•"
-      : "—";
-
-
-  blinkEye();
-
-
-  morseSymbolIndex++;
-
-
-  setTimeout(
-    playNextMorse,
-    symbol === "."
-      ? 900
-      : 1500
-  );
-
 }
 
-
-playNextMorse();
+morseLoop();
 
 
 /* =================================================
@@ -785,41 +467,36 @@ playNextMorse();
 
 const insults = [
 
-  "arschloch",
-  "idiot",
-  "blöd",
-  "dumm",
-  "scheiße",
-  "scheisse",
-  "fick",
-  "fick dich",
-  "hurensohn",
-  "hure",
-  "wichser",
-  "spast",
-  "opfer",
-  "bastard",
-  "fotze",
-  "penner",
-  "mistkerl",
-  "depp"
+    "arschloch",
+    "idiot",
+    "blöd",
+    "blödmann",
+    "dumm",
+    "scheiße",
+    "scheisse",
+    "fick",
+    "fick dich",
+    "hurensohn",
+    "hure",
+    "wichser",
+    "spast",
+    "opfer",
+    "bastard",
+    "fotze",
+    "penner",
+    "depp"
 
 ];
 
 
 function containsInsult(
-  text
-){
+    text
+) {
 
-  const lower =
-    text.toLowerCase();
-
-  return insults.some(
-    word =>
-      lower.includes(
-        word
-      )
-  );
+    return insults.some(
+        word =>
+            text.includes(word)
+    );
 
 }
 
@@ -828,38 +505,31 @@ function containsInsult(
    OFF-TOPIC
 ================================================= */
 
-const offTopicWords = [
+const offTopic = [
 
-  "minecraft",
-  "fortnite",
-  "youtube",
-  "tiktok",
-  "instagram",
-  "fußball",
-  "fussball",
-  "schule",
-  "hausaufgaben",
-  "mathe",
-  "wetter",
-  "pizza",
-  "musik"
+    "minecraft",
+    "fortnite",
+    "youtube",
+    "tiktok",
+    "instagram",
+    "fußball",
+    "fussball",
+    "pizza",
+    "musik",
+    "schule",
+    "mathe"
 
 ];
 
 
 function isOffTopic(
-  text
-){
+    text
+) {
 
-  const lower =
-    text.toLowerCase();
-
-  return offTopicWords.some(
-    word =>
-      lower.includes(
-        word
-      )
-  );
+    return offTopic.some(
+        word =>
+            text.includes(word)
+    );
 
 }
 
@@ -868,469 +538,364 @@ function isOffTopic(
    NOTFALLNUMMERN
 ================================================= */
 
+let emergencyStep =
+    false;
+
+
 const emergencyResponses = {
 
-  "01":
-    "Notfallkanal 01. Bei Gasgeruch. Bitte verlassen Sie den betroffenen Bereich und warten Sie auf weitere Anweisungen.",
+    "01":
+        "Notfallkanal 01. Bei Gasgeruch. Bitte verlassen Sie den betroffenen Bereich und warten Sie auf weitere Anweisungen.",
 
-  "02":
-    "Notfallkanal 02. Hund bellt oder ungewöhnliches Tiergeräusch. Bitte überprüfen Sie aufmerksam die Umgebung.",
+    "02":
+        "Notfallkanal 02. Hund bellt oder ungewöhnliches Tiergeräusch. Bitte überprüfen Sie aufmerksam die Umgebung.",
 
-  "03":
-    "Notfall erkannt, Maßnahmen werden eingeleitet.\n\nEs befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
+    "03":
+        "Notfall erkannt, Maßnahmen werden eingeleitet.\n\nEs befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
 
-  "04":
-    "Notfallkanal 04. Feuer oder Rauch. Bitte entfernen Sie sich vom betroffenen Bereich und warten Sie auf weitere Anweisungen.",
+    "04":
+        "Notfallkanal 04. Feuer oder Rauch. Bitte entfernen Sie sich vom betroffenen Bereich und warten Sie auf weitere Anweisungen.",
 
-  "05":
-    "Notfallkanal 05. Wasseraustritt festgestellt. Bitte überprüfen Sie die Umgebung.",
+    "05":
+        "Notfallkanal 05. Wasseraustritt festgestellt. Bitte überprüfen Sie die Umgebung.",
 
-  "06":
-    "Notfallkanal 06. Elektrische Störung. Berühren Sie keine unbekannten technischen Komponenten.",
+    "06":
+        "Notfallkanal 06. Elektrische Störung. Berühren Sie keine unbekannten technischen Komponenten.",
 
-  "07":
-    "Notfallkanal 07. Verletzte Person. Bitte informieren Sie das Showpersonal und warten Sie auf weitere Anweisungen.",
+    "07":
+        "Notfallkanal 07. Verletzte Person. Bitte informieren Sie das Showpersonal und warten Sie auf weitere Anweisungen.",
 
-  "08":
-    "Notfallkanal 08. Ungewöhnliches Geräusch oder unbekannte Bewegung. Überprüfen Sie die Umgebung aufmerksam.",
+    "08":
+        "Notfallkanal 08. Ungewöhnliches Geräusch oder unbekannte Bewegung. Überprüfen Sie die Umgebung aufmerksam.",
 
-  "09":
-    "Notfallkanal 09. Sonstiger Notfall. Bitte bleiben Sie ruhig und warten Sie auf weitere Anweisungen."
+    "09":
+        "Notfallkanal 09. Sonstiger Notfall. Bitte bleiben Sie ruhig und warten Sie auf weitere Anweisungen."
 
 };
 
 
 /* =================================================
-   ZAHLEN
+   ZAHLEN ERKENNEN
 ================================================= */
 
 const numberWords = {
 
-  "null":0,
-
-  "eins":1,
-  "ein":1,
-
-  "zwei":2,
-
-  "drei":3,
-
-  "vier":4,
-
-  "fünf":5,
-  "fuenf":5,
-
-  "sechs":6,
-
-  "sieben":7,
-
-  "acht":8,
-
-  "neun":9,
-
-  "zehn":10,
-
-  "elf":11,
-
-  "zwölf":12,
-  "zwoelf":12,
-
-  "dreizehn":13,
-  "vierzehn":14,
-
-  "fünfzehn":15,
-  "fuenfzehn":15,
-
-  "sechzehn":16,
-  "siebzehn":17,
-  "achtzehn":18,
-  "neunzehn":19,
-
-  "zwanzig":20
+    "eins": 1,
+    "ein": 1,
+    "zwei": 2,
+    "drei": 3,
+    "vier": 4,
+    "fünf": 5,
+    "fuenf": 5,
+    "sechs": 6,
+    "sieben": 7,
+    "acht": 8,
+    "neun": 9,
+    "zehn": 10,
+    "elf": 11,
+    "zwölf": 12,
+    "zwoelf": 12,
+    "dreizehn": 13,
+    "vierzehn": 14,
+    "fünfzehn": 15,
+    "fuenfzehn": 15,
+    "sechzehn": 16,
+    "siebzehn": 17,
+    "achtzehn": 18,
+    "neunzehn": 19,
+    "zwanzig": 20
 
 };
 
 
-function extractEmergencyNumber(
-  text
-){
+function getEmergencyNumber(
+    command
+) {
 
-  const normalized =
-    text
-      .toLowerCase()
-      .replace(
-        /[.,!?]/g,
-        " "
-      )
-      .replace(
-        /\s+/g,
-        " "
-      )
-      .trim();
+    /* 01 / 02 / 03 usw. */
 
+    const direct =
+        command.match(
+            /\b([0-9]{1,3})\b/
+        );
 
-  /* direkte Zahl */
+    if (direct) {
 
-  const direct =
-    normalized.match(
-      /\b([0-9]{1,3})\b/
-    );
+        return parseInt(
+            direct[1],
+            10
+        );
+
+    }
 
 
-  if(
-    direct
-  ){
+    /* "null drei" */
 
-    return parseInt(
-      direct[1],
-      10
-    );
+    const zero =
+        command.match(
+            /\bnull\s+(eins|ein|zwei|drei|vier|fünf|fuenf|sechs|sieben|acht|neun)\b/
+        );
 
-  }
+    if (zero) {
 
-
-  /* null drei / null vier usw. */
-
-  const zeroMatch =
-    normalized.match(
-      /\bnull\s+(eins|ein|zwei|drei|vier|fünf|fuenf|sechs|sieben|acht|neun)\b/
-    );
-
-
-  if(
-    zeroMatch
-  ){
-
-    return numberWords[
-      zeroMatch[1]
-    ];
-
-  }
-
-
-  /* ausgeschriebene Zahl */
-
-  const words =
-    normalized.split(" ");
-
-
-  for(
-    const word of words
-  ){
-
-    if(
-      numberWords[
-        word
-      ] !== undefined
-    ){
-
-      const value =
-        numberWords[
-          word
+        return numberWords[
+            zero[1]
         ];
 
+    }
 
-      if(
-        value >= 1
-      ){
 
-        return value;
+    /* "drei", "vier", "zehn" usw. */
 
-      }
+    const words =
+        command.split(/\s+/);
+
+    for (
+        const word of words
+    ) {
+
+        if (
+            numberWords[word]
+            !== undefined
+        ) {
+
+            return numberWords[word];
+
+        }
 
     }
 
-  }
-
-
-  return null;
+    return null;
 
 }
 
 
 /* =================================================
-   NOTFALLNUMMER-ANTWORT
+   OBSERVER
 ================================================= */
-
-function emergencyNumberResponse(
-  number
-){
-
-  return (
-    emergencyResponses[
-      String(
-        number
-      ).padStart(
-        2,
-        "0"
-      )
-    ] ||
-    "Ungültiger Notfallkanal."
-  );
-
-}
-
-
-/* =================================================
-   OBSERVER ANTWORTEN
-================================================= */
-
-let emergencyStep =
-  false;
-
 
 function getObserverAnswer(
-  command
-){
-
-  command =
     command
-      .toLowerCase()
-      .trim();
+) {
 
-
-  /* =========================================
-     BELEIDIGUNGEN
-  ========================================= */
-
-  if(
-    containsInsult(
-      command
-    )
-  ){
-
-    return (
-      "Bitte unterlasse das, wir sind im öffentlich Rechtlichen Fernsehen zu sehen!"
-    );
-
-  }
-
-
-  /* =========================================
-     NOTFALLNUMMERN
-  ========================================= */
-
-  if(
-    command.includes(
-      "notfallnummern"
-    )
-  ){
-
-    emergencyStep =
-      true;
-
-    return (
-      "Nennen Sie jetzt die Notfallnummer."
-    );
-
-  }
-
-
-  /* =========================================
-     NOTFALLNUMMER EINGABE
-  ========================================= */
-
-  if(
-    emergencyStep
-  ){
-
-    const number =
-      extractEmergencyNumber(
+    command =
         command
-      );
+            .toLowerCase()
+            .trim();
 
 
-    if(
-      number !== null
-    ){
+    /* BELEIDIGUNG */
 
-      emergencyStep =
-        false;
-
-
-      if(
-        number >= 10
-      ){
+    if (
+        containsInsult(
+            command
+        )
+    ) {
 
         return (
-          "Maximale Anzahl der Notfallnummern bis 09."
+            "Bitte unterlasse das, wir sind im öffentlich Rechtlichen Fernsehen zu sehen!"
         );
-
-      }
-
-
-      if(
-        number >= 1 &&
-        number <= 9
-      ){
-
-        return emergencyNumberResponse(
-          number
-        );
-
-      }
 
     }
 
-  }
+
+    /* NOTFALLNUMMERN */
+
+    if (
+        command.includes(
+            "notfallnummern"
+        )
+    ) {
+
+        emergencyStep =
+            true;
+
+        return (
+            "Nennen Sie jetzt die Notfallnummer."
+        );
+
+    }
 
 
-  /* =========================================
-     ALTE OBSERVER-ANTWORTEN
-  ========================================= */
+    /* NOTFALLNUMMER EINGABE */
 
-  if(
-    command === "hallo" ||
-    command.startsWith(
-      "hallo "
-    ) ||
-    command === "hi" ||
-    command === "hey"
-  ){
+    if (
+        emergencyStep
+    ) {
 
-    return "Hallo.";
-
-  }
+        const number =
+            getEmergencyNumber(
+                command
+            );
 
 
-  if(
-    command === "was"
-  ){
+        if (
+            number !== null
+        ) {
 
-    return "Was?";
-
-  }
-
-
-  if(
-    command.includes(
-      "wer bist du"
-    ) ||
-    command.includes(
-      "was bist du"
-    ) ||
-    command.includes(
-      "wie heißt du"
-    ) ||
-    command.includes(
-      "wie heisst du"
-    )
-  ){
-
-    return "Observer Typ 0.4.";
-
-  }
+            emergencyStep =
+                false;
 
 
-  if(
-    command.includes(
-      "wo sind wir"
-    ) ||
-    (
-      command.includes("wo") &&
-      command.includes("sind") &&
-      command.includes("wir")
-    )
-  ){
+            if (
+                number >= 10
+            ) {
+
+                return (
+                    "Maximale Anzahl der Notfallnummern bis 09."
+                );
+
+            }
+
+
+            const formatted =
+                String(number)
+                    .padStart(2, "0");
+
+
+            if (
+                emergencyResponses[
+                    formatted
+                ]
+            ) {
+
+                return emergencyResponses[
+                    formatted
+                ];
+
+            }
+
+        }
+
+    }
+
+
+    /* ALTE ANTWORTEN */
+
+    if (
+        command === "hallo" ||
+        command === "hi" ||
+        command === "hey" ||
+        command.startsWith("hallo ")
+    ) {
+
+        return "Hallo.";
+
+    }
+
+
+    if (
+        command === "was"
+    ) {
+
+        return "Was?";
+
+    }
+
+
+    if (
+        command.includes(
+            "wer bist du"
+        ) ||
+        command.includes(
+            "was bist du"
+        ) ||
+        command.includes(
+            "wie heißt du"
+        ) ||
+        command.includes(
+            "wie heisst du"
+        )
+    ) {
+
+        return "Observer Typ 0.4.";
+
+    }
+
+
+    if (
+        command.includes(
+            "wo sind wir"
+        ) ||
+        (
+            command.includes("wo") &&
+            command.includes("sind") &&
+            command.includes("wir")
+        )
+    ) {
+
+        return (
+            "Ihr wurdet von zwei Männern hier reingebracht, " +
+            "sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, " +
+            "der eine hatte einen Zettel darin versteckt."
+        );
+
+    }
+
+
+    if (
+        command.includes(
+            "hilfe"
+        ) ||
+        command.includes(
+            "hilf uns"
+        )
+    ) {
+
+        return (
+            "Ich bin nicht fürs Helfen da."
+        );
+
+    }
+
+
+    if (
+        command.includes(
+            "waschmaschine"
+        )
+    ) {
+
+        return (
+            "Ich bin nicht für eine Wäsche gemacht."
+        );
+
+    }
+
+
+    if (
+        command.includes("wie") &&
+        command.includes("kommen") &&
+        (
+            command.includes("raus") ||
+            command.includes("heraus")
+        )
+    ) {
+
+        return (
+            "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+        );
+
+    }
+
+
+    /* OFF-TOPIC */
+
+    if (
+        isOffTopic(
+            command
+        )
+    ) {
+
+        return (
+            "Diese Frage gehört nicht zur Show, stelle eine andere!"
+        );
+
+    }
+
 
     return (
-      "Ihr wurdet von zwei Männern hier reingebracht, " +
-      "sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, " +
-      "der eine hatte einen Zettel darin versteckt."
+        "Ich habe das nicht verstanden. Stelle die Frage bitte noch einmal."
     );
-
-  }
-
-
-  if(
-    command.includes(
-      "hilfe"
-    ) ||
-    command.includes(
-      "hilf uns"
-    )
-  ){
-
-    return (
-      "Ich bin nicht fürs Helfen da."
-    );
-
-  }
-
-
-  if(
-    command.includes(
-      "waschmaschine"
-    )
-  ){
-
-    return (
-      "Ich bin nicht für eine Wäsche gemacht."
-    );
-
-  }
-
-
-  const hasWie =
-    command.includes(
-      "wie"
-    );
-
-  const hasKommen =
-    command.includes(
-      "kommen"
-    );
-
-  const hasRaus =
-    command.includes(
-      "raus"
-    ) ||
-    command.includes(
-      "heraus"
-    );
-
-
-  if(
-    (
-      hasWie &&
-      hasKommen &&
-      hasRaus
-    ) ||
-    command.includes(
-      "wie kommen wir hier raus"
-    ) ||
-    command.includes(
-      "wie kommen wir hier heraus"
-    )
-  ){
-
-    return (
-      "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
-    );
-
-  }
-
-
-  /* =========================================
-     OFF-TOPIC
-  ========================================= */
-
-  if(
-    isOffTopic(
-      command
-    )
-  ){
-
-    return (
-      "Diese Frage gehört nicht zur Show, stelle eine andere!"
-    );
-
-  }
-
-
-  return (
-    "Ich habe das nicht verstanden. Stelle die Frage bitte noch einmal."
-  );
 
 }
 
@@ -1339,738 +904,241 @@ function getObserverAnswer(
    SENDEN
 ================================================= */
 
-function sendMessage(){
+function sendMessage() {
 
-  const text =
-    input.value.trim();
+    const text =
+        input.value.trim();
 
+    if (!text) {
+        return;
+    }
 
-  if(
-    !text
-  ){
+    input.value = "";
 
-    return;
+    stopListening();
 
-  }
-
-
-  input.value =
-    "";
-
-
-  stopListening();
-
-
-  addMessage(
-    "DU",
-    text
-  );
-
-
-  const answer =
-    getObserverAnswer(
-      text
+    addMessage(
+        "DU",
+        text
     );
 
+    const answer =
+        getObserverAnswer(
+            text
+        );
 
-  setTimeout(
-    () => {
+    setTimeout(() => {
 
-      addMessage(
-        "OBSERVER",
-        answer
-      );
+        addMessage(
+            "OBSERVER",
+            answer
+        );
 
-    },
-    250
-  );
+    }, 250);
 
 }
 
 
-sendButton.addEventListener(
-  "click",
-  sendMessage
+send.addEventListener(
+    "click",
+    sendMessage
 );
 
 
 input.addEventListener(
-  "keydown",
-  event => {
+    "keydown",
+    event => {
 
-    if(
-      event.key === "Enter"
-    ){
+        if (
+            event.key === "Enter"
+        ) {
 
-      event.preventDefault();
+            event.preventDefault();
 
-      sendMessage();
+            sendMessage();
+
+        }
 
     }
-
-  }
 );
-
-
-/* =================================================
-   SPRACHERKENNUNG
-================================================= */
-
-let recognition =
-  null;
-
-let listening =
-  false;
-
-
-const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
-
-if(
-  SpeechRecognition
-){
-
-  recognition =
-    new SpeechRecognition();
-
-  recognition.lang =
-    "de-DE";
-
-  recognition.continuous =
-    false;
-
-  recognition.interimResults =
-    true;
-
-  recognition.maxAlternatives =
-    1;
-
-
-  recognition.onstart =
-    () => {
-
-      listening =
-        true;
-
-      micButton.classList.add(
-        "active"
-      );
-
-      micStatus.textContent =
-        "ICH HÖRE ZU";
-
-      micStatus.classList.add(
-        "visible"
-      );
-
-    };
-
-
-  recognition.onresult =
-    event => {
-
-      let transcript =
-        "";
-
-
-      for(
-        let i =
-          event.resultIndex;
-
-        i <
-          event.results.length;
-
-        i++
-      ){
-
-        transcript +=
-          event.results[
-            i
-          ][0].transcript;
-
-      }
-
-
-      input.value =
-        transcript.trim();
-
-    };
-
-
-  recognition.onerror =
-    event => {
-
-      console.log(
-        "SpeechRecognition:",
-        event.error
-      );
-
-      stopListening();
-
-    };
-
-
-  recognition.onend =
-    () => {
-
-      listening =
-        false;
-
-      micButton.classList.remove(
-        "active"
-      );
-
-      micStatus.classList.remove(
-        "visible"
-      );
-
-    };
-
-}
 
 
 /* =================================================
    MIKROFON
 ================================================= */
 
-function startListening(){
-
-  if(
-    !recognition ||
-    listening
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    recognition.start();
-
-  }
-  catch(error){
-
-    console.log(
-      "Mikrofon:",
-      error
-    );
-
-  }
-
-}
-
-
-function stopListening(){
-
-  if(
-    recognition
-  ){
-
-    try{
-
-      recognition.stop();
-
-    }
-    catch(error){}
-
-  }
-
-
-  listening =
-    false;
-
-
-  micButton.classList.remove(
-    "active"
-  );
-
-  micStatus.classList.remove(
-    "visible"
-  );
-
-}
-
-
-micButton.addEventListener(
-  "click",
-  () => {
-
-    if(
-      listening
-    ){
-
-      stopListening();
-
-    }
-    else{
-
-      startListening();
-
-    }
-
-  }
-);
-
-
-/* =================================================
-   KAMERA
-================================================= */
-
-let barcodeReader =
-  null;
-
-let barcodeControls =
-  null;
-
-let currentStream =
-  null;
-
-let currentCameraMode =
-  "back";
-
-let scannerStarted =
-  false;
-
-let lastDetectedValue =
-  "";
-
-let lastDetectedTime =
-  0;
-
-
-/* =================================================
-   ZIEL-BARCODE
-================================================= */
-
-const TARGET_BARCODE =
-  "000000";
-
-
-const BARCODE_MESSAGE =
-  "Ich habe den Inhalt in diesem Karton gescannt:\n\n" +
-  "WARNUNG, es befinden sich zerbrechliche Gegenstände in diesem Karton. " +
-  "Laut Scan enthält es eine Flüssigkeit.";
-
-
-/* =================================================
-   BARCODE
-================================================= */
-
-function handleBarcode(
-  value
-){
-
-  if(
-    !value
-  ){
-
-    return;
-
-  }
-
-
-  const cleanValue =
-    String(
-      value
-    ).trim();
-
-
-  /*
-     Nur der gewünschte Code
-     löst eine Reaktion aus.
-  */
-
-  if(
-    cleanValue !==
-    TARGET_BARCODE
-  ){
-
-    cameraStatus.textContent =
-      "KAMERA AKTIV · KEIN BEKANNTER CODE";
-
-    return;
-
-  }
-
-
-  const now =
-    Date.now();
-
-
-  if(
-    cleanValue ===
-      lastDetectedValue &&
-    now -
-      lastDetectedTime <
-      5000
-  ){
-
-    return;
-
-  }
-
-
-  lastDetectedValue =
-    cleanValue;
-
-  lastDetectedTime =
-    now;
-
-
-  addMessage(
-    "OBSERVER",
-    BARCODE_MESSAGE
-  );
-
-
-  cameraStatus.textContent =
-    "BARCODE ERKANNT";
-
-}
-
-
-/* =================================================
-   KAMERA STOPPEN
-================================================= */
-
-function stopCamera(){
-
-  scannerStarted =
-    false;
-
-
-  if(
-    barcodeControls
-  ){
-
-    try{
-
-      barcodeControls.stop();
-
-    }
-    catch(error){}
-
-
-    barcodeControls =
-      null;
-
-  }
-
-
-  if(
-    barcodeReader
-  ){
-
-    try{
-
-      barcodeReader.reset();
-
-    }
-    catch(error){}
-
-
-    barcodeReader =
-      null;
-
-  }
-
-
-  if(
-    currentStream
-  ){
-
-    currentStream
-      .getTracks()
-      .forEach(
-        track =>
-          track.stop()
-      );
-
-
-    currentStream =
-      null;
-
-  }
-
-
-  scannerVideo.srcObject =
+let recognition =
     null;
 
-}
+let listening =
+    false;
 
 
-/* =================================================
-   KAMERA START
-================================================= */
-
-async function startCamera(
-  mode
-){
-
-  stopCamera();
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
 
-  currentCameraMode =
-    mode;
+if (
+    SpeechRecognition
+) {
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang =
+        "de-DE";
+
+    recognition.continuous =
+        false;
+
+    recognition.interimResults =
+        true;
 
 
-  cameraStatus.textContent =
-    "KAMERA WIRD GESTARTET …";
+    recognition.onstart =
+        () => {
+
+            listening =
+                true;
+
+            mic.classList.add(
+                "active"
+            );
+
+            status.classList.add(
+                "active"
+            );
+
+        };
 
 
-  try{
+    recognition.onresult =
+        event => {
 
-    currentStream =
-      await navigator.mediaDevices
-        .getUserMedia({
+            let result = "";
 
-          video:{
-            facingMode:
-              mode === "back"
-                ? {
-                    ideal:
-                      "environment"
-                  }
-                : {
-                    ideal:
-                      "user"
-                  },
+            for (
+                let i =
+                    event.resultIndex;
 
-            width:{
-              ideal:
-                1280
-            },
+                i <
+                    event.results.length;
 
-            height:{
-              ideal:
-                720
-            }
+                i++
+            ) {
 
-          },
-
-          audio:false
-
-        });
-
-
-    scannerVideo.srcObject =
-      currentStream;
-
-
-    await scannerVideo.play();
-
-
-    scannerStarted =
-      true;
-
-
-    updateCameraButtons();
-
-
-    cameraStatus.textContent =
-      "KAMERA AKTIV · SCAN BEREIT";
-
-
-    startBarcodeReader();
-
-  }
-  catch(error){
-
-    console.log(
-      "Kamera:",
-      error
-    );
-
-
-    cameraStatus.textContent =
-      "KAMERA KONNTE NICHT GESTARTET WERDEN";
-
-  }
-
-}
-
-
-/* =================================================
-   BARCODE READER
-================================================= */
-
-async function startBarcodeReader(){
-
-  try{
-
-    if(
-      !window.ZXingBrowser
-    ){
-
-      cameraStatus.textContent =
-        "BARCODE-SCANNER NICHT GELADEN";
-
-      return;
-
-    }
-
-
-    barcodeReader =
-      new ZXingBrowser
-        .BrowserMultiFormatReader();
-
-
-    barcodeControls =
-      await barcodeReader
-        .decodeFromVideoElement(
-          scannerVideo,
-          (
-            result,
-            error
-          ) => {
-
-            if(
-              result
-            ){
-
-              handleBarcode(
-                result.getText()
-              );
+                result +=
+                    event.results[i][0]
+                        .transcript;
 
             }
 
-          }
-        );
+            input.value =
+                result.trim();
 
-  }
-  catch(error){
+        };
 
-    console.log(
-      "Barcode:",
-      error
-    );
 
-  }
+    recognition.onerror =
+        event => {
+
+            console.log(
+                "Mikrofonfehler:",
+                event.error
+            );
+
+            stopListening();
+
+        };
+
+
+    recognition.onend =
+        () => {
+
+            listening =
+                false;
+
+            mic.classList.remove(
+                "active"
+            );
+
+            status.classList.remove(
+                "active"
+            );
+
+        };
 
 }
 
 
-/* =================================================
-   KAMERA BUTTONS
-================================================= */
+function startListening() {
 
-function updateCameraButtons(){
+    if (
+        !recognition ||
+        listening
+    ) {
 
-  backCameraButton.classList.toggle(
-    "active",
-    currentCameraMode ===
-      "back"
-  );
-
-
-  frontCameraButton.classList.toggle(
-    "active",
-    currentCameraMode ===
-      "front"
-  );
-
-}
-
-
-/* =================================================
-   KAMERA ÖFFNEN
-================================================= */
-
-cameraButton.addEventListener(
-  "click",
-  async () => {
-
-    cameraOverlay.classList.add(
-      "open"
-    );
-
-
-    await startCamera(
-      "back"
-    );
-
-  }
-);
-
-
-/* =================================================
-   KAMERA SCHLIESSEN
-================================================= */
-
-closeCameraButton.addEventListener(
-  "click",
-  () => {
-
-    stopCamera();
-
-    cameraOverlay.classList.remove(
-      "open"
-    );
-
-  }
-);
-
-
-/* =================================================
-   RÜCKKAMERA
-================================================= */
-
-backCameraButton.addEventListener(
-  "click",
-  async () => {
-
-    await startCamera(
-      "back"
-    );
-
-  }
-);
-
-
-/* =================================================
-   FRONTKAMERA
-================================================= */
-
-frontCameraButton.addEventListener(
-  "click",
-  async () => {
-
-    await startCamera(
-      "front"
-    );
-
-  }
-);
-
-
-/* =================================================
-   ESC
-================================================= */
-
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Escape" &&
-      cameraOverlay.classList.contains(
-        "open"
-      )
-    ){
-
-      stopCamera();
-
-      cameraOverlay.classList.remove(
-        "open"
-      );
+        return;
 
     }
 
-  }
+    try {
+
+        recognition.start();
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+function stopListening() {
+
+    if (recognition) {
+
+        try {
+
+            recognition.stop();
+
+        } catch (error) {}
+
+    }
+
+    listening =
+        false;
+
+    mic.classList.remove(
+        "active"
+    );
+
+    status.classList.remove(
+        "active"
+    );
+
+}
+
+
+mic.addEventListener(
+    "click",
+    () => {
+
+        if (
+            listening
+        ) {
+
+            stopListening();
+
+        } else {
+
+            startListening();
+
+        }
+
+    }
 );
 
 
@@ -2079,8 +1147,8 @@ document.addEventListener(
 ================================================= */
 
 addMessage(
-  "OBSERVER",
-  "Beobachtung aktiviert."
+    "OBSERVER",
+    "Beobachtung aktiviert."
 );
 
 </script>
