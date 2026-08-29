@@ -1,727 +1,339 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
->
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 <title>OBSERVER</title>
 
 <style>
-
-/* =========================================
-   GRUNDLAYOUT
-========================================= */
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-
-  background: #000;
-  color: #fff;
-
-  font-family: Arial, Helvetica, sans-serif;
-
-  overflow: hidden;
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  overflow:hidden;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
+body{
+  display:flex;
+  flex-direction:column;
 }
 
+/* =========================
+   OBSERVER
+========================= */
 
-/* =========================================
-   OBSERVER-BEREICH
-========================================= */
-
-#observerArea {
-  width: 100%;
-  height: 150px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: flex-start;
-
-  padding-top: 18px;
+#observerArea{
+  height:150px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding-top:18px;
 }
 
-
-/* =========================================
-   AUGE
-========================================= */
-
-#eye {
-  position: relative;
-
-  width: 150px;
-  height: 90px;
-
-  flex-shrink: 0;
-
-  border: 4px solid white;
-
-  border-radius: 50% / 60%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
+#eye{
+  position:relative;
+  width:150px;
+  height:90px;
+  border:4px solid #fff;
+  border-radius:50% / 60%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 
-#pupil {
-  width: 46px;
-  height: 46px;
-
-  background: white;
-
-  border-radius: 50%;
+#pupil{
+  width:46px;
+  height:46px;
+  background:#fff;
+  border-radius:50%;
 }
 
-
-/* =========================================
-   BLINZELN
-========================================= */
-
-#eye.normalBlink #pupil {
-  opacity: 0;
+#eye.blink #pupil{
+  opacity:0;
 }
 
-#eye.normalBlink::before,
-#eye.normalBlink::after {
-
-  content: "";
-
-  position: absolute;
-
-  left: -5px;
-
-  width: calc(100% + 10px);
-
-  height: 51%;
-
-  background: #000;
-
-  z-index: 2;
+#eye.blink::before,
+#eye.blink::after{
+  content:"";
+  position:absolute;
+  left:-5px;
+  width:calc(100% + 10px);
+  height:51%;
+  background:#000;
+  z-index:2;
 }
 
-#eye.normalBlink::before {
-  top: -5px;
+#eye.blink::before{
+  top:-5px;
 }
 
-#eye.normalBlink::after {
-  bottom: -5px;
+#eye.blink::after{
+  bottom:-5px;
 }
 
-
-/* =========================================
-   TITEL
-========================================= */
-
-#title {
-  margin-top: 8px;
-
-  font-size: 13px;
-
-  letter-spacing: 5px;
-
-  opacity: 0.7;
+#title{
+  margin-top:8px;
+  font-size:13px;
+  letter-spacing:5px;
+  opacity:.7;
 }
 
+#morseText{
+  margin-top:4px;
+  height:16px;
+  font-size:10px;
+  letter-spacing:3px;
+  opacity:.45;
+}
 
-/* =========================================
+/* =========================
    CHAT
-========================================= */
+========================= */
 
-#chat {
-
-  width: 100%;
-
-  flex: 1;
-
-  overflow-y: auto;
-
-  padding:
-    18px
-    14px
-    20px;
-
-  -webkit-overflow-scrolling: touch;
+#chat{
+  flex:1;
+  width:100%;
+  overflow-y:auto;
+  padding:18px 14px 20px;
 }
 
-
-/* =========================================
-   CHAT-NACHRICHT
-========================================= */
-
-.message {
-  width: 100%;
-  margin-bottom: 17px;
+.message{
+  width:100%;
+  margin-bottom:17px;
 }
 
-.messageLabel {
-  margin-bottom: 5px;
-
-  font-size: 10px;
-
-  letter-spacing: 2px;
-
-  opacity: 0.45;
+.messageLabel{
+  margin-bottom:5px;
+  font-size:10px;
+  letter-spacing:2px;
+  opacity:.45;
 }
 
-.messageText {
-
-  font-size: 16px;
-
-  line-height: 1.5;
-
-  word-break: break-word;
-
-  white-space: pre-wrap;
+.messageText{
+  font-size:16px;
+  line-height:1.5;
+  word-break:break-word;
+  white-space:pre-wrap;
 }
 
+/* =========================
+   INPUT
+========================= */
 
-/* =========================================
-   EINGABE
-========================================= */
-
-#inputArea {
-
-  width: 100%;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  padding:
-    9px
-    12px
-    max(
-      10px,
-      env(safe-area-inset-bottom)
-    );
-
-  border-top:
-    1px solid
-    rgba(255,255,255,0.15);
-
-  background: #000;
-
-  flex-shrink: 0;
+#inputArea{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 12px max(10px,env(safe-area-inset-bottom));
+  border-top:1px solid rgba(255,255,255,.15);
+  background:#000;
+  flex-shrink:0;
 }
 
-
-/* =========================================
-   TEXTFELD
-========================================= */
-
-#input {
-
-  flex: 1;
-
-  min-width: 0;
-
-  height: 48px;
-
-  padding:
-    0 15px;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.35);
-
-  border-radius: 24px;
-
-  background: #111;
-
-  color: #fff;
-
-  outline: none;
-
-  font-size: 16px;
-
-  -webkit-user-select: text;
-  user-select: text;
+#input{
+  flex:1;
+  min-width:0;
+  height:48px;
+  padding:0 15px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:24px;
+  background:#111;
+  color:#fff;
+  outline:none;
+  font-size:16px;
 }
 
-#input::placeholder {
-  color:
-    rgba(255,255,255,0.4);
+#input::placeholder{
+  color:rgba(255,255,255,.4);
 }
 
-
-/* =========================================
-   BUTTONS
-========================================= */
-
-.iconButton {
-
-  width: 48px;
-  height: 48px;
-
-  padding: 0;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.4);
-
-  border-radius: 50%;
-
-  background: #000;
-
-  color: #fff;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  font-size: 20px;
-
-  flex-shrink: 0;
-
-  touch-action: manipulation;
-
-  cursor: pointer;
+.iconButton{
+  width:48px;
+  height:48px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:50%;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+  cursor:pointer;
 }
 
-.iconButton:active {
-  transform: scale(0.94);
+.iconButton:active{
+  transform:scale(.94);
 }
 
-
-/* =========================================
-   MIKROFON
-========================================= */
-
-#micButton.active {
-
-  background: #fff;
-
-  color: #000;
-
-  border-color: #fff;
+#micButton.active{
+  background:#fff;
+  color:#000;
+  border-color:#fff;
 }
 
-.iconButton:disabled {
-
-  opacity: 0.3;
-
-  cursor: default;
+#micStatus{
+  position:fixed;
+  left:50%;
+  bottom:80px;
+  transform:translateX(-50%);
+  padding:5px 10px;
+  font-size:10px;
+  letter-spacing:2px;
+  opacity:0;
+  pointer-events:none;
 }
 
-
-/* =========================================
-   MIKROFONSTATUS
-========================================= */
-
-#micStatus {
-
-  position: fixed;
-
-  left: 50%;
-
-  bottom: 80px;
-
-  transform:
-    translateX(-50%);
-
-  padding:
-    5px 10px;
-
-  font-size: 10px;
-
-  letter-spacing: 2px;
-
-  opacity: 0;
-
-  pointer-events: none;
+#micStatus.visible{
+  opacity:.65;
 }
 
-#micStatus.visible {
-  opacity: 0.65;
+/* =========================
+   KAMERA
+========================= */
+
+#cameraOverlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  background:#000;
+  display:none;
+  flex-direction:column;
 }
 
-
-/* =========================================
-   KAMERA-BUTTON
-========================================= */
-
-#cameraButton {
-  font-size: 21px;
+#cameraOverlay.open{
+  display:flex;
 }
 
-
-/* =========================================
-   KAMERA-FENSTER
-========================================= */
-
-#cameraOverlay {
-
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 1000;
-
-  background: #000;
-
-  display: none;
-
-  flex-direction: column;
+#cameraHeader{
+  min-height:62px;
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#050505;
+  border-bottom:1px solid rgba(255,255,255,.15);
 }
 
-#cameraOverlay.open {
-  display: flex;
+#cameraTitle{
+  font-size:13px;
+  letter-spacing:3px;
+  opacity:.8;
 }
 
-
-/* =========================================
-   KAMERA HEADER
-========================================= */
-
-#cameraHeader {
-
-  width: 100%;
-
-  min-height: 62px;
-
-  padding:
-    10px
-    14px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 10px;
-
-  background: #050505;
-
-  border-bottom:
-    1px solid
-    rgba(255,255,255,0.15);
-
-  flex-shrink: 0;
+#closeCameraButton{
+  width:42px;
+  height:42px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  background:#000;
+  color:#fff;
+  font-size:22px;
 }
 
-#cameraTitle {
-
-  font-size: 13px;
-
-  letter-spacing: 3px;
-
-  opacity: 0.8;
+#cameraViewArea{
+  position:relative;
+  flex:1;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  overflow:hidden;
 }
 
-
-/* =========================================
-   KAMERA SCHLIESSEN
-========================================= */
-
-#closeCameraButton {
-
-  width: 42px;
-  height: 42px;
-
-  border: 1px solid
-    rgba(255,255,255,0.35);
-
-  border-radius: 50%;
-
-  background: #000;
-
-  color: #fff;
-
-  font-size: 22px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
+#scannerVideo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#000;
 }
 
-
-/* =========================================
-   VIDEO-BEREICH
-========================================= */
-
-#cameraViewArea {
-
-  position: relative;
-
-  width: 100%;
-
-  flex: 1;
-
-  min-height: 0;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  background: #000;
-
-  overflow: hidden;
+#scanFrame{
+  position:absolute;
+  width:min(72vw,360px);
+  height:min(42vw,210px);
+  border:2px solid rgba(255,255,255,.8);
+  border-radius:12px;
+  pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.25);
 }
 
-#scannerVideo {
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  display: block;
-
-  background: #000;
+#scanFrame::before{
+  content:"";
+  position:absolute;
+  left:10%;
+  right:10%;
+  top:50%;
+  height:2px;
+  background:rgba(255,255,255,.75);
 }
 
-
-/* =========================================
-   SCAN-RAHMEN
-========================================= */
-
-#scanFrame {
-
-  position: absolute;
-
-  width: min(72vw, 360px);
-
-  height: min(42vw, 210px);
-
-  border:
-    2px solid
-    rgba(255,255,255,0.8);
-
-  border-radius: 12px;
-
-  pointer-events: none;
-
-  box-shadow:
-    0 0 0 9999px
-    rgba(0,0,0,0.25);
+#cameraStatus{
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:max-content;
+  max-width:90%;
+  padding:8px 14px;
+  border-radius:20px;
+  background:rgba(0,0,0,.72);
+  font-size:11px;
+  letter-spacing:1px;
+  text-align:center;
 }
 
-#scanFrame::before {
-
-  content: "";
-
-  position: absolute;
-
-  left: 10%;
-
-  right: 10%;
-
-  top: 50%;
-
-  height: 2px;
-
-  background: rgba(255,255,255,0.75);
-
-  transform: translateY(-50%);
+#cameraControls{
+  width:100%;
+  padding:12px max(12px,env(safe-area-inset-bottom));
+  display:flex;
+  gap:8px;
+  background:#050505;
+  border-top:1px solid rgba(255,255,255,.15);
 }
 
-
-/* =========================================
-   KAMERA STATUS
-========================================= */
-
-#cameraStatus {
-
-  position: absolute;
-
-  left: 50%;
-
-  bottom: 18px;
-
-  transform:
-    translateX(-50%);
-
-  width: max-content;
-
-  max-width: 90%;
-
-  padding:
-    8px 14px;
-
-  border-radius: 20px;
-
-  background:
-    rgba(0,0,0,0.72);
-
-  font-size: 11px;
-
-  letter-spacing: 1px;
-
-  text-align: center;
+.cameraControlButton{
+  flex:1;
+  min-height:46px;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:23px;
+  background:#111;
+  color:#fff;
+  font-size:13px;
 }
 
-
-/* =========================================
-   KAMERA STEUERUNG
-========================================= */
-
-#cameraControls {
-
-  width: 100%;
-
-  padding:
-    12px
-    12px
-    max(
-      12px,
-      env(safe-area-inset-bottom)
-    );
-
-  display: flex;
-
-  gap: 8px;
-
-  background: #050505;
-
-  border-top:
-    1px solid
-    rgba(255,255,255,0.15);
-
-  flex-shrink: 0;
+.cameraControlButton.active{
+  background:#fff;
+  color:#000;
 }
 
-.cameraControlButton {
-
-  flex: 1;
-
-  min-height: 46px;
-
-  border:
-    1px solid
-    rgba(255,255,255,0.3);
-
-  border-radius: 23px;
-
-  background: #111;
-
-  color: #fff;
-
-  font-size: 13px;
-
-  cursor: pointer;
-
-  touch-action: manipulation;
-}
-
-.cameraControlButton.active {
-
-  background: #fff;
-
-  color: #000;
-
-  border-color: #fff;
-}
-
-
-/* =========================================
-   KAMERA INFO
-========================================= */
-
-#cameraInfo {
-
-  position: absolute;
-
-  top: 74px;
-
-  left: 50%;
-
-  transform:
-    translateX(-50%);
-
-  z-index: 3;
-
-  padding:
-    6px 10px;
-
-  background:
-    rgba(0,0,0,0.65);
-
-  border-radius: 14px;
-
-  font-size: 9px;
-
-  letter-spacing: 1px;
-
-  opacity: 0.75;
-
-  pointer-events: none;
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 600px) {
-
-  #cameraTitle {
-    font-size: 11px;
-    letter-spacing: 2px;
+@media(max-width:600px){
+  #cameraTitle{
+    font-size:11px;
+    letter-spacing:2px;
   }
-
-  #scanFrame {
-    width: 78vw;
-    height: 43vw;
-  }
-
 }
-
 </style>
 
-
-<!-- =========================================
-     ZXING
-========================================= -->
-
-<script
-  src="https://unpkg.com/@zxing/browser@0.2.1/umd/zxing-browser.min.js">
-</script>
+<script src="https://unpkg.com/@zxing/browser@0.2.1/umd/zxing-browser.min.js"></script>
 
 </head>
 
-
 <body>
-
-
-<!-- =========================================
-     OBSERVER
-========================================= -->
 
 <div id="observerArea">
 
@@ -729,35 +341,19 @@ body {
     <div id="pupil"></div>
   </div>
 
-  <div id="title">
-    OBSERVER
-  </div>
+  <div id="title">OBSERVER</div>
+
+  <div id="morseText"></div>
 
 </div>
 
-
-<!-- =========================================
-     CHAT
-========================================= -->
-
 <div id="chat"></div>
-
-
-<!-- =========================================
-     EINGABE
-========================================= -->
 
 <div id="inputArea">
 
-  <button
-    id="micButton"
-    class="iconButton"
-    type="button"
-    aria-label="Mikrofon"
-  >
+  <button id="micButton" class="iconButton" type="button">
     🎤
   </button>
-
 
   <input
     id="input"
@@ -768,40 +364,25 @@ body {
     spellcheck="false"
   >
 
-
-  <button
-    id="sendButton"
-    class="iconButton"
-    type="button"
-    aria-label="Senden"
-  >
+  <button id="sendButton" class="iconButton" type="button">
     ➤
   </button>
 
-
-  <button
-    id="cameraButton"
-    class="iconButton"
-    type="button"
-    aria-label="Kamera öffnen"
-  >
+  <button id="cameraButton" class="iconButton" type="button">
     📷
   </button>
 
 </div>
 
-
 <div id="micStatus">
   ICH HÖRE ZU
 </div>
 
-
-<!-- =========================================
-     KAMERA-OVERLAY
-========================================= -->
+<!-- =========================
+     KAMERA
+========================= -->
 
 <div id="cameraOverlay">
-
 
   <div id="cameraHeader">
 
@@ -809,34 +390,22 @@ body {
       OBSERVER · KAMERA
     </div>
 
-    <button
-      id="closeCameraButton"
-      type="button"
-      aria-label="Kamera schließen"
-    >
+    <button id="closeCameraButton">
       ×
     </button>
 
   </div>
-
 
   <div id="cameraViewArea">
 
     <video
       id="scannerVideo"
       autoplay
-      playsinline
       muted
+      playsinline
     ></video>
 
-
-    <div id="cameraInfo">
-      KAMERABILD · OBSERVER
-    </div>
-
-
     <div id="scanFrame"></div>
-
 
     <div id="cameraStatus">
       KAMERA WIRD GESTARTET …
@@ -844,29 +413,25 @@ body {
 
   </div>
 
-
   <div id="cameraControls">
 
     <button
       id="backCameraButton"
       class="cameraControlButton active"
-      type="button"
     >
-      🔄 Rückkamera
+      Rückkamera
     </button>
 
     <button
       id="frontCameraButton"
       class="cameraControlButton"
-      type="button"
     >
-      🤳 Frontkamera
+      Frontkamera
     </button>
 
   </div>
 
 </div>
-
 
 <script>
 
@@ -874,26 +439,29 @@ body {
    ELEMENTE
 ================================================= */
 
-const eye =
-  document.getElementById("eye");
-
 const chat =
   document.getElementById("chat");
 
 const input =
   document.getElementById("input");
 
-const micButton =
-  document.getElementById("micButton");
-
 const sendButton =
   document.getElementById("sendButton");
 
-const cameraButton =
-  document.getElementById("cameraButton");
+const micButton =
+  document.getElementById("micButton");
 
 const micStatus =
   document.getElementById("micStatus");
+
+const eye =
+  document.getElementById("eye");
+
+const morseText =
+  document.getElementById("morseText");
+
+const cameraButton =
+  document.getElementById("cameraButton");
 
 const cameraOverlay =
   document.getElementById("cameraOverlay");
@@ -918,44 +486,43 @@ const frontCameraButton =
    CHAT
 ================================================= */
 
-function addMessage(
-  sender,
-  message
-) {
+function addMessage(label,text){
 
-  const wrapper =
+  const message =
     document.createElement("div");
 
-  wrapper.className =
+  message.className =
     "message";
 
-
-  const label =
+  const messageLabel =
     document.createElement("div");
 
-  label.className =
+  messageLabel.className =
     "messageLabel";
 
-  label.textContent =
-    sender;
+  messageLabel.textContent =
+    label;
 
-
-  const text =
+  const messageText =
     document.createElement("div");
 
-  text.className =
+  messageText.className =
     "messageText";
 
-  text.textContent =
-    message;
+  messageText.textContent =
+    text;
 
+  message.appendChild(
+    messageLabel
+  );
 
-  wrapper.appendChild(label);
+  message.appendChild(
+    messageText
+  );
 
-  wrapper.appendChild(text);
-
-  chat.appendChild(wrapper);
-
+  chat.appendChild(
+    message
+  );
 
   requestAnimationFrame(() => {
 
@@ -963,96 +530,173 @@ function addMessage(
       chat.scrollHeight;
 
   });
+}
+
+
+/* =================================================
+   BLINZELN
+================================================= */
+
+function blinkEye(){
+
+  eye.classList.add("blink");
+
+  setTimeout(() => {
+
+    eye.classList.remove("blink");
+
+  },180);
 
 }
 
 
 /* =================================================
-   AUGE
+   MORSECODE
+   SYMBOL ANZÜNDEN
 ================================================= */
 
-function blink() {
+const morseMap = {
 
-  eye.classList.add(
-    "normalBlink"
+  "A": ".-",
+  "Ä": ".-.-",
+  "B": "-...",
+  "C": "-.-.",
+  "D": "-..",
+  "E": ".",
+  "F": "..-.",
+  "G": "--.",
+  "H": "....",
+  "I": "..",
+  "J": ".---",
+  "K": "-.-",
+  "L": ".-..",
+  "M": "--",
+  "N": "-.",
+  "O": "---",
+  "Ö": "---.",
+  "P": ".--.",
+  "Q": "--.-",
+  "R": ".-.",
+  "S": "...",
+  "T": "-",
+  "U": "..-",
+  "Ü": "..--",
+  "V": "...-",
+  "W": ".--",
+  "X": "-..-",
+  "Y": "-.--",
+  "Z": "--.."
+
+};
+
+const morseSentence =
+  "SYMBOL ANZÜNDEN";
+
+
+function getMorseLetters(){
+
+  return morseSentence
+    .split("")
+    .map(letter => {
+
+      if(letter === " "){
+        return "/";
+      }
+
+      return morseMap[letter] || "";
+
+    });
+
+}
+
+const morseLetters =
+  getMorseLetters();
+
+let morseIndex = 0;
+let morseSymbolIndex = 0;
+
+function playNextMorse(){
+
+  const current =
+    morseLetters[morseIndex];
+
+  if(current === "/"){
+
+    morseText.textContent =
+      "   /   ";
+
+    morseIndex++;
+
+    setTimeout(
+      playNextMorse,
+      1000
+    );
+
+    return;
+
+  }
+
+  if(
+    !current ||
+    morseSymbolIndex >= current.length
+  ){
+
+    morseIndex++;
+
+    morseSymbolIndex = 0;
+
+    if(
+      morseIndex >=
+      morseLetters.length
+    ){
+
+      morseText.textContent =
+        "—  NEUSTART  —";
+
+      setTimeout(() => {
+
+        morseIndex = 0;
+        morseSymbolIndex = 0;
+
+        playNextMorse();
+
+      },1800);
+
+      return;
+
+    }
+
+    setTimeout(
+      playNextMorse,
+      700
+    );
+
+    return;
+
+  }
+
+  const symbol =
+    current[morseSymbolIndex];
+
+  morseText.textContent =
+    symbol === "."
+      ? "•"
+      : "—";
+
+  blinkEye();
+
+  morseSymbolIndex++;
+
+  setTimeout(
+    playNextMorse,
+    symbol === "."
+      ? 900
+      : 1500
   );
 
-
-  setTimeout(() => {
-
-    eye.classList.remove(
-      "normalBlink"
-    );
-
-  }, 170);
-
 }
 
-
-function scheduleBlink() {
-
-  const delay =
-    5000 +
-    Math.random() * 8500;
-
-
-  setTimeout(() => {
-
-    blink();
-
-    scheduleBlink();
-
-  }, delay);
-
-}
-
-
-scheduleBlink();
-
-
-/* =================================================
-   SPRACHEINGABE
-================================================= */
-
-let recognition = null;
-
-let listening = false;
-
-let sending = false;
-
-let emergencyStep = false;
-
-let lastSentCommand = "";
-
-let lastSentTime = 0;
-
-
-/* =================================================
-   NORMALISIEREN
-================================================= */
-
-function normalize(
-  value
-) {
-
-  return value
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(
-      /[\u0300-\u036f]/g,
-      ""
-    )
-    .replace(
-      /[.,!?;:()[\]{}"'„“]/g,
-      " "
-    )
-    .replace(
-      /\s+/g,
-      " "
-    );
-
-}
+playNextMorse();
 
 
 /* =================================================
@@ -1061,165 +705,71 @@ function normalize(
 
 const insults = [
 
-  "arsch",
   "arschloch",
   "idiot",
-  "idiotin",
-  "dummkopf",
-  "depp",
-  "trottel",
-  "blödmann",
-  "blodmann",
-  "vollidiot",
+  "blöd",
+  "dumm",
+  "scheiße",
+  "scheisse",
+  "fick",
+  "fick dich",
   "hurensohn",
-  "mistkerl",
-  "miststück",
-  "miststueck",
-  "schlampe",
+  "hure",
   "wichser",
+  "spast",
+  "opfer",
+  "bastard",
+  "fotze",
   "penner",
-  "spasti",
-  "opfer"
+  "mistkerl",
+  "depp"
 
 ];
 
+function containsInsult(text){
 
-function containsInsult(
-  text
-) {
-
-  const words =
-    text.split(" ");
-
+  const lower =
+    text.toLowerCase();
 
   return insults.some(
     word =>
-      words.includes(word)
+      lower.includes(word)
   );
 
 }
 
 
 /* =================================================
-   RELEVANTE THEMEN
+   SHOW-FILTER
 ================================================= */
 
-const relevantWords = [
+const offTopicWords = [
 
-  "observer",
-  "escape",
-  "raum",
-  "tür",
-  "tur",
-  "raus",
-  "heraus",
-  "hilfe",
-  "waschmaschine",
-  "notfall",
-  "nummer",
-  "drei",
-  "03",
-  "mann",
-  "männer",
-  "maenner",
-  "hoodie",
-  "jacke",
-  "zettel",
-  "betriebssystem",
-  "überwachung",
-  "ueberwachung",
-  "beobachtung",
-  "ordner",
-  "show",
-  "signal",
-  "licht",
-  "symbol",
-  "barcode",
-  "karton",
-  "scan",
-  "scannen"
+  "minecraft",
+  "fortnite",
+  "youtube",
+  "tiktok",
+  "instagram",
+  "fußball",
+  "fussball",
+  "schule",
+  "hausaufgaben",
+  "mathe",
+  "wetter",
+  "pizza",
+  "musik"
 
 ];
 
+function isOffTopic(text){
 
-function isRelevant(
-  command
-) {
+  const lower =
+    text.toLowerCase();
 
-  if (
-    command === "hallo" ||
-    command === "hi" ||
-    command === "hey" ||
-    command === "was"
-  ) {
-
-    return true;
-
-  }
-
-
-  for (
-    const word of relevantWords
-  ) {
-
-    if (
-      command.includes(word)
-    ) {
-
-      return true;
-
-    }
-
-  }
-
-
-  return (
-    command.includes("wer bist")
-    ||
-    command.includes("was bist")
-    ||
-    command.includes("wie heisst")
-    ||
-    command.includes("wie heißt")
-    ||
-    command.includes("was passiert")
-    ||
-    command.includes("was sollen wir")
+  return offTopicWords.some(
+    word =>
+      lower.includes(word)
   );
-
-}
-
-
-/* =================================================
-   DOPPELTE SENDUNGEN
-================================================= */
-
-function isDuplicateSend(
-  command
-) {
-
-  const now =
-    Date.now();
-
-
-  if (
-    command === lastSentCommand &&
-    now - lastSentTime < 2500
-  ) {
-
-    return true;
-
-  }
-
-
-  lastSentCommand =
-    command;
-
-  lastSentTime =
-    now;
-
-
-  return false;
 
 }
 
@@ -1228,105 +778,167 @@ function isDuplicateSend(
    NOTFALLNUMMERN
 ================================================= */
 
-function getEmergencyNumber(
-  command
-) {
+const emergencyResponses = {
 
-  if (
-    command === "1" ||
-    command === "01" ||
-    command === "eins" ||
-    command === "null eins" ||
-    command.includes("nummer eins")
-  ) {
-    return "01";
+  "01":
+    "Notfallnummer 01 erkannt: Bei Gasgeruch. Bitte verlassen Sie den betroffenen Bereich und warten Sie auf weitere Anweisungen.",
+
+  "02":
+    "Notfallnummer 02 erkannt: Ungewöhnliches Tiergeräusch oder bellender Hund. Bitte bleiben Sie aufmerksam und überprüfen Sie die Umgebung.",
+
+  "03":
+    "Notfall erkannt, Maßnahmen werden eingeleitet.\n\nEs befinden sich lediglich drei Personen in der Umgebung. Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel in einem Notfall-Ordner.",
+
+  "04":
+    "Notfallnummer 04 erkannt: Feuer oder Rauch. Bitte entfernen Sie sich vom betroffenen Bereich und warten Sie auf weitere Anweisungen.",
+
+  "05":
+    "Notfallnummer 05 erkannt: Wasseraustritt. Bitte überprüfen Sie die Umgebung und halten Sie Abstand zu elektrischen Geräten.",
+
+  "06":
+    "Notfallnummer 06 erkannt: Elektrische Störung. Berühren Sie keine unbekannten technischen Komponenten.",
+
+  "07":
+    "Notfallnummer 07 erkannt: Verletzte Person. Bitte informieren Sie das Showpersonal und warten Sie auf weitere Anweisungen.",
+
+  "08":
+    "Notfallnummer 08 erkannt: Ungewöhnliches Geräusch oder unbekannte Bewegung. Überprüfen Sie die Umgebung aufmerksam.",
+
+  "09":
+    "Notfallnummer 09 erkannt: Sonstiger Notfall. Bitte bleiben Sie ruhig und warten Sie auf weitere Anweisungen."
+
+};
+
+
+/* =================================================
+   ZAHLEN AUS SPRACHE / TEXT
+================================================= */
+
+const numberWords = {
+
+  "null":"0",
+  "eins":"1",
+  "ein":"1",
+  "zwei":"2",
+  "drei":"3",
+  "vier":"4",
+  "fünf":"5",
+  "fuenf":"5",
+  "sechs":"6",
+  "sieben":"7",
+  "acht":"8",
+  "neun":"9",
+  "zehn":"10",
+  "elf":"11",
+  "zwölf":"12",
+  "zwoelf":"12"
+
+};
+
+
+function extractEmergencyNumber(text){
+
+  const normalized =
+    text
+      .toLowerCase()
+      .replace(/[.,!?]/g," ")
+      .replace(/\s+/g," ")
+      .trim();
+
+  /* 01, 02 ... 09 */
+  const direct =
+    normalized.match(
+      /\b(0?[1-9]|10|11|12|13|14|15|16|17|18|19|20)\b/
+    );
+
+  if(direct){
+
+    let number =
+      parseInt(
+        direct[1],
+        10
+      );
+
+    return number;
+
   }
 
+  /* Wörter */
 
-  if (
-    command === "2" ||
-    command === "02" ||
-    command === "zwei" ||
-    command === "null zwei" ||
-    command.includes("nummer zwei")
-  ) {
-    return "02";
+  const words =
+    normalized.split(" ");
+
+  for(const word of words){
+
+    if(
+      numberWords[word] !== undefined
+    ){
+
+      return parseInt(
+        numberWords[word],
+        10
+      );
+
+    }
+
   }
 
+  /* Kombinationen wie "null drei" */
 
-  if (
-    command === "3" ||
-    command === "03" ||
-    command === "drei" ||
-    command === "null drei" ||
-    command.includes("nummer drei")
-  ) {
-    return "03";
+  if(
+    normalized.includes("null drei")
+  ){
+    return 3;
   }
 
-
-  if (
-    command === "4" ||
-    command === "04" ||
-    command === "vier" ||
-    command === "null vier" ||
-    command.includes("nummer vier")
-  ) {
-    return "04";
+  if(
+    normalized.includes("null eins")
+  ){
+    return 1;
   }
 
-
-  if (
-    command === "5" ||
-    command === "05" ||
-    command === "fuenf" ||
-    command === "fünf" ||
-    command === "null fünf" ||
-    command.includes("nummer fünf")
-  ) {
-    return "05";
+  if(
+    normalized.includes("null zwei")
+  ){
+    return 2;
   }
 
-
-  if (
-    command === "6" ||
-    command === "06" ||
-    command === "sechs" ||
-    command === "null sechs"
-  ) {
-    return "06";
+  if(
+    normalized.includes("null vier")
+  ){
+    return 4;
   }
 
-
-  if (
-    command === "7" ||
-    command === "07" ||
-    command === "sieben" ||
-    command === "null sieben"
-  ) {
-    return "07";
+  if(
+    normalized.includes("null fünf") ||
+    normalized.includes("null fuenf")
+  ){
+    return 5;
   }
 
-
-  if (
-    command === "8" ||
-    command === "08" ||
-    command === "acht" ||
-    command === "null acht"
-  ) {
-    return "08";
+  if(
+    normalized.includes("null sechs")
+  ){
+    return 6;
   }
 
-
-  if (
-    command === "9" ||
-    command === "09" ||
-    command === "neun" ||
-    command === "null neun"
-  ) {
-    return "09";
+  if(
+    normalized.includes("null sieben")
+  ){
+    return 7;
   }
 
+  if(
+    normalized.includes("null acht")
+  ){
+    return 8;
+  }
+
+  if(
+    normalized.includes("null neun")
+  ){
+    return 9;
+  }
 
   return null;
 
@@ -1334,337 +946,204 @@ function getEmergencyNumber(
 
 
 /* =================================================
-   FALSCHE NOTFALLNUMMERN
+   NACHRICHT VERARBEITEN
 ================================================= */
 
-function emergencyNumberResponse(
-  number
-) {
+let sending =
+  false;
 
-  switch (number) {
 
-    case "01":
-      return "Notfallkanal 01. Akustische Auffälligkeit registriert. Kein weiterer Vorgang erforderlich.";
+function processMessage(text){
 
-    case "02":
-      return "Notfallkanal 02. Möglicher Fehlalarm. Überprüfen Sie die Umgebung.";
-
-    case "04":
-      return "Notfallkanal 04. Keine eindeutige Gefahrenlage festgestellt.";
-
-    case "05":
-      return "Notfallkanal 05. Dieser Kanal ist für den aktuellen Vorgang nicht verfügbar.";
-
-    case "06":
-      return "Notfallkanal 06. Falscher Notfallkanal.";
-
-    case "07":
-      return "Notfallkanal 07. Keine gültige Notfallmeldung vorhanden.";
-
-    case "08":
-      return "Notfallkanal 08. Dieser Kanal ist für den aktuellen Vorfall nicht vorgesehen.";
-
-    case "09":
-      return "Notfallkanal 09. Notfallcode nicht bestätigt.";
-
-    default:
-      return "Ungültiger Notfallkanal.";
-
+  if(!text.trim()){
+    return;
   }
 
-}
+  addMessage(
+    "DU",
+    text
+  );
 
+  const emergencyNumber =
+    extractEmergencyNumber(text);
 
-/* =================================================
-   OBSERVER-ANTWORT
-================================================= */
+  /* =========================================
+     NOTFALLNUMMER
+  ========================================= */
 
-function getObserverAnswer(
-  command
-) {
+  if(
+    emergencyNumber !== null
+  ){
 
-  command =
-    normalize(command);
+    if(
+      emergencyNumber >= 1 &&
+      emergencyNumber <= 9
+    ){
 
-
-  if (
-    containsInsult(command)
-  ) {
-
-    return "Bitte unterlasse das, wir sind im öffentlich Rechtlichen Fernsehen zu sehen!";
-
-  }
-
-
-  if (
-    command.includes("notfallnummern")
-  ) {
-
-    emergencyStep =
-      true;
-
-
-    return "Nennen Sie jetzt die Notfallnummer.";
-
-  }
-
-
-  if (
-    emergencyStep
-  ) {
-
-    const number =
-      getEmergencyNumber(command);
-
-
-    if (
-      number
-    ) {
-
-      emergencyStep =
-        false;
-
-
-      if (
-        number === "03"
-      ) {
-
-        return (
-          "Notfall erkannt, Maßnahmen werden eingeleitet.\n\n" +
-          "Es befinden sich lediglich drei Personen in der Umgebung. " +
-          "Stellen Sie sicher, dass Hilfeschreie nicht von ihnen kommen. " +
-          "Sollte dies nicht der Fall sein, finden Sie eine weitere Hilfetafel " +
-          "in einem Notfall-Ordner."
-        );
-
-      }
-
-
-      return emergencyNumberResponse(
-        number
+      addMessage(
+        "OBSERVER",
+        emergencyResponses[
+          String(
+            emergencyNumber
+          ).padStart(2,"0")
+        ]
       );
+
+      return;
+
+    }
+
+    if(
+      emergencyNumber >= 10
+    ){
+
+      addMessage(
+        "OBSERVER",
+        "Maximale Anzahl der Notfallnummern bis 09."
+      );
+
+      return;
 
     }
 
   }
 
+  /* =========================================
+     BELEIDIGUNG
+  ========================================= */
 
-  if (
-    command === "hallo" ||
-    command.startsWith("hallo ") ||
-    command === "hi" ||
-    command === "hey"
-  ) {
+  if(
+    containsInsult(text)
+  ){
 
-    return "Hallo.";
-
-  }
-
-
-  if (
-    command === "was"
-  ) {
-
-    return "Was?";
-
-  }
-
-
-  if (
-    command.includes("wer bist du") ||
-    command.includes("was bist du") ||
-    command.includes("wie heißt du") ||
-    command.includes("wie heisst du")
-  ) {
-
-    return "Observer Typ 0.4.";
-
-  }
-
-
-  if (
-    command.includes("wo sind wir") ||
-    (
-      command.includes("wo") &&
-      command.includes("sind") &&
-      command.includes("wir")
-    )
-  ) {
-
-    return (
-      "Ihr wurdet von zwei Männern hier reingebracht, " +
-      "sie trugen einen schwarzen Hoodie und eine schwarze Winterjacke, " +
-      "der eine hatte einen Zettel darin versteckt."
+    addMessage(
+      "OBSERVER",
+      "Bitte unterlasse das, wir sind im öffentlich Rechtlichen Fernsehen zu sehen!"
     );
 
-  }
-
-
-  if (
-    command.includes("hilfe") ||
-    command.includes("hilf uns")
-  ) {
-
-    return "Ich bin nicht fürs Helfen da.";
+    return;
 
   }
 
+  /* =========================================
+     OFF-TOPIC
+  ========================================= */
 
-  if (
-    command.includes("waschmaschine")
-  ) {
+  if(
+    isOffTopic(text)
+  ){
 
-    return "Ich bin nicht für eine Wäsche gemacht.";
-
-  }
-
-
-  const hasWie =
-    command.includes("wie");
-
-  const hasKommen =
-    command.includes("kommen");
-
-  const hasRaus =
-    command.includes("raus") ||
-    command.includes("heraus");
-
-
-  if (
-    (
-      hasWie &&
-      hasKommen &&
-      hasRaus
-    )
-    ||
-    command.includes(
-      "wie kommen wir hier raus"
-    )
-    ||
-    command.includes(
-      "wie kommen wir hier heraus"
-    )
-  ) {
-
-    return (
-      "Probiert es mal mit der Tür, sonst sind alle Wege im Betriebssystem blockiert."
+    addMessage(
+      "OBSERVER",
+      "Diese Frage gehört nicht zur Show, stelle eine andere !"
     );
 
+    return;
+
   }
 
+  /* =========================================
+     SHOW-ANTWORTEN
+  ========================================= */
 
-  if (
-    !isRelevant(command)
-  ) {
+  const lower =
+    text.toLowerCase();
 
-    return (
-      "Diese Frage gehört nicht zur Show, stelle eine andere!"
+  if(
+    lower.includes("hallo") ||
+    lower.includes("hi") ||
+    lower.includes("hey")
+  ){
+
+    addMessage(
+      "OBSERVER",
+      "Hallo. Die Beobachtung läuft."
     );
 
+    return;
+
   }
 
+  if(
+    lower.includes("wer bist du") ||
+    lower.includes("was bist du")
+  ){
 
-  return (
-    "Ich habe das nicht verstanden. Stelle die Frage bitte noch einmal."
+    addMessage(
+      "OBSERVER",
+      "Ich bin der OBSERVER. Ich beobachte das Szenario und reagiere auf bestimmte Ereignisse."
+    );
+
+    return;
+
+  }
+
+  if(
+    lower.includes("hilfe")
+  ){
+
+    addMessage(
+      "OBSERVER",
+      "Wenn Sie Hilfe benötigen, überprüfen Sie zunächst die Hinweise im Szenario."
+    );
+
+    return;
+
+  }
+
+  if(
+    lower.includes("kamera")
+  ){
+
+    addMessage(
+      "OBSERVER",
+      "Die Kamera ist dauerhaft aktiv."
+    );
+
+    return;
+
+  }
+
+  addMessage(
+    "OBSERVER",
+    "Diese Information kann ich innerhalb des Szenarios nicht beantworten. Beobachten Sie Ihre Umgebung."
   );
 
 }
 
 
 /* =================================================
-   CHAT SENDEN
+   SENDEN
 ================================================= */
 
-function sendMessage() {
+function sendMessage(){
 
-  if (
+  if(
     sending
-  ) {
-
+  ){
     return;
-
   }
 
-
-  const raw =
+  const text =
     input.value.trim();
 
-
-  if (
-    !raw
-  ) {
-
+  if(!text){
     return;
-
   }
 
+  input.value = "";
 
-  const command =
-    normalize(raw);
-
-
-  if (
-    isDuplicateSend(command)
-  ) {
-
-    input.value = "";
-
-    return;
-
-  }
-
-
-  sending =
-    true;
-
-
-  sendButton.disabled =
-    true;
-
-
-  micButton.disabled =
-    true;
-
+  sending = true;
 
   stopListening();
 
-
-  addMessage(
-    "DU",
-    raw
-  );
-
-
-  input.value =
-    "";
-
+  processMessage(text);
 
   setTimeout(() => {
 
-    const answer =
-      getObserverAnswer(
-        command
-      );
+    sending = false;
 
-
-    addMessage(
-      "OBSERVER",
-      answer
-    );
-
-
-    sending =
-      false;
-
-
-    sendButton.disabled =
-      false;
-
-
-    micButton.disabled =
-      false;
-
-  }, 180);
+  },300);
 
 }
 
@@ -1675,17 +1154,13 @@ sendButton.addEventListener(
 );
 
 
-/* =================================================
-   ENTER
-================================================= */
-
 input.addEventListener(
   "keydown",
   event => {
 
-    if (
+    if(
       event.key === "Enter"
-    ) {
+    ){
 
       event.preventDefault();
 
@@ -1701,54 +1176,51 @@ input.addEventListener(
    SPRACHERKENNUNG
 ================================================= */
 
-const RecognitionAPI =
+let recognition =
+  null;
+
+let listening =
+  false;
+
+
+const SpeechRecognition =
   window.SpeechRecognition ||
   window.webkitSpeechRecognition;
 
 
-if (
-  RecognitionAPI
-) {
+if(SpeechRecognition){
 
   recognition =
-    new RecognitionAPI();
-
+    new SpeechRecognition();
 
   recognition.lang =
     "de-DE";
 
-
   recognition.continuous =
     false;
-
 
   recognition.interimResults =
     true;
 
-
   recognition.maxAlternatives =
-    3;
+    1;
 
 
   recognition.onstart =
     () => {
 
-      listening =
-        true;
-
+      listening = true;
 
       micButton.classList.add(
         "active"
       );
 
+      micStatus.textContent =
+        "ICH HÖRE ZU";
 
       micStatus.classList.add(
         "visible"
       );
-
-
-      micStatus.textContent =
-        "ICH HÖRE ZU";
 
     };
 
@@ -1756,36 +1228,31 @@ if (
   recognition.onresult =
     event => {
 
-      let transcript =
-        "";
+      let transcript = "";
 
-
-      for (
-        let i = 0;
+      for(
+        let i = event.resultIndex;
         i < event.results.length;
         i++
-      ) {
+      ){
 
         transcript +=
-          event.results[i][0]
-            .transcript;
+          event.results[i][0].transcript;
 
       }
 
-
       input.value =
         transcript.trim();
-
 
       const last =
         event.results[
           event.results.length - 1
         ];
 
-
-      if (
+      if(
+        last &&
         last.isFinal
-      ) {
+      ){
 
         micStatus.textContent =
           "SPRACHE ERKANNT";
@@ -1798,19 +1265,15 @@ if (
   recognition.onerror =
     event => {
 
-      listening =
-        false;
-
+      listening = false;
 
       micButton.classList.remove(
         "active"
       );
 
-
       micStatus.classList.remove(
         "visible"
       );
-
 
       console.log(
         "SpeechRecognition:",
@@ -1823,14 +1286,11 @@ if (
   recognition.onend =
     () => {
 
-      listening =
-        false;
-
+      listening = false;
 
       micButton.classList.remove(
         "active"
       );
-
 
       micStatus.classList.remove(
         "visible"
@@ -1842,29 +1302,27 @@ if (
 
 
 /* =================================================
-   MIKROFON
+   MIKROFON START
 ================================================= */
 
-function startListening() {
+function startListening(){
 
-  if (
+  if(
     !recognition ||
     listening ||
     sending
-  ) {
+  ){
 
     return;
 
   }
 
-
-  try {
+  try{
 
     recognition.start();
 
   }
-
-  catch (error) {
+  catch(error){
 
     console.log(
       "Mikrofonstart:",
@@ -1876,34 +1334,24 @@ function startListening() {
 }
 
 
-function stopListening() {
+function stopListening(){
 
-  if (
-    !recognition
-  ) {
-
+  if(!recognition){
     return;
-
   }
 
-
-  try {
+  try{
 
     recognition.stop();
 
   }
+  catch(error){}
 
-  catch (error) {}
-
-
-  listening =
-    false;
-
+  listening = false;
 
   micButton.classList.remove(
     "active"
   );
-
 
   micStatus.classList.remove(
     "visible"
@@ -1916,25 +1364,17 @@ micButton.addEventListener(
   "click",
   () => {
 
-    if (
-      sending
-    ) {
-
+    if(sending){
       return;
-
     }
 
-
-    if (
-      listening
-    ) {
+    if(listening){
 
       stopListening();
 
       return;
 
     }
-
 
     startListening();
 
@@ -1943,35 +1383,42 @@ micButton.addEventListener(
 
 
 /* =================================================
-   BARCODE-SCANNER
+   KAMERA / BARCODE
 ================================================= */
 
-let barcodeReader = null;
+let barcodeReader =
+  null;
 
-let barcodeControls = null;
+let barcodeControls =
+  null;
 
-let currentStream = null;
+let currentStream =
+  null;
 
-let currentCameraMode = "back";
+let currentCameraMode =
+  "back";
 
-let scannerStarted = false;
+let scannerStarted =
+  false;
 
-let lastDetectedValue = "";
+let lastDetectedValue =
+  "";
 
-let lastDetectedTime = 0;
+let lastDetectedTime =
+  0;
 
 
-/* =================================================
+/* =========================================
    ZIEL-BARCODE
-================================================= */
+========================================= */
 
 const TARGET_BARCODE =
   "000000";
 
 
-/* =================================================
-   BARCODE-NACHRICHT
-================================================= */
+/* =========================================
+   BARCODE-TEXT
+========================================= */
 
 const BARCODE_MESSAGE =
   "Ich habe den Inhalt in diesem Karton gescannt:\n\n" +
@@ -1983,68 +1430,60 @@ const BARCODE_MESSAGE =
    BARCODE AUSLÖSEN
 ================================================= */
 
-function handleBarcode(
-  value
-) {
+function handleBarcode(value){
 
-  if (!value) {
+  if(!value){
     return;
   }
-
 
   const cleanValue =
-    String(value)
-      .trim();
-
+    String(value).trim();
 
   /*
-     Nur der Barcode 000000
-     darf reagieren.
+     Nur 000000 reagiert.
+     Jeder andere Barcode,
+     jedes andere Symbol und
+     jeder andere QR-Code
+     wird ignoriert.
   */
 
-  if (
+  if(
     cleanValue !== TARGET_BARCODE
-  ) {
+  ){
+
+    cameraStatus.textContent =
+      "KAMERA AKTIV · KEIN BEKANNTER CODE";
 
     return;
 
   }
-
 
   const now =
     Date.now();
 
-
-  if (
+  if(
     cleanValue === lastDetectedValue &&
     now - lastDetectedTime < 5000
-  ) {
+  ){
 
     return;
 
   }
 
-
   lastDetectedValue =
     cleanValue;
-
 
   lastDetectedTime =
     now;
 
+  /*
+     Kamera bleibt dauerhaft aktiv.
+  */
 
   addMessage(
     "OBSERVER",
     BARCODE_MESSAGE
   );
-
-
-  /*
-     Nach erfolgreichem Scan
-     kann das Kamerafenster offen bleiben.
-     So können die Spieler sehen,
-     dass der Scan funktioniert hat.
-  */
 
   cameraStatus.textContent =
     "BARCODE ERKANNT";
@@ -2053,148 +1492,51 @@ function handleBarcode(
 
 
 /* =================================================
-   KAMERA-GERÄTE
-================================================= */
-
-async function getCameraDevices() {
-
-  if (
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.enumerateDevices
-  ) {
-
-    return [];
-
-  }
-
-
-  try {
-
-    const devices =
-      await navigator.mediaDevices.enumerateDevices();
-
-
-    return devices.filter(
-      device =>
-        device.kind === "videoinput"
-    );
-
-  }
-
-  catch (error) {
-
-    console.log(
-      "Kamera-Geräte:",
-      error
-    );
-
-
-    return [];
-
-  }
-
-}
-
-
-/* =================================================
-   RÜCKKAMERA SUCHEN
-================================================= */
-
-function findBackCamera(
-  devices
-) {
-
-  return devices.find(
-    device =>
-      /back|rear|environment|rück|hinten/i
-        .test(
-          device.label || ""
-        )
-  );
-
-}
-
-
-/* =================================================
-   FRONTKAMERA SUCHEN
-================================================= */
-
-function findFrontCamera(
-  devices
-) {
-
-  return devices.find(
-    device =>
-      /front|user|face|vorn/i
-        .test(
-          device.label || ""
-        )
-  );
-
-}
-
-
-/* =================================================
    KAMERA STOPPEN
 ================================================= */
 
-function stopCamera() {
+function stopCamera(){
 
   scannerStarted =
     false;
 
+  if(barcodeControls){
 
-  if (
-    barcodeControls
-  ) {
-
-    try {
-
+    try{
       barcodeControls.stop();
-
     }
-
-    catch (error) {}
+    catch(error){}
 
     barcodeControls =
       null;
 
   }
 
+  if(barcodeReader){
 
-  if (
-    barcodeReader
-  ) {
-
-    try {
-
+    try{
       barcodeReader.reset();
-
     }
-
-    catch (error) {}
+    catch(error){}
 
     barcodeReader =
       null;
 
   }
 
-
-  if (
-    currentStream
-  ) {
+  if(currentStream){
 
     currentStream
       .getTracks()
       .forEach(
-        track => track.stop()
+        track =>
+          track.stop()
       );
 
     currentStream =
       null;
 
   }
-
 
   scannerVideo.srcObject =
     null;
@@ -2208,98 +1550,74 @@ function stopCamera() {
 
 async function startCamera(
   mode = "back"
-) {
+){
 
   stopCamera();
-
 
   currentCameraMode =
     mode;
 
-
   cameraStatus.textContent =
     "KAMERA WIRD GESTARTET …";
 
-
-  try {
-
-    /*
-       Erst versuchen wir die
-       gewünschte Kamera direkt
-       über facingMode zu bekommen.
-    */
-
-    const constraints = {
-
-      video: {
-
-        facingMode:
-          mode === "back"
-            ? { ideal: "environment" }
-            : { ideal: "user" },
-
-        width: {
-          ideal: 1280
-        },
-
-        height: {
-          ideal: 720
-        }
-
-      },
-
-      audio: false
-
-    };
-
+  try{
 
     currentStream =
       await navigator.mediaDevices
-        .getUserMedia(
-          constraints
-        );
+        .getUserMedia({
+
+          video:{
+            facingMode:
+              mode === "back"
+                ? {
+                    ideal:"environment"
+                  }
+                : {
+                    ideal:"user"
+                  },
+
+            width:{
+              ideal:1280
+            },
+
+            height:{
+              ideal:720
+            }
+
+          },
+
+          audio:false
+
+        });
 
 
     scannerVideo.srcObject =
       currentStream;
 
-
     await scannerVideo.play();
-
 
     scannerStarted =
       true;
 
-
     updateCameraButtons();
-
 
     cameraStatus.textContent =
       mode === "back"
         ? "RÜCKKAMERA · BARCODE BEREIT"
         : "FRONTKAMERA · BARCODE BEREIT";
 
-
-    /*
-       Barcode-Erkennung starten.
-    */
-
     await startBarcodeReader();
 
-
   }
-
-  catch (error) {
+  catch(error){
 
     console.log(
       "Kamera:",
       error
     );
 
-
     cameraStatus.textContent =
       "KAMERA KONNTE NICHT GESTARTET WERDEN";
-
 
     scannerStarted =
       false;
@@ -2310,14 +1628,14 @@ async function startCamera(
 
 
 /* =================================================
-   BARCODE READER STARTEN
+   BARCODE READER
 ================================================= */
 
-async function startBarcodeReader() {
+async function startBarcodeReader(){
 
-  if (
+  if(
     !window.ZXingBrowser
-  ) {
+  ){
 
     cameraStatus.textContent =
       "BARCODE-SCANNER NICHT GELADEN";
@@ -2326,12 +1644,11 @@ async function startBarcodeReader() {
 
   }
 
-
-  try {
+  try{
 
     barcodeReader =
-      new ZXingBrowser.BrowserMultiFormatReader();
-
+      new ZXingBrowser
+        .BrowserMultiFormatReader();
 
     barcodeControls =
       await barcodeReader
@@ -2342,29 +1659,19 @@ async function startBarcodeReader() {
             error
           ) => {
 
-            if (
-              !result
-            ) {
-
+            if(!result){
               return;
-
             }
 
-
-            const value =
-              result.getText();
-
-
             handleBarcode(
-              value
+              result.getText()
             );
 
           }
         );
 
   }
-
-  catch (error) {
+  catch(error){
 
     console.log(
       "Barcode Reader:",
@@ -2377,16 +1684,15 @@ async function startBarcodeReader() {
 
 
 /* =================================================
-   KAMERA BUTTONS AKTUALISIEREN
+   KAMERA BUTTONS
 ================================================= */
 
-function updateCameraButtons() {
+function updateCameraButtons(){
 
   backCameraButton.classList.toggle(
     "active",
     currentCameraMode === "back"
   );
-
 
   frontCameraButton.classList.toggle(
     "active",
@@ -2408,21 +1714,10 @@ cameraButton.addEventListener(
       "open"
     );
 
-
-    cameraStatus.textContent =
-      "KAMERA WIRD GESTARTET …";
-
-
-    /*
-       Standardmäßig Rückkamera.
-    */
-
     currentCameraMode =
       "back";
 
-
     updateCameraButtons();
-
 
     await startCamera(
       "back"
@@ -2442,7 +1737,6 @@ closeCameraButton.addEventListener(
 
     stopCamera();
 
-
     cameraOverlay.classList.remove(
       "open"
     );
@@ -2459,15 +1753,14 @@ backCameraButton.addEventListener(
   "click",
   async () => {
 
-    if (
+    if(
       currentCameraMode === "back" &&
       scannerStarted
-    ) {
+    ){
 
       return;
 
     }
-
 
     await startCamera(
       "back"
@@ -2485,15 +1778,14 @@ frontCameraButton.addEventListener(
   "click",
   async () => {
 
-    if (
+    if(
       currentCameraMode === "front" &&
       scannerStarted
-    ) {
+    ){
 
       return;
 
     }
-
 
     await startCamera(
       "front"
@@ -2504,22 +1796,22 @@ frontCameraButton.addEventListener(
 
 
 /* =================================================
-   OVERLAY BEIM VERLASSEN STOPPEN
+   BEIM VERLASSEN DER SEITE
 ================================================= */
 
 document.addEventListener(
   "visibilitychange",
   () => {
 
-    if (
+    if(
       document.hidden
-    ) {
+    ){
 
-      if (
+      if(
         cameraOverlay.classList.contains(
           "open"
         )
-      ) {
+      ){
 
         stopCamera();
 
@@ -2532,19 +1824,19 @@ document.addEventListener(
 
 
 /* =================================================
-   ESCAPE-TASTE
+   ESC
 ================================================= */
 
 document.addEventListener(
   "keydown",
   event => {
 
-    if (
+    if(
       event.key === "Escape" &&
       cameraOverlay.classList.contains(
         "open"
       )
-    ) {
+    ){
 
       stopCamera();
 
@@ -2555,6 +1847,16 @@ document.addEventListener(
     }
 
   }
+);
+
+
+/* =================================================
+   STARTNACHRICHT
+================================================= */
+
+addMessage(
+  "OBSERVER",
+  "Beobachtung aktiviert."
 );
 
 </script>
